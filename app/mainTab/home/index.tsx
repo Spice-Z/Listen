@@ -9,6 +9,7 @@ export default function App() {
       <Link href={{pathname:"/mainTab/home/player",params: { episodeId: 1 }}} >Episode 1</Link>
       <Link href={{pathname:"/mainTab/home/player",params: { episodeId: 2 }}} >Episode 2</Link>
       <Link href={{pathname:"/mainTab/setting"}} >Setting</Link>
+      <Link href="/modal">Present modal</Link>
       <StatusBar style="auto" />
     </View>
   );

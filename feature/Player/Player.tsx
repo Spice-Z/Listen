@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,39 +6,37 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
-import textJson from '../../assets/text.json'
-import text2Json from '../../assets/text2.json'
+import textJson from '../../assets/text.json';
+import text2Json from '../../assets/text2.json';
 import { useSearchParams } from 'expo-router';
 import { parseTimestamp } from '../../utils/vtt';
-import { PauseIcon, PlayIcon, SkipForwardIcon } from '../icons';
-import Back15SecIcon from '../icons/Back15SecIcon';
+import { PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon } from '../icons';
+import TrackPlayer, {
+  usePlaybackState,
+  useTrackPlayerEvents,
+  Event,
+  State,
+  useProgress,
+} from 'react-native-track-player';
 
 const Player = () => {
   const { episodeId } = useSearchParams();
   const [captions, setCaptions] = useState([]);
-  const captionsRef = useRef([])
+  const captionsRef = useRef([]);
   const [activeCaptionIndex, setActiveCaptionIndex] = useState(null);
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const [playbackDuration, setPlaybackDuration] = useState(0);
-  const [sound, setSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+
+  const playbackState = usePlaybackState();
 
   useEffect(() => {
     loadCaptions();
-    loadAudio();
-    console.log({ episodeId })
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-    };
+    setupPlayer();
   }, []);
 
   const loadCaptions = async () => {
-    console.log('loadCaptions')
-    const text = episodeId === '1' ? textJson.data : text2Json.data
+    const text = episodeId === '1' ? textJson.data : text2Json.data;
     const lines = text.split('\n');
 
     const parsedCaptions = lines.reduce((acc, line) => {
@@ -51,56 +49,59 @@ const Player = () => {
       return acc;
     }, []);
 
-    setCaptions(parsedCaptions)
-    captionsRef.current = parsedCaptions
+    setCaptions(parsedCaptions);
+    captionsRef.current = parsedCaptions;
   };
 
-  const loadAudio = async () => {
-    const audio = episodeId === '1' ? require('../../assets/audio.mp3') : require('../../assets/audio2.mp3')
-    const { sound } = await Audio.Sound.createAsync(
-      audio,
-      { shouldPlay: false }
+  const setupPlayer = async () => {
+    const audio = episodeId === '1' ? 'https://anchor.fm/s/81fb5eec/podcast/play/67591883/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-30%2Fefa8c91f-d674-0399-9ee4-b7900c797b90.mp3' : require('../../assets/audio2.mp3');
+    await TrackPlayer.add({ url: audio });
+  }
+
+  useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
+    setActiveCaptionIndex(null);
+    setPlaybackPosition(0);
+  });
+
+  useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
+    const track = await TrackPlayer.getCurrentTrack();
+    if (track === null) {
+      setActiveCaptionIndex(null);
+      setPlaybackPosition(0);
+      return
+    }
+    console.log('track changed')
+    const duration = await TrackPlayer.getDuration();
+    setPlaybackDuration(duration);
+  });
+
+  const progress = useProgress();
+  useEffect(() => {
+    const { position } = progress;
+    setPlaybackPosition(position);
+    const captions = captionsRef.current;
+    const activeCaption = captions.findIndex(
+      (caption) =>
+        caption.start <= position && caption.end >= position
     );
-    setSound(sound);
-
-    sound.setOnPlaybackStatusUpdate((playbackStatus) => {
-      if (playbackStatus.isLoaded) {
-        const positionSeconds = playbackStatus.positionMillis / 1000;
-        const captions = captionsRef.current;
-        const activeCaption = captions.findIndex(
-          (caption) =>
-            caption.start <= positionSeconds && caption.end >= positionSeconds
-        );
-        setActiveCaptionIndex(activeCaption);
-        setPlaybackPosition(playbackStatus.positionMillis);
-        setPlaybackDuration(playbackStatus.durationMillis);
-      }
-    });
-  };
+    setActiveCaptionIndex(activeCaption);
+  }, [progress.position]);
 
   const handlePlayPause = async () => {
-    if (sound) {
-      if (isPlaying) {
-        await sound.pauseAsync();
-      } else {
-        await sound.playAsync();
-      }
-      setIsPlaying(!isPlaying);
+    if (playbackState === State.Playing) {
+      await TrackPlayer.pause();
+    } else {
+      await TrackPlayer.play();
     }
   };
 
   const handleSkip = async (seconds) => {
-    if (sound) {
-      const newPosition = playbackPosition + seconds * 1000;
-      await sound.setPositionAsync(newPosition);
-    }
+    const newPosition = playbackPosition + seconds;
+    await TrackPlayer.seekTo(newPosition);
   };
-
   const handleSeek = async (value) => {
-    if (sound) {
-      const newPosition = value * playbackDuration;
-      await sound.setPositionAsync(newPosition);
-    }
+    const newPosition = value * playbackDuration;
+    await TrackPlayer.seekTo(newPosition);
   };
 
   return (
@@ -127,19 +128,23 @@ const Player = () => {
           style={styles.controlButton}
           onPress={() => handleSkip(-15)}
         >
-          <Back15SecIcon width={24} height={24} />
+          <SkipBackwardIcon width={24} height={24} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.playPauseButton}
           onPress={handlePlayPause}
         >
-          {isPlaying ? <PauseIcon width={24} height={24} fill='#fff'/>:<PlayIcon width={24} height={24} fill='#fff'/>}
+          {playbackState === State.Playing ? (
+            <PauseIcon width={24} height={24} fill="#fff" />
+          ) : (
+            <PlayIcon width={24} height={24} fill="#fff" />
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.controlButton}
           onPress={() => handleSkip(15)}
         >
-          <SkipForwardIcon width={24} height={24} color='#fff'/>
+          <SkipForwardIcon width={24} height={24} color="#fff" />
         </TouchableOpacity>
       </View>
 
@@ -196,7 +201,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 40,
     marginTop: 10,
-    backgroundColor: 'beige'
+    backgroundColor: 'beige',
   },
   captionsScrollView: {
     maxHeight: 300,

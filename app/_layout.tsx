@@ -13,7 +13,15 @@ export default function Layout() {
     }
   }, []);
 
-  return <Stack screenOptions={{
-    headerShown: false,
-  }}/>;
+  return <Stack >
+    <Stack.Screen name="mainTab" options={{
+      // Hide the header for all other routes.
+      headerShown: false,
+    }}
+    />
+    <Stack.Screen name="modal" options={{
+      // Hide the header for all other routes.
+      presentation: "transparentModal",
+    }} />
+  </Stack>;
 }

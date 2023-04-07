@@ -3,11 +3,12 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { SplashScreen } from "expo-router";
 import { useEffect } from "react";
-import TrackPlayer, { Capability } from "react-native-track-player";
+import TrackPlayer, { AppKilledPlaybackBehavior, Capability } from "react-native-track-player";
 
 export default function Root() {
   const router = useRouter();
   const setup = async () => {
+    console.log('setup')
     await TrackPlayer.setupPlayer()
     await TrackPlayer.updateOptions({
       capabilities: [
@@ -16,7 +17,11 @@ export default function Root() {
         Capability.SkipToNext,
         Capability.SkipToPrevious
       ],
+      android: {
+        appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+      },
     });
+    console.log('push')
     router.push("/mainTab/home");
   }
 
@@ -25,8 +30,7 @@ export default function Root() {
     setup()
   }, []);
   return <>
-  <SplashScreen />
-  <StatusBar style="auto" />
+    <StatusBar style="auto" />
   </>
 }
 
