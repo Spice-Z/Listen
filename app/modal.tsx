@@ -10,14 +10,14 @@ export default function Modal() {
 
   return (
     <>
-    <Stack.Screen
+      <Stack.Screen
         options={{
           headerTitle: 'Modal player',
           headerLeft: () => <Text onPress={navigation.goBack}>close</Text>,
         }}
       />
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: 'white' }}>
-    </View>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: 'white' }}>
+      </View>
     </>
   );
 }

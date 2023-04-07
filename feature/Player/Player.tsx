@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState, useEffect, useRef, useCallback,
+} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,11 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
-import textJson from '../../assets/text.json';
-import text2Json from '../../assets/text2.json';
 import { useSearchParams } from 'expo-router';
-import { parseTimestamp } from '../../utils/vtt';
-import { PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon } from '../icons';
 import TrackPlayer, {
   usePlaybackState,
   useTrackPlayerEvents,
@@ -19,8 +17,14 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
+import textJson from '../../assets/text.json';
+import text2Json from '../../assets/text2.json';
+import { parseTimestamp } from '../../utils/vtt';
+import {
+  PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon,
+} from '../icons';
 
-const Player = () => {
+function Player() {
   const { episodeId } = useSearchParams();
   const [captions, setCaptions] = useState([]);
   const captionsRef = useRef([]);
@@ -44,7 +48,7 @@ const Player = () => {
         const [start, end] = line.split(' --> ').map(parseTimestamp);
         acc.push({ start, end, text: '' });
       } else if (line.trim() !== '' && !line.startsWith('WEBVTT')) {
-        acc[acc.length - 1].text += line.trim() + ' ';
+        acc[acc.length - 1].text += `${line.trim()} `;
       }
       return acc;
     }, []);
@@ -56,7 +60,7 @@ const Player = () => {
   const setupPlayer = async () => {
     const audio = episodeId === '1' ? 'https://anchor.fm/s/81fb5eec/podcast/play/67591883/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-30%2Fefa8c91f-d674-0399-9ee4-b7900c797b90.mp3' : require('../../assets/audio2.mp3');
     await TrackPlayer.add({ url: audio });
-  }
+  };
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setActiveCaptionIndex(null);
@@ -68,9 +72,9 @@ const Player = () => {
     if (track === null) {
       setActiveCaptionIndex(null);
       setPlaybackPosition(0);
-      return
+      return;
     }
-    console.log('track changed')
+    console.log('track changed');
     const duration = await TrackPlayer.getDuration();
     setPlaybackDuration(duration);
   });
@@ -81,8 +85,7 @@ const Player = () => {
     setPlaybackPosition(position);
     const captions = captionsRef.current;
     const activeCaption = captions.findIndex(
-      (caption) =>
-        caption.start <= position && caption.end >= position
+      (caption) => caption.start <= position && caption.end >= position,
     );
     setActiveCaptionIndex(activeCaption);
   }, [progress.position]);
@@ -162,7 +165,7 @@ const Player = () => {
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
