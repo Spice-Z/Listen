@@ -1,17 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { Link } from 'expo-router';
+import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet } from "react-native";
+import { SplashScreen } from "expo-router";
+import { useEffect } from "react";
+import TrackPlayer, { Capability } from "react-native-track-player";
+
+export default function Root() {
+  const router = useRouter();
+  const setup = async () => {
+    await TrackPlayer.setupPlayer()
+    await TrackPlayer.updateOptions({
+      capabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious
+      ],
+    });
+    router.push("/mainTab/home");
+  }
 
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Link href={{pathname:"/player",params: { episodeId: 1 }}} >Episode 1</Link>
-      <Link href={{pathname:"/player",params: { episodeId: 2 }}} >Episode 2</Link>
-      <StatusBar style="auto" />
-    </View>
-  );
+  useEffect(() => {
+    setup()
+  }, []);
+  return <>
+  <SplashScreen />
+  <StatusBar style="auto" />
+  </>
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -21,3 +40,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+

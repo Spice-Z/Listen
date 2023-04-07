@@ -1,9 +1,19 @@
 import { Stack } from "expo-router";
+import { useEffect } from "react";
 
 export const unstable_settings = {
-  initialRouteName: "index",
+  initialRouteName: "home",
 };
 
 export default function Layout() {
-  return <Stack initialRouteName="index" />;
+  useEffect(() => {
+    console.log("Layout");
+    return () => {
+      console.log("Layout unmount");
+    }
+  }, []);
+
+  return <Stack screenOptions={{
+    headerShown: false,
+  }}/>;
 }

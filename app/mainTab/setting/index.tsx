@@ -1,16 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
+
 import { StyleSheet, Text, View } from 'react-native';
-import Player from '../feature/Player/Player';
-import { Link } from 'expo-router';
-import { useSearchParams } from "expo-router";
+import { Stack, useSearchParams, useRouter, Link } from "expo-router";
 
 export default function PlayerPage() {
-  
+  const params = useSearchParams();
 
   return (
     <View style={styles.container}>
-      <Player />
-      <StatusBar style="auto" />
+      <Text>Notification</Text>
+      <Link href={{pathname:"/mainTab/setting/detail"}} >Setting</Link>
     </View>
   );
 }

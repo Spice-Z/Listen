@@ -15,12 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ]
+      },
+      "bundleIdentifier": "com.spicex.Listen"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.spicex.Listen"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0b079cfe-10c2-470d-aeac-3242cb2a4790"
       }
     }
   }
