@@ -1,8 +1,10 @@
 import { Text, View } from 'react-native';
 import { Stack, useNavigation } from 'expo-router';
+import { useTrackPlayer } from '../feature/Player/hooks/useTrackPlayer';
 
 export default function Modal() {
   const navigation = useNavigation();
+  const { currentTrack } = useTrackPlayer();
 
   return (
     <>
@@ -16,7 +18,9 @@ export default function Modal() {
       <View style={{
         flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white',
       }}
-      />
+      >
+        <Text>{currentTrack?.title}</Text>
+      </View>
     </>
   );
 }

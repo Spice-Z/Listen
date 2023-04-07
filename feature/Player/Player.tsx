@@ -1,5 +1,5 @@
 import {
-  useState, useEffect, useRef, useCallback,
+  useState, useEffect, useRef,
 } from 'react';
 import {
   StyleSheet,
@@ -38,7 +38,6 @@ function Player() {
 
   useDidMount(() => {
     loadCaptions();
-    setupPlayer();
   });
 
   const loadCaptions = async () => {
@@ -60,20 +59,17 @@ function Player() {
   };
 
   const { playTrackIfNotCurrentlyPlaying, playingTrackDuration } = useTrackPlayer();
+  const track: Track = episodeId === '2' ? {
+    title: '【4月5日】トランプ前大統領が罪状認否。大統領選にらみ「遅延と攻撃」',
+    artist: 'News Connect ~あなたと経済をつなぐ5分間~',
+    date: 'Tue, 04 Apr 2023 21:00:15 GMT',
+    artwork: 'https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/21707347/21707347-1644160555988-248024357475.jpg',
+    url: 'https://d3ctxlq1ktw2nl.cloudfront.net/staging/2023-3-4/5fc7a6ae-6bb4-0c45-fc8f-dbb5fd5ed9f5.mp3',
+    duration: 463,
+  } : {
+    url: require('../../assets/audio.mp3'),
+  };
 
-  const setupPlayer = useCallback(async () => {
-    const track: Track = episodeId === '1' ? {
-      title: '【4月5日】トランプ前大統領が罪状認否。大統領選にらみ「遅延と攻撃」',
-      artist: 'News Connect ~あなたと経済をつなぐ5分間~',
-      date: 'Tue, 04 Apr 2023 21:00:15 GMT',
-      artwork: 'https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/21707347/21707347-1644160555988-248024357475.jpg',
-      url: 'https://anchor.fm/s/81fb5eec/podcast/play/67591883/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-30%2Fefa8c91f-d674-0399-9ee4-b7900c797b90.mp3',
-      duration: 463,
-    } : {
-      url: require('../../assets/audio2.mp3'),
-    };
-    await playTrackIfNotCurrentlyPlaying(track);
-  }, [episodeId, playTrackIfNotCurrentlyPlaying]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setActiveCaptionIndex(null);
@@ -104,7 +100,7 @@ function Player() {
     if (playbackState === State.Playing) {
       await TrackPlayer.pause();
     } else {
-      await TrackPlayer.play();
+      await playTrackIfNotCurrentlyPlaying(track);;
     }
   };
 
