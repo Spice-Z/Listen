@@ -1,7 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Stack, useSearchParams, useRouter } from "expo-router";
+import { useSearchParams, useRouter } from "expo-router";
 import Player from '../../../feature/Player/Player';
 
 export default function PlayerPage() {

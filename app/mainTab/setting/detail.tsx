@@ -1,6 +1,6 @@
 
 import { StyleSheet, Text, View } from 'react-native';
-import { Stack, useSearchParams, useRouter } from "expo-router";
+import { Stack, useSearchParams } from "expo-router";
 
 export default function PlayerPage() {
   const params = useSearchParams();

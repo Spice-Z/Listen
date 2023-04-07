@@ -1,9 +1,7 @@
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
-import { SplashScreen } from "expo-router";
-import { useEffect } from "react";
 import TrackPlayer, { AppKilledPlaybackBehavior, Capability } from "react-native-track-player";
+import { useDidMount } from "../feature/hooks/useDidMount";
 
 export default function Root() {
   const router = useRouter();
@@ -25,23 +23,10 @@ export default function Root() {
     router.push("/mainTab/home");
   }
 
-
-  useEffect(() => {
+  useDidMount(() => {
     setup()
-  }, []);
+  });
   return <>
     <StatusBar style="auto" />
   </>
 }
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-

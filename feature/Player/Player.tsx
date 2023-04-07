@@ -1,4 +1,4 @@
-import React, {
+import {
   useState, useEffect, useRef, useCallback,
 } from 'react';
 import {
@@ -16,6 +16,7 @@ import TrackPlayer, {
   Event,
   State,
   useProgress,
+  Track,
 } from 'react-native-track-player';
 import textJson from '../../assets/text.json';
 import text2Json from '../../assets/text2.json';
@@ -23,6 +24,8 @@ import { parseTimestamp } from '../../utils/vtt';
 import {
   PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon,
 } from '../icons';
+import { useTrackPlayer } from './hooks/useTrackPlayer';
+import { useDidMount } from '../hooks/useDidMount';
 
 function Player() {
   const { episodeId } = useSearchParams();
@@ -30,14 +33,13 @@ function Player() {
   const captionsRef = useRef([]);
   const [activeCaptionIndex, setActiveCaptionIndex] = useState(null);
   const [playbackPosition, setPlaybackPosition] = useState(0);
-  const [playbackDuration, setPlaybackDuration] = useState(0);
 
   const playbackState = usePlaybackState();
 
-  useEffect(() => {
+  useDidMount(() => {
     loadCaptions();
     setupPlayer();
-  }, []);
+  });
 
   const loadCaptions = async () => {
     const text = episodeId === '1' ? textJson.data : text2Json.data;
@@ -57,10 +59,21 @@ function Player() {
     captionsRef.current = parsedCaptions;
   };
 
-  const setupPlayer = async () => {
-    const audio = episodeId === '1' ? 'https://anchor.fm/s/81fb5eec/podcast/play/67591883/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-30%2Fefa8c91f-d674-0399-9ee4-b7900c797b90.mp3' : require('../../assets/audio2.mp3');
-    await TrackPlayer.add({ url: audio });
-  };
+  const { playTrackIfNotCurrentlyPlaying, playingTrackDuration } = useTrackPlayer();
+
+  const setupPlayer = useCallback(async () => {
+    const track: Track = episodeId === '1' ? {
+      title: '【4月5日】トランプ前大統領が罪状認否。大統領選にらみ「遅延と攻撃」',
+      artist: 'News Connect ~あなたと経済をつなぐ5分間~',
+      date: 'Tue, 04 Apr 2023 21:00:15 GMT',
+      artwork: 'https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/21707347/21707347-1644160555988-248024357475.jpg',
+      url: 'https://anchor.fm/s/81fb5eec/podcast/play/67591883/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-2-30%2Fefa8c91f-d674-0399-9ee4-b7900c797b90.mp3',
+      duration: 463,
+    } : {
+      url: require('../../assets/audio2.mp3'),
+    };
+    await playTrackIfNotCurrentlyPlaying(track);
+  }, [episodeId, playTrackIfNotCurrentlyPlaying]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setActiveCaptionIndex(null);
@@ -72,14 +85,11 @@ function Player() {
     if (track === null) {
       setActiveCaptionIndex(null);
       setPlaybackPosition(0);
-      return;
     }
-    console.log('track changed');
-    const duration = await TrackPlayer.getDuration();
-    setPlaybackDuration(duration);
   });
 
-  const progress = useProgress();
+  const progress = useProgress(500);
+
   useEffect(() => {
     const { position } = progress;
     setPlaybackPosition(position);
@@ -88,7 +98,7 @@ function Player() {
       (caption) => caption.start <= position && caption.end >= position,
     );
     setActiveCaptionIndex(activeCaption);
-  }, [progress.position]);
+  }, [progress]);
 
   const handlePlayPause = async () => {
     if (playbackState === State.Playing) {
@@ -103,7 +113,7 @@ function Player() {
     await TrackPlayer.seekTo(newPosition);
   };
   const handleSeek = async (value) => {
-    const newPosition = value * playbackDuration;
+    const newPosition = value * playingTrackDuration;
     await TrackPlayer.seekTo(newPosition);
   };
 
@@ -154,8 +164,8 @@ function Player() {
       <Slider
         style={styles.seekBar}
         value={
-          playbackDuration > 0
-            ? playbackPosition / playbackDuration
+          playingTrackDuration > 0
+            ? playbackPosition / playingTrackDuration
             : 0
         }
         onSlidingComplete={handleSeek}
