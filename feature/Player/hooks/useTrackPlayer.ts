@@ -5,6 +5,7 @@ import { useDidMount } from '../../hooks/useDidMount';
 export const useTrackPlayer = () => {
   const [playingTrackDuration, setPlayingTrackDuration] = useState<number | null>(null);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentQueue, setCurrentQueue] = useState<Track[]>([]);
 
   const getCurrentTrack = useCallback(async (): Promise<Track | null> => {
     const currentIndex = await TrackPlayer.getCurrentTrack();
@@ -12,14 +13,17 @@ export const useTrackPlayer = () => {
     return currentTrack;
   }, []);
 
+  const _updateCurrentInfo = useCallback(async () => {
+    const currentTrack = await getCurrentTrack();
+    setCurrentTrack(currentTrack);
+    const duration = await TrackPlayer.getDuration();
+    setPlayingTrackDuration(duration);
+    const Queue = await TrackPlayer.getQueue();
+    setCurrentQueue(Queue);
+  }, [getCurrentTrack]);
+
   useDidMount(() => {
-    const init = async () => {
-      const currentTrack = await getCurrentTrack();
-      setCurrentTrack(currentTrack);
-      const duration = await TrackPlayer.getDuration();
-      setPlayingTrackDuration(duration);
-    };
-    init();
+    _updateCurrentInfo();
   });
 
   const playTrackIfNotCurrentlyPlaying = useCallback(async (track: Track) => {
@@ -37,15 +41,12 @@ export const useTrackPlayer = () => {
     }
   }, []);
 
-  // update current track when it changes
+  // update current queue/track when it changes
   useTrackPlayerEvents([Event.PlaybackState, Event.PlaybackTrackChanged], async (event) => {
-    const currentIndex = await TrackPlayer.getCurrentTrack();
-    const currentTrack = currentIndex !== null ? await TrackPlayer.getTrack(currentIndex) : null;
-    setCurrentTrack(currentTrack);
-    const duration = await TrackPlayer.getDuration();
-    setPlayingTrackDuration(duration);
+    await _updateCurrentInfo();
   });
   return {
+    currentQueue,
     currentTrack,
     playTrackIfNotCurrentlyPlaying,
     playingTrackDuration,

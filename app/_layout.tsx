@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { useEffect } from "react";
+import { theme } from "../feature/styles/theme";
 
 export const unstable_settings = {
   initialRouteName: "home",
@@ -22,6 +23,14 @@ export default function Layout() {
     <Stack.Screen name="modal" options={{
       // Hide the header for all other routes.
       presentation: "transparentModal",
+      headerStyle: {
+        backgroundColor: theme.color.bgMain,
+      },
+      headerTitleStyle: {
+        color: theme.color.textMain,
+        fontWeight: theme.fontWeight.bold,
+        fontSize: 18,
+      }
     }} />
   </Stack>;
 }

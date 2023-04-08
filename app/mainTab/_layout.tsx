@@ -1,3 +1,7 @@
 import { Tabs } from "expo-router";
 
-export default Tabs;
+export default function Layout() {
+ return <Tabs screenOptions={{
+  headerShown: false,
+ }} />;
+}
