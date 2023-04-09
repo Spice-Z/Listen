@@ -15,6 +15,7 @@ exports.registerChannel = functions
   .runWith({
     timeoutSeconds: 300,
   })
+  .region('asia-northeast1')
   .https.onCall(async (data: { url: string }, context: functions.https.CallableContext) => {
     if (!context.auth) {
       throw new functions.https.HttpsError(
@@ -46,11 +47,11 @@ exports.registerChannel = functions
     return { success: true };
   });
 
-exports.getPodcasts = functions.https.onCall(async (_, context) => {
-  if (!context.auth) {
+exports.getPodcasts = functions.region('asia-northeast1').https.onCall(async (request) => {
+  if (request.app == null) {
     throw new functions.https.HttpsError(
-      'unauthenticated',
-      'The function must be called while authenticated.'
+      'failed-precondition',
+      'The function must be called from an App Check verified app.'
     );
   }
 
