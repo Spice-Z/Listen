@@ -47,13 +47,13 @@ exports.registerChannel = functions
     return { success: true };
   });
 
-exports.getPodcasts = functions.region('asia-northeast1').https.onCall(async (request) => {
-  if (request.app == null) {
-    throw new functions.https.HttpsError(
-      'failed-precondition',
-      'The function must be called from an App Check verified app.'
-    );
-  }
+exports.getPodcasts = functions.region('asia-northeast1').https.onCall(async (_) => {
+  // if (request.app == null) {
+  //   throw new functions.https.HttpsError(
+  //     'failed-precondition',
+  //     'The function must be called from an App Check verified app.'
+  //   );
+  // }
 
   const snapshot = await admin.firestore().collection(CHANNEL_DOCUMENT_NAME).get();
   return snapshot.docs.map((doc) => {
