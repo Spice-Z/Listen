@@ -1,11 +1,30 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback } from 'react';
+import { useQuery } from "@tanstack/react-query";
+
+const loader = () => {
+  return {
+    "2022-07-15": [
+      {
+        id: "activity-id-1",
+        label: "腹筋ローラー",
+        date: "2022/7/15",
+        value: "20",
+        method: "COUNT",
+        exp: 100,
+        createdAt: "14:25",
+        icon: "https://wallpaperaccess.com/full/317501.jpg",
+      },
+    ],
+  };
+};
 
 
 export default function App() {
+  const query = useQuery(["home_screen_loader"], loader);
   const router = useRouter();
   const onPress = useCallback(() => {
     router.push({ pathname: '/mainTab/home/player', params: { episodeId: 2 } })
@@ -34,6 +53,10 @@ export default function App() {
           <Image style={styles.artwork} src='https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/21707347/21707347-1644160555988-248024357475.jpg' />
           <Text numberOfLines={3} style={styles.channelTitle}>BBC GLOBAL NEWS PODCAST BBC GLOBAL NEWS PODCAST BBC GLOBAL NEWS PODCAST</Text>
         </Pressable>
+        <FlatList
+          data={query.data?.["2022-07-15"] ?? []} renderItem={({ item }) => {
+            return <Text style={{ color: '#fff' }}>{item.label}</Text>
+          }} />
       </View>
     </>
   );

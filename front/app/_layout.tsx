@@ -3,7 +3,12 @@ import { useEffect } from "react";
 import { theme } from "../feature/styles/theme";
 import { StyleSheet, View } from "react-native";
 import MiniPlayer from "../feature/Player/MiniPlayer";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
+const queryClient = new QueryClient();
 export const unstable_settings = {
   initialRouteName: "home",
 };
@@ -17,28 +22,30 @@ export default function Layout() {
   }, []);
 
   return <>
-    <Stack>
-      <Stack.Screen name="mainTab" options={{
-        // Hide the header for all other routes.
-        headerShown: false,
-      }}
-      />
-      <Stack.Screen name="modal" options={{
-        // Hide the header for all other routes.
-        presentation: "transparentModal",
-        headerStyle: {
-          backgroundColor: theme.color.bgMain,
-        },
-        headerTitleStyle: {
-          color: theme.color.textMain,
-          fontWeight: theme.fontWeight.bold,
-          fontSize: 18,
-        }
-      }} />
-    </Stack>
-    <View style={styles.miniPlayerContainer}>
-      <MiniPlayer />
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <Stack>
+        <Stack.Screen name="mainTab" options={{
+          // Hide the header for all other routes.
+          headerShown: false,
+        }}
+        />
+        <Stack.Screen name="modal" options={{
+          // Hide the header for all other routes.
+          presentation: "transparentModal",
+          headerStyle: {
+            backgroundColor: theme.color.bgMain,
+          },
+          headerTitleStyle: {
+            color: theme.color.textMain,
+            fontWeight: theme.fontWeight.bold,
+            fontSize: 18,
+          }
+        }} />
+      </Stack>
+      <View style={styles.miniPlayerContainer}>
+        <MiniPlayer />
+      </View>
+    </QueryClientProvider>
   </>;
 }
 
