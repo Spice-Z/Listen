@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "902432499969",
+    "project_id": "listen-16e96",
+    "storage_bucket": "listen-16e96.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902432499969:android:36d8e507db729d3d4c5300",
+        "android_client_info": {
+          "package_name": "com.spicex.Listen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902432499969-g00o09iuvin4b3jf1sqs2appqu0f1vh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZA8DuaOdP_pBQqNbBvJz1K7OonjaziOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902432499969-g00o09iuvin4b3jf1sqs2appqu0f1vh5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "902432499969-gd3onl0m15ouv5j5ekpnpok33bqdio35.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.spicex.Listen"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

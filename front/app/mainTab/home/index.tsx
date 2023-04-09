@@ -5,23 +5,24 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback } from 'react';
 import { useQuery } from "@tanstack/react-query";
 
-const loader = () => {
-  return {
-    "2022-07-15": [
-      {
-        id: "activity-id-1",
-        label: "腹筋ローラー",
-        date: "2022/7/15",
-        value: "20",
-        method: "COUNT",
-        exp: 100,
-        createdAt: "14:25",
-        icon: "https://wallpaperaccess.com/full/317501.jpg",
-      },
-    ],
-  };
+const loader = async () => {
+  const data: {
+    id: string;
+    title: string;
+    imageUrl: string;
+    description: string;
+    author: string;
+  }[] = [{
+    id: '1',
+    title: 'BBC GLOBAL NEWS PODCAST BBC GLOBAL NEWS PODCAST BBC GLOBAL NEWS PODCAST',
+    imageUrl: 'https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded_nologo/21707347/21707347-1644160555988-248024357475.jpg',
+    description: 'The latest global news, analysis and information from the BBC World Service.',
+    author: 'BBC World Service',
+  }];
+  return data
 };
 
+const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
 
 export default function App() {
   const query = useQuery(["home_screen_loader"], loader);
@@ -54,8 +55,12 @@ export default function App() {
           <Text numberOfLines={3} style={styles.channelTitle}>BBC GLOBAL NEWS PODCAST BBC GLOBAL NEWS PODCAST BBC GLOBAL NEWS PODCAST</Text>
         </Pressable>
         <FlatList
-          data={query.data?.["2022-07-15"] ?? []} renderItem={({ item }) => {
-            return <Text style={{ color: '#fff' }}>{item.label}</Text>
+          data={query.data ?? []} renderItem={({ item }) => {
+            return <Pressable style={styles.channelCard} onPress={onPress}>
+              {/* @ts-ignore */}
+              <Image style={styles.artwork} src={item.imageUrl} />
+              <Text numberOfLines={3} style={styles.channelTitle}>{item.title}</Text>
+            </Pressable>
           }} />
       </View>
     </>
