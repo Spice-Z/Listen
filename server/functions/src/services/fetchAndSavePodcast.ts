@@ -48,6 +48,7 @@ export async function fetchAndSavePodcast(feedUrl: string, isNewPodcast: boolean
       url: item.enclosure ? item.enclosure.url : undefined,
       content: item.contentSnippet || item.content || '',
       duration: item.itunes ? item.itunes.duration : undefined,
+      imageUrl: item.itunes && item.itunes.image ? item.itunes.image : '',
       pubDate: item.pubDate ? new Date(item.pubDate) : now,
       season: item.itunes ? item.itunes.season : undefined,
       episode: item.itunes ? item.itunes.episode : undefined,

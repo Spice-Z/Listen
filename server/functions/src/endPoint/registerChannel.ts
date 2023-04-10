@@ -9,12 +9,12 @@ export const registerChannel = functions
   })
   .region('asia-northeast1')
   .https.onCall(async (data: { url: string }, context: functions.https.CallableContext) => {
-    if (!context.auth) {
-      throw new functions.https.HttpsError(
-        'unauthenticated',
-        'The function must be called while authenticated.'
-      );
-    }
+    // if (!context.auth) {
+    //   throw new functions.https.HttpsError(
+    //     'unauthenticated',
+    //     'The function must be called while authenticated.'
+    //   );
+    // }
 
     const feedUrl = data.url;
     if (!feedUrl) {
