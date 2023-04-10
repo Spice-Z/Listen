@@ -8,6 +8,12 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import { useDidMount } from '../../hooks/useDidMount';
 
+type Needed = {
+  artwork: string;
+  duration: number;
+};
+export type TrackPlayerTrack = Track & Needed;
+
 export const useTrackPlayer = () => {
   const [playingTrackDuration, setPlayingTrackDuration] = useState<number | null>(null);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
@@ -34,7 +40,7 @@ export const useTrackPlayer = () => {
     _updateCurrentInfo();
   });
 
-  const playTrackIfNotCurrentlyPlaying = useCallback(async (track: Track) => {
+  const playTrackIfNotCurrentlyPlaying = useCallback(async (track: TrackPlayerTrack) => {
     const currentIndex = await TrackPlayer.getCurrentTrack();
     const currentTrack = currentIndex !== null ? await TrackPlayer.getTrack(currentIndex) : null;
     if (currentTrack === null || currentTrack.url !== track.url) {

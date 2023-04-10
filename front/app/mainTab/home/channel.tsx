@@ -1,55 +1,22 @@
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { theme } from "../../../feature/styles/theme";
-import { firebase } from '@react-native-firebase/functions';
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import ChannelInfo from "../../../feature/Channel/components/ChannelInfo";
 import EpisodeCard from "../../../feature/Episode/components/EpisodeCard";
-
-const channelLoader = async (channelId: string) => {
- const app = firebase.app();
- const functions = app.functions('asia-northeast1');
- const getChannelById = functions.httpsCallable('getChannelById')
- const response = await getChannelById({ id: channelId })
- const data: {
-  id: string;
-  title: string;
-  imageUrl: string;
-  description: string;
-  author: string;
- } = response.data
- return data
-};
-
-const EpisodesLoader = async (channelId: string) => {
- const app = firebase.app();
- const functions = app.functions('asia-northeast1');
- const getEpisodesByChannelId = functions.httpsCallable('getEpisodesByChannelId')
- const response = await getEpisodesByChannelId({ channelId })
- const data: {
-  id: string,
-  title: string,
-  description: string,
-  url: string,
-  content: string,
-  duration: number,
-  imageUrl: string,
-  // pubDate: timestamp,
- }[] = response.data
- return data
-}
-
+import { getChannelById } from "../../../feature/dataLoader/getChannelById";
+import { getEpisodesByChannelId } from "../../../feature/dataLoader/getEpisodesByChannelId";
 
 export default function Channel() {
  const { channelId } = useSearchParams();
  const { isLoading, error, data } = useQuery({
   queryKey: ['getChannelById', channelId as string],
-  queryFn: () => channelLoader(channelId as string),
+  queryFn: () => getChannelById(channelId as string),
  })
  const { isLoading: isEpisodeLoading, error: episodeError, data: episodeData } = useQuery({
   queryKey: ['getEpisodesByChannelId', channelId as string],
-  queryFn: () => EpisodesLoader(channelId as string),
+  queryFn: () => getEpisodesByChannelId(channelId as string),
  })
  const router = useRouter();
 
@@ -78,9 +45,9 @@ export default function Channel() {
   </>
  }, [channelInfo, isLoading])
 
- const onPressEpisode = useCallback((id: string) => {
-  router.push({ pathname: '/mainTab/home/episode', params: { id } })
- }, [router])
+ const onPressEpisode = useCallback((episodeId: string) => {
+  router.push({ pathname: '/mainTab/home/episode', params: { channelId, episodeId } })
+ }, [channelId, router])
 
  return <>
   <Stack.Screen

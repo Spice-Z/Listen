@@ -28,7 +28,6 @@ import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
 
 function ModalPlayer() {
-
   const [captions, setCaptions] = useState([]);
   const captionsRef = useRef([]);
   const [activeCaptionIndex, setActiveCaptionIndex] = useState(null);

@@ -16,7 +16,6 @@ import TrackPlayer, {
   Event,
   State,
   useProgress,
-  Track,
 } from 'react-native-track-player';
 import textJson from '../../assets/text.json';
 import text2Json from '../../assets/text2.json';
@@ -24,7 +23,7 @@ import { parseTimestamp } from '../../utils/vtt';
 import {
   PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon,
 } from '../icons';
-import { useTrackPlayer } from './hooks/useTrackPlayer';
+import { TrackPlayerTrack, useTrackPlayer } from './hooks/useTrackPlayer';
 import { useDidMount } from '../hooks/useDidMount';
 
 function Player() {
@@ -59,7 +58,7 @@ function Player() {
   };
 
   const { playTrackIfNotCurrentlyPlaying, playingTrackDuration } = useTrackPlayer();
-  const track: Track = episodeId === '2' ? {
+  const track: TrackPlayerTrack = episodeId === '2' ? {
     title: '【4月5日】トランプ前大統領が罪状認否。大統領選にらみ「遅延と攻撃」',
     artist: 'News Connect ~あなたと経済をつなぐ5分間~',
     date: 'Tue, 04 Apr 2023 21:00:15 GMT',
@@ -68,6 +67,9 @@ function Player() {
     duration: 463,
   } : {
     url: require('../../assets/audio.mp3'),
+    title: '',
+    artwork: '',
+    duration: 0,
   };
 
 
