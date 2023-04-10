@@ -6,7 +6,6 @@ import { useDidMount } from "../feature/hooks/useDidMount";
 export default function Root() {
   const router = useRouter();
   const setup = async () => {
-    console.log('setup')
     await TrackPlayer.setupPlayer()
     await TrackPlayer.updateOptions({
       capabilities: [
@@ -19,8 +18,7 @@ export default function Root() {
         appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
       },
     });
-    console.log('push')
-    router.push("/mainTab/home");
+    router.replace("/mainTab/home");
   }
 
   useDidMount(() => {

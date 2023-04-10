@@ -9,8 +9,8 @@ import { firebase } from '@react-native-firebase/functions';
 const loader = async () => {
   const app = firebase.app();
   const functions = app.functions('asia-northeast1');
-  const getPodcasts = functions.httpsCallable('getPodcasts')
-  const response = await getPodcasts({})
+  const getChannels = functions.httpsCallable('getChannels')
+  const response = await getChannels({})
   const data: {
     id: string;
     title: string;
@@ -35,8 +35,8 @@ export default function App() {
   const onPress = useCallback(() => {
     router.push({ pathname: '/mainTab/home/player', params: { episodeId: 2 } })
   }, [router])
-  const onPress2 = useCallback(() => {
-    router.push({ pathname: '/mainTab/home/channel', params: { episodeId: 2 } })
+  const onPressChannel = useCallback((channelId: string) => {
+    router.push({ pathname: '/mainTab/home/channel', params: { channelId } })
   }, [router])
   return (
     <>
@@ -50,7 +50,7 @@ export default function App() {
         <FlatList
           data={query.data ?? []}
           renderItem={({ item }) => {
-            return <Pressable style={styles.channelCard} onPress={onPress}>
+            return <Pressable style={styles.channelCard} onPress={() => onPressChannel(item.id)}>
               {/* @ts-ignore */}
               <Image style={styles.artwork} src={item.imageUrl} />
               <Text numberOfLines={3} style={styles.channelTitle}>{item.title}</Text>

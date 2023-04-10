@@ -6,7 +6,6 @@ import Episode from '../../../feature/Episode/Episode';
 export default function PlayerPage() {
  const router = useRouter();
  const params = useSearchParams();
- const title = typeof params.name === "string" ? params.name : 'Player';
 
  return (
   <View style={styles.container}>
