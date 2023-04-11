@@ -42,6 +42,7 @@ export const getEpisodeById = functions.region('asia-northeast1').https.onCall(a
     title: episodeData.title,
     description: episodeData.description,
     url: episodeData.url,
+    transcriptUrl: episodeData.transcriptUrl,
     imageUrl: episodeData.imageUrl,
     content: episodeData.content,
     duration: episodeData.duration,

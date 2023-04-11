@@ -45,6 +45,7 @@ export const getEpisodesByChannelId = functions
         title: data.title,
         description: data.description,
         url: data.url,
+        transcriptUrl: data.transcriptUrl,
         imageUrl: data.imageUrl,
         content: data.content,
         duration: data.duration,

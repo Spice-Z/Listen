@@ -24,20 +24,20 @@ export async function fetchAndSavePodcast(feedUrl: string, isNewPodcast: boolean
     updatedAt: feed.lastBuildDate ? new Date(feed.lastBuildDate) : now,
   };
 
-  const podcastSnapshot = await admin
+  const channelSnapshot = await admin
     .firestore()
     .collection(CHANNEL_DOCUMENT_NAME)
     .where('url', '==', feedUrl)
     .get();
-  let podcastRef: FirebaseFirestore.DocumentReference;
+  let channelRef: FirebaseFirestore.DocumentReference;
 
-  if (podcastSnapshot.empty) {
+  if (channelSnapshot.empty) {
     // 新規ポッドキャストの場合
-    podcastRef = await admin.firestore().collection(CHANNEL_DOCUMENT_NAME).add(podcastData);
+    channelRef = await admin.firestore().collection(CHANNEL_DOCUMENT_NAME).add(podcastData);
   } else {
     // 既存のポッドキャストの場合
-    podcastRef = podcastSnapshot.docs[0].ref;
-    await podcastRef.update(podcastData);
+    channelRef = channelSnapshot.docs[0].ref;
+    await channelRef.update(podcastData);
   }
 
   const episodesData = feed.items.map((item) => {
@@ -56,31 +56,49 @@ export async function fetchAndSavePodcast(feedUrl: string, isNewPodcast: boolean
   });
 
   const episodePromises = episodesData.map(async (episodeData) => {
+    let episodeId: string | undefined;
+    let pubDate: Date | undefined;
+    let url = episodeData.url;
     if (isNewPodcast) {
       // 新規ポッドキャストの場合、重複チェックなしでエピソードを追加
-      await podcastRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
+      const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
+      episodeId = episodeDocRef.id;
+      pubDate = episodeData.pubDate;
     } else {
       // 既存のポッドキャストの場合、重複チェックを行い、必要に応じてエピソードを更新
-      const episodeSnapshot = await podcastRef
+      const episodeSnapshot = await channelRef
         .collection(EPISODE_DOCUMENT_NAME)
         .where('guid', '==', episodeData.guid)
         .get();
 
       if (episodeSnapshot.empty) {
         // 新規エピソードの場合
-        await podcastRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
+        const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
+        episodeId = episodeDocRef.id;
+        pubDate = episodeData.pubDate;
       } else {
         // 既存のエピソードの場合
-        const episodeRef = episodeSnapshot.docs[0].ref;
+        const episodeDocRef = episodeSnapshot.docs[0].ref;
 
-        // 必要に応じてエピソードを更新
-        // 例えば、説明が異なる場合に更新する
-        if (episodeData.description !== episodeSnapshot.docs[0].data().description) {
-          await episodeRef.update(episodeData);
+        // rssから取得した更新日時変更されていたらエピソードも更新
+        if (episodeData.pubDate !== episodeSnapshot.docs[0].data().pubDate) {
+          await episodeDocRef.update(episodeData);
+          if (episodeData.url !== episodeSnapshot.docs[0].data().url) {
+            episodeId = episodeDocRef.id;
+            pubDate = episodeData.pubDate;
+          }
         }
       }
     }
+    return { episodeId, pubDate, url };
   });
 
-  await Promise.all(episodePromises);
+  const newEpisodes = await Promise.all(episodePromises);
+  return {
+    channelId: channelRef.id,
+    episodes: newEpisodes.filter<{ episodeId: string; pubDate: Date; url: string }>(
+      (episode): episode is { episodeId: string; pubDate: Date; url: string } =>
+        episode.episodeId !== undefined && episode.pubDate !== undefined
+    ),
+  };
 }

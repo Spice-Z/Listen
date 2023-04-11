@@ -27,14 +27,23 @@ export const registerChannel = functions
     const existingChannelSnapshot = await admin
       .firestore()
       .collection(CHANNEL_DOCUMENT_NAME)
-      .where('url', '==', feedUrl)
+      .where('feedUrl', '==', feedUrl)
       .get();
 
     if (!existingChannelSnapshot.empty) {
       throw new functions.https.HttpsError('already-exists', 'The channel is already registered.');
     }
 
-    await fetchAndSavePodcast(feedUrl, true);
+    const { channelId, episodes } = await fetchAndSavePodcast(feedUrl, true);
+
+    const pendingEpisodesPromises = episodes.map(async (episode) => {
+      await admin.firestore().collection('transcriptPendingEpisodes').doc(episode.episodeId).set({
+        channelId: channelId,
+        pubDate: episode.pubDate,
+        url: episode.url,
+      });
+    });
+    await Promise.all(pendingEpisodesPromises);
 
     return { success: true };
   });
