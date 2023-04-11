@@ -77,15 +77,20 @@ export const generateTranscript = functions
         const convertTargetFileName = `${ulId}_converted.${fileExtension}`;
         const convertTargetPath = path.resolve(convertTargetDir, convertTargetFileName);
 
-        const speed = 1.4;
+        const speed = 1.2;
         await convertSpeed(downloadTargetPath, convertTargetPath, speed);
-
-        const chunkFilePaths = await splitAudio(convertTargetDir, convertTargetFileName, 60 * 20);
+        const splitSeconds = 60 * 20;
+        const chunkFilePaths = await splitAudio(
+          convertTargetDir,
+          convertTargetFileName,
+          splitSeconds
+        );
         const { segments } = await transcribeAudioFiles({
           apiKey: OPEN_AI_API_KEY,
           audioFilePaths: chunkFilePaths,
           model: 'whisper-1',
           speed,
+          splitSeconds,
         });
         const transcriptUrl = await uploadSegmentsToGCS({ segments, id: ulId });
 

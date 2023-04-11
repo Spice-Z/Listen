@@ -8,11 +8,13 @@ export async function transcribeAudioFiles({
   audioFilePaths,
   model,
   speed,
+  splitSeconds,
 }: {
   apiKey: string;
   audioFilePaths: string[];
   model: string;
   speed: number;
+  splitSeconds: number;
 }): Promise<{
   segments: {
     start: number;
@@ -66,9 +68,7 @@ export async function transcribeAudioFiles({
         text: segment.text,
       });
       if (response.data.segments.length - 1 === index) {
-        const start = response.data.segments[0].start;
-        const end = response.data.segments[response.data.segments.length - 1].end;
-        elapsedTime += (end - start) * speed;
+        elapsedTime += splitSeconds;
       }
     });
   });

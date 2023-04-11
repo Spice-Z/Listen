@@ -24,9 +24,9 @@ Global News Podcast - BBC World Service
 TED Talks Daily - TED
 `registerChannel({url:"https://feeds.feedburner.com/TEDTalks_audio"})`
 
-shell
+WSJ Tech News Briefing
+`registerChannel({url:"https://video-api.wsj.com/podcast/rss/wsj/tech-news-briefing"})`
 
-```
-generateTranscript({"channelId":"TBuM2ICuClvW5CjkySJ1", "targetDate":"April 1, 2023 00:00:00"})
-registerChannel({url:"https://anchor.fm/s/81fb5eec/podcast/rss"})
-```
+generateTranscript
+`generateTranscript({"channelId":"TBuM2ICuClvW5CjkySJ1", "targetDate":"April 1, 2023 00:00:00"})`
+`registerChannel({url:"https://anchor.fm/s/81fb5eec/podcast/rss"})`
