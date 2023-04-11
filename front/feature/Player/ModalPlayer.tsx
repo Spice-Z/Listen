@@ -105,11 +105,12 @@ function ModalPlayer() {
               styles.captionText,
               activeCaptionIndex >= index ? styles.highlightedCaption : null,
             ]}
+            selectable
           >
             {caption.text}
             {index < transcriptData.length - 1 ? ' ' : ''}
           </Text>
-        )) : <Text>No Transcript, sorry...</Text>}
+        )) : <Text style={styles.noTranscriptText}>No Transcript, sorry...</Text>}
       </ScrollView>
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
@@ -219,10 +220,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     color: theme.color.textWeak,
-    fontWeight: '400',
+    fontWeight: '600',
   },
   highlightedCaption: {
-    color: theme.color.accent,
+    backgroundColor: theme.color.accent,
     fontWeight: '600',
   },
   playerContainer: {
@@ -251,6 +252,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  noTranscriptText: {
+    width: '100%',
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: '800',
+    textAlign: 'center',
+    color: theme.color.textMain,
+  }
 });
 
 export default ModalPlayer;

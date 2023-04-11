@@ -45,7 +45,7 @@ export default function EpisodePage() {
     title: data.title,
     artist: channelData.title,
     date: 'Tue, 04 Apr 2023 21:00:15 GMT',
-    artwork: data.imageUrl,
+    artwork: data.imageUrl || channelData.imageUrl,
     url: data.url,
     duration: data.duration,
    }
@@ -74,7 +74,7 @@ export default function EpisodePage() {
       channelTitle={channelData.title}
       episodeTitle={data.title}
       episodeDescription={data.content}
-      episodeImageUrl={data.imageUrl}
+      episodeImageUrl={data.imageUrl || channelData.imageUrl}
       duration={data.duration}
       isPlaying={isThisEpisodePlaying}
       onPressPlay={onPressPlay}

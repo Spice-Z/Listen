@@ -66,7 +66,7 @@ export default function Channel() {
       title={item.title}
       description={item.description}
       duration={item.duration}
-      imageUrl={item.imageUrl}
+      imageUrl={item.imageUrl || channelInfo.imageUrl}
       onPress={onPressEpisode}
      />
     }}
