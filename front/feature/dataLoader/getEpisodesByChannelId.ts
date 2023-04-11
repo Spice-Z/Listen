@@ -13,6 +13,7 @@ export const getEpisodesByChannelId = async (channelId: string) => {
     content: string;
     duration: number;
     imageUrl: string;
+    transcriptUrl: string | undefined;
     // pubDate: timestamp,
   }[] = response.data;
   return data;

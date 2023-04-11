@@ -40,6 +40,8 @@ export default function EpisodePage() {
    TrackPlayer.pause()
   } else {
    const track: TrackPlayerTrack = {
+    id: data.id,
+    channelId: channelData.id,
     title: data.title,
     artist: channelData.title,
     date: 'Tue, 04 Apr 2023 21:00:15 GMT',

@@ -9,6 +9,8 @@ import TrackPlayer, {
 import { useDidMount } from '../../hooks/useDidMount';
 
 type Needed = {
+  id: string;
+  channelId: string;
   artwork: string;
   duration: number;
 };
@@ -16,15 +18,15 @@ export type TrackPlayerTrack = Track & Needed;
 
 export const useTrackPlayer = () => {
   const [playingTrackDuration, setPlayingTrackDuration] = useState<number | null>(null);
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
-  const [currentQueue, setCurrentQueue] = useState<Track[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<TrackPlayerTrack | null>(null);
+  const [currentQueue, setCurrentQueue] = useState<TrackPlayerTrack[]>([]);
   const playbackState = usePlaybackState();
   const isPlaying = useMemo(() => playbackState === State.Playing, [playbackState]);
 
-  const getCurrentTrack = useCallback(async (): Promise<Track | null> => {
+  const getCurrentTrack = useCallback(async (): Promise<TrackPlayerTrack | null> => {
     const currentIndex = await TrackPlayer.getCurrentTrack();
     const currentTrack = currentIndex !== null ? await TrackPlayer.getTrack(currentIndex) : null;
-    return currentTrack;
+    return currentTrack as TrackPlayerTrack;
   }, []);
 
   const _updateCurrentInfo = useCallback(async () => {
@@ -33,7 +35,7 @@ export const useTrackPlayer = () => {
     const duration = await TrackPlayer.getDuration();
     setPlayingTrackDuration(duration);
     const Queue = await TrackPlayer.getQueue();
-    setCurrentQueue(Queue);
+    setCurrentQueue(Queue as TrackPlayerTrack[]);
   }, [getCurrentTrack]);
 
   useDidMount(() => {

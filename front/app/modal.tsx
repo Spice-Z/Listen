@@ -1,6 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Stack, useNavigation } from 'expo-router';
-import { useTrackPlayer } from '../feature/Player/hooks/useTrackPlayer';
 import { theme } from '../feature/styles/theme';
 import ModalPlayer from '../feature/Player/ModalPlayer';
 import { BackDownIcon } from '../feature/icons';
@@ -17,9 +16,6 @@ function BackButton() {
 }
 
 export default function Modal() {
-  const navigation = useNavigation();
-  const { currentTrack } = useTrackPlayer();
-
   return (
     <>
       <Stack.Screen

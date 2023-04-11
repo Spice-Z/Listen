@@ -8,7 +8,7 @@ export const theme = {
     bgMain: '#0D0C0E',
     bgEmphasis: '#2B2C2B',
     bgDark: '#000000',
-    accent: '#9F74EB',
+    accent: '#955EF8',
     textMain: '#FFFFFF',
     textWeak: '#E5E5E5',
   },

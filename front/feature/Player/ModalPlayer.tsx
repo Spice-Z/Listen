@@ -1,5 +1,5 @@
 import {
-  useState, useEffect, useRef,
+  useState, useEffect,
 } from 'react';
 import {
   StyleSheet,
@@ -17,47 +17,33 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import text2Json from '../../assets/text2.json';
-import { parseTimestamp } from '../../utils/vtt';
 import {
   PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon,
 } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
-import { useDidMount } from '../hooks/useDidMount';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
+import { useQuery } from '@tanstack/react-query';
+import { getEpisodeById } from '../dataLoader/getEpisodeById';
+import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 
 function ModalPlayer() {
-  const [captions, setCaptions] = useState([]);
-  const captionsRef = useRef([]);
   const [activeCaptionIndex, setActiveCaptionIndex] = useState(null);
   const [playbackPosition, setPlaybackPosition] = useState(0);
 
   const playbackState = usePlaybackState();
 
-  useDidMount(() => {
-    loadCaptions();
-  });
-
-  const loadCaptions = async () => {
-    const text = text2Json.data;
-    const lines = text.split('\n');
-
-    const parsedCaptions = lines.reduce((acc, line) => {
-      if (line.includes('-->')) {
-        const [start, end] = line.split(' --> ').map(parseTimestamp);
-        acc.push({ start, end, text: '' });
-      } else if (line.trim() !== '' && !line.startsWith('WEBVTT')) {
-        acc[acc.length - 1].text += `${line.trim()} `;
-      }
-      return acc;
-    }, []);
-
-    setCaptions(parsedCaptions);
-    captionsRef.current = parsedCaptions;
-  };
-
   const { playingTrackDuration, currentQueue, currentTrack } = useTrackPlayer();
+  const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
+  const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
+  const { isLoading, data } = useQuery({
+    queryKey: ['getEpisodeById', currentEpisodeChannelId, currentEpisodeId],
+    queryFn: () => getEpisodeById(currentEpisodeChannelId as string, currentEpisodeId as string),
+  })
+  const { isLoading: _isTranscriptLoading, data: transcriptData } = useQuery({
+    queryKey: ['getTranscriptFromUrl', data?.transcriptUrl],
+    queryFn: () => getTranscriptFromUrl(data?.transcriptUrl),
+  })
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setActiveCaptionIndex(null);
@@ -77,12 +63,14 @@ function ModalPlayer() {
   useEffect(() => {
     const { position } = progress;
     setPlaybackPosition(position);
-    const captions = captionsRef.current;
-    const activeCaption = captions.findIndex(
-      (caption) => caption.start <= position && caption.end >= position,
-    );
-    setActiveCaptionIndex(activeCaption);
-  }, [progress]);
+    if (transcriptData) {
+      const transcription = transcriptData;
+      const activeCaption = transcription.findIndex(
+        (caption) => caption.start <= position && caption.end >= position,
+      );
+      setActiveCaptionIndex(activeCaption);
+    }
+  }, [progress, transcriptData]);
 
   const handlePlayPause = async () => {
     if (playbackState === State.Playing) {
@@ -109,18 +97,19 @@ function ModalPlayer() {
         style={styles.captionsScrollView}
         contentContainerStyle={styles.captionsContainer}
       >
-        {captions.map((caption, index) => (
+        {_isTranscriptLoading && <Text>Transcript is Loading...</Text>}
+        {!!transcriptData ? transcriptData.map((caption, index) => (
           <Text
             key={index}
             style={[
               styles.captionText,
-              activeCaptionIndex === index ? styles.highlightedCaption : null,
+              activeCaptionIndex >= index ? styles.highlightedCaption : null,
             ]}
           >
             {caption.text}
-            {index < captions.length - 1 ? ' ' : ''}
+            {index < transcriptData.length - 1 ? ' ' : ''}
           </Text>
-        ))}
+        )) : <Text>No Transcript, sorry...</Text>}
       </ScrollView>
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
@@ -233,7 +222,8 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   highlightedCaption: {
-    color: theme.color.accent
+    color: theme.color.accent,
+    fontWeight: '600',
   },
   playerContainer: {
     height: 100,
