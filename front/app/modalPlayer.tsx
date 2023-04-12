@@ -15,7 +15,7 @@ function BackButton() {
   );
 }
 
-export default function Modal() {
+export default function modalPlayer() {
   return (
     <>
       <Stack.Screen

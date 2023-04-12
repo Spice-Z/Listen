@@ -53,9 +53,6 @@ export default function EpisodePage() {
   }
  }, [channelData, data, isThisEpisodePlaying, playTrackIfNotCurrentlyPlaying])
 
-
-
-
  return <>
   <Stack.Screen
    options={{
@@ -67,11 +64,12 @@ export default function EpisodePage() {
     <>
      <Stack.Screen
       options={{
-       title: data.title || ''
+       title: data.title || '',
       }}
      />
      <Episode
       channelTitle={channelData.title}
+      date={data.pubDate}
       episodeTitle={data.title}
       episodeDescription={data.content}
       episodeImageUrl={data.imageUrl || channelData.imageUrl}

@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { useEffect } from "react";
 import { theme } from "../feature/styles/theme";
 import { StyleSheet, View } from "react-native";
@@ -26,6 +26,7 @@ export default function Layout() {
       console.log("Layout unmount");
     }
   }, []);
+  const pathname = usePathname();
 
   return <>
     <QueryClientProvider client={queryClient}>
@@ -35,9 +36,10 @@ export default function Layout() {
           headerShown: false,
         }}
         />
-        <Stack.Screen name="modal" options={{
+        <Stack.Screen name="modalPlayer" options={{
           // Hide the header for all other routes.
           presentation: "transparentModal",
+          animation: 'slide_from_bottom',
           headerStyle: {
             backgroundColor: theme.color.bgMain,
           },
@@ -49,7 +51,7 @@ export default function Layout() {
         }} />
       </Stack>
       <View style={styles.miniPlayerContainer}>
-        <MiniPlayer />
+        <MiniPlayer hide={pathname === '/modalPlayer'} />
       </View>
     </QueryClientProvider>
   </>;

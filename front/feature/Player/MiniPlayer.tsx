@@ -6,7 +6,10 @@ import { PauseIcon, PlayIcon } from "../icons";
 import TrackPlayer from "react-native-track-player";
 import ArtworkImage from "./components/ArtworkImage";
 
-export default function MiniPlayer() {
+type Props = {
+  hide: boolean;
+}
+export default function MiniPlayer({ hide }: Props) {
   const { isPlaying, currentTrack } = useTrackPlayer();
   const hasPlayingTrack = currentTrack !== null;
   const router = useRouter();
@@ -18,8 +21,8 @@ export default function MiniPlayer() {
       await TrackPlayer.play()
     }
   };
-  return hasPlayingTrack ?
-    <Pressable style={styles.container} onPress={() => { router.push('/modal') }}>
+  return hasPlayingTrack && !hide ?
+    <Pressable style={styles.container} onPress={() => { router.push('/modalPlayer') }}>
       <ArtworkImage width={34} height={34} borderRadius={6} />
       <View style={styles.texts}>
         <Text numberOfLines={1} style={styles.title}>{currentTrack.title}</Text>

@@ -1,6 +1,8 @@
 import { memo, useMemo } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { theme } from "../../styles/theme";
+import { formatDMMMYY } from "../../format/date";
+import { formatDuration } from "../../format/duration";
 
 
 type Props = {
@@ -9,6 +11,7 @@ type Props = {
  description: string,
  duration: number,
  imageUrl: string,
+ date: Date,
  onPress: (id: string) => void,
 }
 
@@ -25,6 +28,7 @@ const EpisodeCard = memo(({
  description,
  duration,
  imageUrl,
+ date,
  onPress,
 }: Props) => {
  const arrangedDescription = useMemo(() => {
@@ -32,13 +36,25 @@ const EpisodeCard = memo(({
  }, [description]);
  const onPressItem = () => onPress(id)
 
+ const formattedDate = useMemo(() => {
+  return formatDMMMYY(date)
+ }, [date])
+
+ const formattedDuration = useMemo(() => {
+  return formatDuration(duration)
+ }, [duration])
+
+
  return <Pressable style={styles.container} onPress={onPressItem}>
   <View style={styles.cardHead}>
    {/* @ts-ignore */}
    <Image style={styles.artwork} src={imageUrl} />
    <View style={styles.texts}>
     <Text numberOfLines={2} style={styles.title}>{title}</Text>
-    <Text style={styles.duration}>{duration}</Text>
+    <View style={styles.info}>
+     <Text style={styles.duration}>{formattedDuration}</Text>
+     <Text style={styles.pubDate}>{formattedDate}</Text>
+    </View>
    </View>
   </View>
   <Text numberOfLines={3} style={styles.description}>{arrangedDescription}</Text>
@@ -74,9 +90,17 @@ const styles = StyleSheet.create({
   fontWeight: '600',
   color: theme.color.textMain
  },
+ info: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: 4,
+ },
  duration: {
   color: theme.color.textWeak,
-  marginTop: 4,
+ },
+ pubDate: {
+  color: theme.color.textWeak,
+  marginLeft: 8,
  },
  description: {
   fontSize: 12,
