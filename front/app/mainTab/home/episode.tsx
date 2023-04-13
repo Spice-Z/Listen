@@ -2,25 +2,21 @@ import { StyleSheet, View } from 'react-native';
 
 import { useSearchParams, useRouter, Stack } from "expo-router";
 import Episode from '../../../feature/Episode/Episode';
-import { useQuery } from '@tanstack/react-query';
-import { getEpisodeById } from '../../../feature/dataLoader/getEpisodeById';
-import { getChannelById } from '../../../feature/dataLoader/getChannelById';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
 import { useCallback, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
+import { useEpisodeByIds } from '../../../feature/Episode/hooks/useEpisodeByIds';
+import { useChannelById } from '../../../feature/Channel/hooks/useChannelById';
 
 export default function EpisodePage() {
  const router = useRouter();
  const { channelId, episodeId } = useSearchParams();
- const { isLoading: isChannelLoading, data: channelData } = useQuery({
-  queryKey: ['getChannelById', channelId as string],
-  queryFn: () => getChannelById(channelId as string),
- })
- const { isLoading, error, data } = useQuery({
-  queryKey: ['getEpisodeById', channelId, episodeId],
-  queryFn: () => getEpisodeById(channelId as string, episodeId as string),
- })
+ const { isLoading: isChannelLoading, data: channelData } = useChannelById(channelId as string)
+ const { isLoading, error, data } = useEpisodeByIds({
+  channelId: channelId as string,
+  episodeId: episodeId as string,
+ });
 
  const { playTrackIfNotCurrentlyPlaying, currentTrack, isPlaying } = useTrackPlayer();
  const isThisEpisodePlaying = useMemo(() => {

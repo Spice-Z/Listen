@@ -24,8 +24,8 @@ import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
 import { useQuery } from '@tanstack/react-query';
-import { getEpisodeById } from '../dataLoader/getEpisodeById';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
+import { useEpisodeByIds } from '../Episode/hooks/useEpisodeByIds';
 
 function ModalPlayer() {
   const [activeCaptionIndex, setActiveCaptionIndex] = useState(null);
@@ -36,9 +36,9 @@ function ModalPlayer() {
   const { playingTrackDuration, currentQueue, currentTrack } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { isLoading, data } = useQuery({
-    queryKey: ['getEpisodeById', currentEpisodeChannelId, currentEpisodeId],
-    queryFn: () => getEpisodeById(currentEpisodeChannelId as string, currentEpisodeId as string),
+  const { isLoading, data } = useEpisodeByIds({
+    channelId: currentEpisodeChannelId,
+    episodeId: currentEpisodeId,
   })
   const { isLoading: _isTranscriptLoading, data: transcriptData } = useQuery({
     queryKey: ['getTranscriptFromUrl', data?.transcriptUrl],

@@ -1,7 +1,7 @@
 import { firebase } from '@react-native-firebase/functions';
 import { IEpisode } from '../Types/IEpisode';
 
-export const getEpisodeById = async (channelId: string, episodeId: string) => {
+export const getEpisodeByIds = async (channelId: string, episodeId: string) => {
   const app = firebase.app();
   const functions = app.functions('asia-northeast1');
   const getEpisodeById = functions.httpsCallable('getEpisodeById');

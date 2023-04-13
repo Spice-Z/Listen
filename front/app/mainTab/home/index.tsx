@@ -3,34 +3,14 @@ import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback } from 'react';
-import { useQuery } from "@tanstack/react-query";
-import { firebase } from '@react-native-firebase/functions';
+import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 
-const loader = async () => {
-  const app = firebase.app();
-  const functions = app.functions('asia-northeast1');
-  const getChannels = functions.httpsCallable('getChannels')
-  const response = await getChannels({})
-  const data: {
-    id: string;
-    title: string;
-    imageUrl: string;
-    description: string;
-    author: string;
-  }[] = response.data.map((item: any) => ({
-    id: item.id,
-    title: item.title,
-    imageUrl: item.imageUrl,
-    description: item.description,
-  }))
-  return data
-};
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
 
 export default function App() {
 
-  const query = useQuery(["home_screen_loader"], loader);
+  const query = useChannels();
   const router = useRouter();
   const onPress = useCallback(() => {
     router.push({ pathname: '/mainTab/home/player', params: { episodeId: 2 } })

@@ -1,23 +1,16 @@
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { theme } from "../../../feature/styles/theme";
-import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import ChannelInfo from "../../../feature/Channel/components/ChannelInfo";
 import EpisodeCard from "../../../feature/Episode/components/EpisodeCard";
-import { getChannelById } from "../../../feature/dataLoader/getChannelById";
-import { getEpisodesByChannelId } from "../../../feature/dataLoader/getEpisodesByChannelId";
+import { useEpisodesByChannelId } from "../../../feature/Episode/hooks/useEpisodesByChannelId";
+import { useChannelById } from "../../../feature/Channel/hooks/useChannelById";
 
 export default function Channel() {
  const { channelId } = useSearchParams();
- const { isLoading, error, data } = useQuery({
-  queryKey: ['getChannelById', channelId as string],
-  queryFn: () => getChannelById(channelId as string),
- })
- const { isLoading: isEpisodeLoading, error: episodeError, data: episodeData } = useQuery({
-  queryKey: ['getEpisodesByChannelId', channelId as string],
-  queryFn: () => getEpisodesByChannelId(channelId as string),
- })
+ const { isLoading, error, data } = useChannelById(channelId as string)
+ const { isLoading: isEpisodeLoading, error: episodeError, data: episodeData } = useEpisodesByChannelId(channelId as string);
  const router = useRouter();
 
 

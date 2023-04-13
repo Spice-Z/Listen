@@ -23,7 +23,6 @@
         "resourceClass": "m-medium"
       }
     },
-    "cli": {
-    }
+    "cli": {}
   }
 }
