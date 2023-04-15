@@ -5,7 +5,6 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
@@ -28,9 +27,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 import { useEpisodeByIds } from '../Episode/hooks/useEpisodeByIds';
 import { useRouter } from 'expo-router';
+import TranscriptScrollBox from './components/TranscriptScrollBox';
 
 function ModalPlayer() {
-  const [activeCaptionIndex, setActiveCaptionIndex] = useState(null);
   const [playbackPosition, setPlaybackPosition] = useState(0);
 
   const playbackState = usePlaybackState();
@@ -57,31 +56,22 @@ function ModalPlayer() {
 
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
-    setActiveCaptionIndex(null);
     setPlaybackPosition(0);
   });
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
     const track = await TrackPlayer.getCurrentTrack();
     if (track === null) {
-      setActiveCaptionIndex(null);
       setPlaybackPosition(0);
     }
   });
 
-  const progress = useProgress(500);
+  const progress = useProgress(250);
 
   useEffect(() => {
     const { position } = progress;
     setPlaybackPosition(position);
-    if (transcriptData) {
-      const transcription = transcriptData;
-      const activeCaption = transcription.findIndex(
-        (caption) => caption.start <= position && caption.end >= position,
-      );
-      setActiveCaptionIndex(activeCaption);
-    }
-  }, [progress, transcriptData]);
+  }, [progress]);
 
   const handlePlayPause = async () => {
     if (playbackState === State.Playing) {
@@ -105,7 +95,6 @@ function ModalPlayer() {
     await switchPlaybackRate()
   };
   const handleOpenTranscriptModal = () => {
-    console.log('handleOpenTranscriptModal')
     router.push('/modalTranscriptPlayer')
   }
 
@@ -113,25 +102,10 @@ function ModalPlayer() {
     <Text style={{ color: theme.color.textMain }}>No Playing </Text>
   </View> : (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.captionsScrollView}
-        contentContainerStyle={styles.captionsContainer}
-      >
-        {_isTranscriptLoading && <Text>Transcript is Loading...</Text>}
-        {!!transcriptData ? transcriptData.map((caption, index) => (
-          <Text
-            key={index}
-            style={[
-              styles.captionText,
-              activeCaptionIndex >= index ? styles.highlightedCaption : null,
-            ]}
-            selectable
-          >
-            {caption.text}
-            {index < transcriptData.length - 1 ? ' ' : ''}
-          </Text>
-        )) : <Text style={styles.noTranscriptText}>No Transcript, sorry...</Text>}
-      </ScrollView>
+      <TranscriptScrollBox
+        transcriptUrl={data?.transcriptUrl}
+        height={'70%'}
+        currentTimePosition={progress.position} />
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
         <View style={styles.episodeInfo}>
@@ -244,26 +218,6 @@ const styles = StyleSheet.create({
     height: 20,
     marginHorizontal: 16,
   },
-  captionsScrollView: {
-    height: '70%',
-  },
-  captionsContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    backgroundColor: theme.color.bgEmphasis
-  },
-  captionText: {
-    fontSize: 16,
-    lineHeight: 22,
-    color: theme.color.textWeak,
-    fontWeight: '600',
-  },
-  highlightedCaption: {
-    backgroundColor: theme.color.accent,
-    fontWeight: '600',
-  },
   playerContainer: {
     height: 100,
     flexDirection: 'row',
@@ -299,14 +253,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-  noTranscriptText: {
-    width: '100%',
-    fontSize: 20,
-    lineHeight: 26,
-    fontWeight: '800',
-    textAlign: 'center',
-    color: theme.color.textMain,
-  }
 });
 
 export default ModalPlayer;
