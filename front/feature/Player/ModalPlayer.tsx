@@ -27,6 +27,7 @@ import ArtworkImage from './components/ArtworkImage';
 import { useQuery } from '@tanstack/react-query';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 import { useEpisodeByIds } from '../Episode/hooks/useEpisodeByIds';
+import { useRouter } from 'expo-router';
 
 function ModalPlayer() {
   const [activeCaptionIndex, setActiveCaptionIndex] = useState(null);
@@ -90,6 +91,8 @@ function ModalPlayer() {
     }
   };
 
+  const router = useRouter()
+
   const handleSkip = async (seconds) => {
     const newPosition = playbackPosition + seconds;
     await TrackPlayer.seekTo(newPosition);
@@ -101,6 +104,10 @@ function ModalPlayer() {
   const handlePlaybackRate = async () => {
     await switchPlaybackRate()
   };
+  const handleOpenTranscriptModal = () => {
+    console.log('handleOpenTranscriptModal')
+    router.push('/modalTranscriptPlayer')
+  }
 
   return currentQueue.length === 0 || currentTrack === null ? <View style={styles.container}>
     <Text style={{ color: theme.color.textMain }}>No Playing </Text>
@@ -184,6 +191,7 @@ function ModalPlayer() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.playerContainerItem}
+          onPress={handleOpenTranscriptModal}
         >
           <View style={styles.controlButton}>
             <Text>✨</Text>
