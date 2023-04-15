@@ -19,9 +19,14 @@ export type TrackPlayerTrack = Track & Needed;
 export const useTrackPlayer = () => {
   const [playingTrackDuration, setPlayingTrackDuration] = useState<number | null>(null);
   const [currentTrack, setCurrentTrack] = useState<TrackPlayerTrack | null>(null);
+  const [currentPlaybackRate, setCurrentPlaybackRate] = useState<number>(1);
   const [currentQueue, setCurrentQueue] = useState<TrackPlayerTrack[]>([]);
   const playbackState = usePlaybackState();
   const isPlaying = useMemo(() => playbackState === State.Playing, [playbackState]);
+  const isLoading = useMemo(
+    () => playbackState === State.Buffering || playbackState === State.Connecting,
+    [playbackState]
+  );
 
   const getCurrentTrack = useCallback(async (): Promise<TrackPlayerTrack | null> => {
     const currentIndex = await TrackPlayer.getCurrentTrack();
@@ -38,8 +43,14 @@ export const useTrackPlayer = () => {
     setCurrentQueue(Queue as TrackPlayerTrack[]);
   }, [getCurrentTrack]);
 
+  const _updateCurrentPlaybackRate = useCallback(async () => {
+    const rate = await TrackPlayer.getRate();
+    setCurrentPlaybackRate(rate);
+  }, []);
+
   useDidMount(() => {
     _updateCurrentInfo();
+    _updateCurrentPlaybackRate();
   });
 
   const playTrackIfNotCurrentlyPlaying = useCallback(async (track: TrackPlayerTrack) => {
@@ -57,15 +68,39 @@ export const useTrackPlayer = () => {
     }
   }, []);
 
+  const switchPlaybackRate = useCallback(async () => {
+    const rate = await TrackPlayer.getRate();
+    setCurrentPlaybackRate(rate);
+    if (rate === 0.5) {
+      await TrackPlayer.setRate(0.75);
+      setCurrentPlaybackRate(0.75);
+    } else if (rate === 0.75) {
+      await TrackPlayer.setRate(1);
+      setCurrentPlaybackRate(1);
+    } else if (rate === 1) {
+      await TrackPlayer.setRate(1.5);
+      setCurrentPlaybackRate(1.5);
+    } else if (rate === 1.5) {
+      await TrackPlayer.setRate(2);
+      setCurrentPlaybackRate(2);
+    } else {
+      await TrackPlayer.setRate(0.5);
+      setCurrentPlaybackRate(0.5);
+    }
+  }, []);
+
   // update current queue/track when it changes
   useTrackPlayerEvents([Event.PlaybackState, Event.PlaybackTrackChanged], async (event) => {
     await _updateCurrentInfo();
   });
   return {
     isPlaying,
+    isLoading,
     currentQueue,
     currentTrack,
+    currentPlaybackRate,
     playTrackIfNotCurrentlyPlaying,
     playingTrackDuration,
+    switchPlaybackRate,
   };
 };

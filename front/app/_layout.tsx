@@ -12,6 +12,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      suspense: true,
     },
   },
 });
@@ -32,12 +33,10 @@ export default function Layout() {
     <QueryClientProvider client={queryClient}>
       <Stack>
         <Stack.Screen name="mainTab" options={{
-          // Hide the header for all other routes.
           headerShown: false,
         }}
         />
         <Stack.Screen name="modalPlayer" options={{
-          // Hide the header for all other routes.
           presentation: "transparentModal",
           animation: 'slide_from_bottom',
           headerStyle: {

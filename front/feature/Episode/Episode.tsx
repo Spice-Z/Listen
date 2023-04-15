@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
 import { PauseIcon, PlayIcon } from '../icons';
 import { formatDMMMYY } from '../format/date';
@@ -13,6 +13,7 @@ type Props = {
   duration: number;
   date: Date;
   isPlaying: boolean;
+  isLoading: boolean;
   onPressPlay: () => void;
 };
 
@@ -24,6 +25,7 @@ const Episode = memo(({
   duration,
   date,
   isPlaying,
+  isLoading,
   onPressPlay
 }: Props) => {
   const formattedDate = useMemo(() => {
@@ -33,6 +35,13 @@ const Episode = memo(({
   const formattedDuration = useMemo(() => {
     return formatDuration(duration)
   }, [duration])
+
+  const playPauseButton = useMemo(() => {
+    if (isLoading) {
+      return <ActivityIndicator />
+    }
+    return isPlaying ? <PauseIcon fill={theme.color.textMain} width={20} height={20} /> : <PlayIcon fill={theme.color.textMain} width={20} height={20} />
+  }, [isLoading, isPlaying])
   return (
     <ScrollView style={styles.container}>
       <View style={styles.head}>
@@ -46,7 +55,7 @@ const Episode = memo(({
       <View style={styles.buttonContainer}>
         <Text style={styles.duration} >{formattedDuration}</Text>
         <Pressable style={styles.playButton} onPress={onPressPlay}>
-          {isPlaying ? <PauseIcon width={30} height={30} fill={theme.color.textMain} /> : <PlayIcon width={30} height={30} fill={theme.color.textMain} />}
+          {playPauseButton}
         </Pressable>
       </View>
       <Text selectable style={styles.description}>{episodeDescription}</Text>

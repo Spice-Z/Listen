@@ -1,5 +1,5 @@
 import {
-  useState, useEffect,
+  useState, useEffect, useMemo,
 } from 'react';
 import {
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
@@ -33,17 +34,26 @@ function ModalPlayer() {
 
   const playbackState = usePlaybackState();
 
-  const { playingTrackDuration, currentQueue, currentTrack } = useTrackPlayer();
+  const { playingTrackDuration, currentQueue, currentTrack, currentPlaybackRate, switchPlaybackRate, isPlaying, isLoading } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { isLoading, data } = useEpisodeByIds({
+  const { data } = useEpisodeByIds({
     channelId: currentEpisodeChannelId,
     episodeId: currentEpisodeId,
   })
   const { isLoading: _isTranscriptLoading, data: transcriptData } = useQuery({
     queryKey: ['getTranscriptFromUrl', data?.transcriptUrl],
     queryFn: () => getTranscriptFromUrl(data?.transcriptUrl),
+    enabled: !!data?.transcriptUrl,
   })
+
+  const playPauseButton = useMemo(() => {
+    if (isLoading) {
+      return <ActivityIndicator />
+    }
+    return isPlaying ? <PauseIcon fill={theme.color.textMain} width={20} height={20} /> : <PlayIcon fill={theme.color.textMain} width={20} height={20} />
+  }, [isLoading, isPlaying])
+
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setActiveCaptionIndex(null);
@@ -87,6 +97,9 @@ function ModalPlayer() {
   const handleSeek = async (value) => {
     const newPosition = value * playingTrackDuration;
     await TrackPlayer.seekTo(newPosition);
+  };
+  const handlePlaybackRate = async () => {
+    await switchPlaybackRate()
   };
 
   return currentQueue.length === 0 || currentTrack === null ? <View style={styles.container}>
@@ -138,26 +151,43 @@ function ModalPlayer() {
       </View>
       <View style={styles.playerContainer}>
         <TouchableOpacity
-          style={styles.controlButton}
+          style={styles.playerContainerItem}
+          onPress={handlePlaybackRate}
+        >
+          <View style={styles.controlButton}>
+            <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.playerContainerItem}
           onPress={() => handleSkip(-15)}
         >
-          <SkipBackwardIcon width={24} height={24} />
+          <View style={styles.controlButton}>
+            <SkipBackwardIcon width={24} height={24} />
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.playPauseButton}
+          style={styles.playerContainerItem}
           onPress={handlePlayPause}
         >
-          {playbackState === State.Playing ? (
-            <PauseIcon width={26} height={26} fill={theme.color.textMain} />
-          ) : (
-            <PlayIcon width={26} height={26} fill={theme.color.textMain} />
-          )}
+          <View style={styles.playPauseButton}>
+            {playPauseButton}
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.controlButton}
+          style={styles.playerContainerItem}
           onPress={() => handleSkip(15)}
         >
-          <SkipForwardIcon width={24} height={24} color="#fff" />
+          <View style={styles.controlButton}>
+            <SkipForwardIcon width={24} height={24} color="#fff" />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.playerContainerItem}
+        >
+          <View style={styles.controlButton}>
+            <Text>✨</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -203,7 +233,7 @@ const styles = StyleSheet.create({
   },
   seekBar: {
     width: Dimensions.get('window').width - 32,
-    height: 40,
+    height: 20,
     marginHorizontal: 16,
   },
   captionsScrollView: {
@@ -229,7 +259,12 @@ const styles = StyleSheet.create({
   playerContainer: {
     height: 100,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 16,
+  },
+  playerContainerItem: {
+    width: '20%',
     alignItems: 'center',
   },
   playPauseButton: {
@@ -240,13 +275,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  playbackRate: {
+    color: theme.color.textMain,
+    fontSize: 16,
+    fontWeight: '800'
+  },
   controlButton: {
     height: 56,
     width: 56,
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 10,
   },
   controlButtonText: {
     color: '#fff',

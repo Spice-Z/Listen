@@ -1,19 +1,18 @@
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { theme } from "../../../feature/styles/theme";
-import { useCallback, useMemo } from "react";
+import { Suspense, useCallback, useMemo } from "react";
 import ChannelInfo from "../../../feature/Channel/components/ChannelInfo";
 import EpisodeCard from "../../../feature/Episode/components/EpisodeCard";
 import { useEpisodesByChannelId } from "../../../feature/Episode/hooks/useEpisodesByChannelId";
 import { useChannelById } from "../../../feature/Channel/hooks/useChannelById";
+import SquareShimmer from "../../../feature/Shimmer/SquareShimmer";
 
-export default function Channel() {
+function Channel() {
  const { channelId } = useSearchParams();
  const { isLoading, error, data } = useChannelById(channelId as string)
  const { isLoading: isEpisodeLoading, error: episodeError, data: episodeData } = useEpisodesByChannelId(channelId as string);
  const router = useRouter();
-
-
  const channelInfo = useMemo(() => {
   if (data) {
    return {
@@ -69,6 +68,37 @@ export default function Channel() {
 
   </View>
  </>
+}
+
+function FallBack() {
+ return <View style={styles.container}>
+  <View style={{ flexDirection: 'row' }} >
+   <SquareShimmer width={122} height={122} />
+   <View style={{ width: 16 }} />
+   <SquareShimmer width='100%' height={60} />
+  </View>
+  <View style={{ marginTop: 16 }} >
+   <SquareShimmer width='100%' height={122} />
+  </View>
+  <View style={{ marginTop: 16 }} >
+   <SquareShimmer width='100%' height={18} />
+  </View>
+  <View style={{ marginTop: 16 }} >
+   <SquareShimmer width='100%' height={80} />
+   <View style={{ height: 16 }} />
+   <SquareShimmer width='100%' height={80} />
+   <View style={{ height: 16 }} />
+   <SquareShimmer width='100%' height={80} />
+   <View style={{ height: 16 }} />
+   <SquareShimmer width='100%' height={80} />
+  </View>
+ </View >
+}
+
+export default function withSuspense() {
+ return <Suspense fallback={<FallBack />}>
+  <Channel />
+ </Suspense>
 }
 
 const styles = StyleSheet.create({

@@ -2,14 +2,14 @@ import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback } from 'react';
+import { Suspense, useCallback } from 'react';
 import { useChannels } from '../../../feature/Channel/hooks/useChannels';
+import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
 
-export default function App() {
-
+function App() {
   const query = useChannels();
   const router = useRouter();
   const onPress = useCallback(() => {
@@ -43,11 +43,37 @@ export default function App() {
   );
 }
 
+function FallBack() {
+  return <View style={styles.container}>
+    <View style={{ height: 16 }} />
+    <SquareShimmer width='100%' height={80} />
+    <View style={{ height: 16 }} />
+    <SquareShimmer width='100%' height={80} />
+    <View style={{ height: 16 }} />
+    <SquareShimmer width='100%' height={80} />
+    <View style={{ height: 16 }} />
+    <SquareShimmer width='100%' height={80} />
+    <View style={{ height: 16 }} />
+    <SquareShimmer width='100%' height={80} />
+  </View>
+}
+
+export default function withSuspense() {
+  return (
+    <Suspense fallback={<FallBack />}>
+      <App />
+    </Suspense>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.bgMain,
     paddingHorizontal: 16,
+  },
+  loading: {
+    color: theme.color.textMain,
   },
   channelCard: {
     backgroundColor: theme.color.bgEmphasis,
@@ -72,3 +98,4 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
 });
+

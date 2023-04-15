@@ -1,24 +1,29 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { useSearchParams, useRouter, Stack } from "expo-router";
+import { useSearchParams, Stack } from "expo-router";
 import Episode from '../../../feature/Episode/Episode';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
-import { useCallback, useMemo } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
 import { useEpisodeByIds } from '../../../feature/Episode/hooks/useEpisodeByIds';
 import { useChannelById } from '../../../feature/Channel/hooks/useChannelById';
 
-export default function EpisodePage() {
- const router = useRouter();
+function EpisodePage() {
  const { channelId, episodeId } = useSearchParams();
  const { isLoading: isChannelLoading, data: channelData } = useChannelById(channelId as string)
- const { isLoading, error, data } = useEpisodeByIds({
+ const { data } = useEpisodeByIds({
   channelId: channelId as string,
   episodeId: episodeId as string,
  });
 
- const { playTrackIfNotCurrentlyPlaying, currentTrack, isPlaying } = useTrackPlayer();
+ const { playTrackIfNotCurrentlyPlaying, currentTrack, isPlaying, isLoading } = useTrackPlayer();
+ const isThisEpisodeLoading = useMemo(() => {
+  if (isLoading && !!data) {
+   return currentTrack?.url === data?.url;
+  }
+  return false
+ }, [currentTrack?.url, data, isLoading])
  const isThisEpisodePlaying = useMemo(() => {
   if (!data) {
    return false
@@ -71,12 +76,25 @@ export default function EpisodePage() {
       episodeImageUrl={data.imageUrl || channelData.imageUrl}
       duration={data.duration}
       isPlaying={isThisEpisodePlaying}
+      isLoading={isThisEpisodeLoading}
       onPressPlay={onPressPlay}
      />
     </>
    }
   </View>
  </>;
+}
+
+function FallBack() {
+ return <View style={styles.container}>
+  <Text style={{ color: 'white' }}>loading...</Text>
+ </View>
+}
+
+export default function withSuspense() {
+ return <Suspense fallback={<FallBack />}>
+  <EpisodePage />
+ </Suspense>
 }
 
 const styles = StyleSheet.create({

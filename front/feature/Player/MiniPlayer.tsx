@@ -1,26 +1,36 @@
-import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import { theme } from "../styles/theme";
 import { useTrackPlayer } from "./hooks/useTrackPlayer";
 import { useRouter } from "expo-router";
 import { PauseIcon, PlayIcon } from "../icons";
 import TrackPlayer from "react-native-track-player";
 import ArtworkImage from "./components/ArtworkImage";
+import { useMemo } from "react";
 
 type Props = {
   hide: boolean;
 }
 export default function MiniPlayer({ hide }: Props) {
-  const { isPlaying, currentTrack } = useTrackPlayer();
+  const { isPlaying, isLoading, currentTrack } = useTrackPlayer();
   const hasPlayingTrack = currentTrack !== null;
   const router = useRouter();
 
   const handlePlayPause = async () => {
+    if (isLoading) {
+      return
+    }
     if (isPlaying) {
       await TrackPlayer.pause();
     } else {
       await TrackPlayer.play()
     }
   };
+  const playPauseButton = useMemo(() => {
+    if (isLoading) {
+      return <ActivityIndicator />
+    }
+    return isPlaying ? <PauseIcon fill={theme.color.textMain} width={20} height={20} /> : <PlayIcon fill={theme.color.textMain} width={20} height={20} />
+  }, [isLoading, isPlaying])
   return hasPlayingTrack && !hide ?
     <Pressable style={styles.container} onPress={() => { router.push('/modalPlayer') }}>
       <ArtworkImage width={34} height={34} borderRadius={6} />
@@ -29,7 +39,7 @@ export default function MiniPlayer({ hide }: Props) {
         <Text numberOfLines={1} style={styles.channel}>{currentTrack.artist}</Text>
       </View>
       <Pressable style={styles.button} onPress={handlePlayPause}>
-        {isPlaying ? <PauseIcon fill={theme.color.textMain} width={20} height={20} /> : <PlayIcon fill={theme.color.textMain} width={20} height={20} />}
+        {playPauseButton}
       </Pressable>
     </Pressable> : null
 }
