@@ -62,7 +62,7 @@ export default function Layout() {
         }} />
       </Stack>
       <View style={styles.miniPlayerContainer}>
-        <MiniPlayer hide={pathname === '/modalPlayer'} />
+        <MiniPlayer hide={pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer'} />
       </View>
     </QueryClientProvider>
   </>;
