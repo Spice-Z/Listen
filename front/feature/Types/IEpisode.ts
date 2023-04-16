@@ -7,5 +7,8 @@ export type IEpisode = {
   duration: number;
   imageUrl: string;
   transcriptUrl: string | undefined;
+  translatedTranscripts: {
+    [key: string]: string;
+  };
   pubDate: Date;
 };

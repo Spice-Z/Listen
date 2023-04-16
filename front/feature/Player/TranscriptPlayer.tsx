@@ -12,6 +12,7 @@ import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import { useEpisodeByIds } from '../Episode/hooks/useEpisodeByIds';
 import TranscriptScrollBox from './components/TranscriptScrollBox';
+import { useEffect } from 'react';
 
 function TranscriptPlayer() {
  const { currentQueue, currentTrack, isPlaying, isLoading } = useTrackPlayer();
@@ -21,6 +22,9 @@ function TranscriptPlayer() {
   channelId: currentEpisodeChannelId,
   episodeId: currentEpisodeId,
  })
+ useEffect(() => {
+  console.log({ data })
+ }, [data])
 
  const progress = useProgress(500);
 
@@ -33,11 +37,9 @@ function TranscriptPlayer() {
     currentTimePosition={progress.position}
     height={'49%'}
    />
-   <View style={styles.separator}>
-    <Text>a</Text>
-   </View>
+   <View style={styles.separator}></View>
    <TranscriptScrollBox
-    transcriptUrl={data?.transcriptUrl}
+    transcriptUrl={data?.translatedTranscripts["Japanese"]}
     currentTimePosition={progress.position}
     height={'49%'}
    />

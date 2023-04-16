@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
  },
  transcriptContainer: {
   width: '100%',
+  paddingHorizontal: 8,
  },
  transcript: {
   fontSize: 16,
