@@ -6,6 +6,8 @@ import { getEpisodesByChannelId } from './endPoint/getEpisodesByChannelId';
 import { getEpisodeById } from './endPoint/getEpisodeById';
 import { generateTranscript } from './endPoint/generateTranscript';
 import { generateTranslatedTranscript } from './endPoint/generateTranslatedTranscript';
+import { generateTranscriptFromIds } from './endPoint/generateTranscriptFromIds';
+
 admin.initializeApp();
 admin.firestore().settings({
   ignoreUndefinedProperties: true,
@@ -19,4 +21,5 @@ export {
   getEpisodeById,
   generateTranscript,
   generateTranslatedTranscript,
+  generateTranscriptFromIds,
 };

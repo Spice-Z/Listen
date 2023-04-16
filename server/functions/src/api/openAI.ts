@@ -199,7 +199,7 @@ export async function translateSegments({
   const results: { start: string; end: string; text: string }[] = [];
   responses.forEach((response) => {
     if (response.status !== 200) {
-      return;
+      throw new Error("response status isn't 200 in translate segments");
     }
     try {
       console.log({ response });
