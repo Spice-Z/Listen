@@ -2,6 +2,7 @@
   "expo": {
     "name": "Listen",
     "slug": "Listen",
+    "scheme": "listen-podcast",
     "version": "1.0.0",
     "jsEngine": "hermes",
     "orientation": "portrait",
