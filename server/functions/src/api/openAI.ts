@@ -68,7 +68,7 @@ export async function transcribeAudioFiles({
         text: segment.text,
       });
       if (response.data.segments.length - 1 === index) {
-        elapsedTime += splitSeconds;
+        elapsedTime += splitSeconds * speed;
       }
     });
   });
@@ -76,73 +76,6 @@ export async function transcribeAudioFiles({
   return {
     segments,
   };
-}
-
-export async function summarizeEpisode({
-  apiKey,
-  text,
-  language,
-}: {
-  apiKey: string;
-  text: string;
-  language: string;
-}) {
-  const texts = text.length >= 3000 ? text.match(/.{3000}/g) : [text];
-  if (texts === null) {
-    return text;
-  }
-  const languagePrompt =
-    language !== 'Emoji'
-      ? `Please output in this language: ${language}`
-      : 'Please use only emojis for output';
-  let summary = '';
-  for (const text of texts) {
-    const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content:
-              "You are a helpful text summary assistant. Make summary and introduction based on transcription. Please generate summary from the perspective of an outsider. It's best to make summary approximately 5 minutes long when read aloud.",
-          },
-          {
-            role: 'system',
-            content: `If a summary currently exists, please revise and add to it in order to create a summary. Current summary: ${summary}`,
-          },
-          {
-            role: 'system',
-            content:
-              "If transcription is Podcast's, follow this guide to make summary: At First, please explain Who is speaking. At next, please explain What is the topic being discussed. At last, provide encouragement for listening to this episode.",
-          },
-          {
-            role: 'system',
-            content: languagePrompt,
-          },
-          {
-            role: 'user',
-            content: `${text}`,
-          },
-        ],
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-        maxContentLength: 100000000,
-        maxBodyLength: 1000000000,
-      }
-    );
-    if (response.status !== 200) {
-      throw new Error(response.statusText);
-    }
-    const data = response.data;
-    summary = data.choices[0].message.content;
-  }
-
-  return summary;
 }
 
 export async function translateToEmoji({ apiKey, text }: { apiKey: string; text: string }) {
@@ -177,23 +110,37 @@ export async function translateToEmoji({ apiKey, text }: { apiKey: string; text:
   return data.choices[0].message.content;
 }
 
-function splitArray<T>(array: T[], size: number): T[][] {
-  if (size <= 0) {
-    throw new Error('Size must be a positive integer.');
-  }
+function splitSegments(
+  segments: { start: string; end: string; text: string }[],
+  limitLength: number
+) {
+  const originalSegments = segments;
+  const splittedSegments: { start: string; end: string; text: string }[][] = [];
+  originalSegments.forEach((segment) => {
+    if (splittedSegments.length === 0) {
+      splittedSegments.push([segment]);
+      return;
+    }
+    const lastSplittedSegment = splittedSegments[splittedSegments.length - 1];
+    const lastSplittedSegmentTotalTextLength = lastSplittedSegment.reduce((a, v) => {
+      return a + v.text.length;
+    }, 0);
+    if (lastSplittedSegmentTotalTextLength + segment.text.length > limitLength) {
+      splittedSegments.push([segment]);
+    } else {
+      lastSplittedSegment.push(segment);
+      splittedSegments[splittedSegments.length - 1] = lastSplittedSegment;
+    }
+  });
 
-  const result: T[][] = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-
-  return result;
+  return splittedSegments;
 }
 
-export async function extractTimestamps({
+export async function translateSegments({
   apiKey,
   segments,
-  language,
+  originalLanguage,
+  targetLanguage,
 }: {
   apiKey: string;
   segments: {
@@ -201,59 +148,73 @@ export async function extractTimestamps({
     end: string;
     text: string;
   }[];
-  language: string;
+  originalLanguage: string;
+  targetLanguage: string;
 }) {
-  const splitedSegments = splitArray(segments, 45);
+  const splittedSegments =
+    originalLanguage === 'English' ? splitSegments(segments, 3000) : splitSegments(segments, 3000);
+
+  console.log('segments length: ', splittedSegments.length);
+
   const responses = await Promise.all(
-    splitedSegments.map(async (segments): Promise<any> => {
-      return await axios.post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: `Given the following transcription, please analyze and extract the 2 most important topics discussed in it. Include the starting time for each topic in seconds with up to two decimal places. Present the output as an array of objects, where each object has keys 'start' and 'topic' without new lines. Write topic in ${language}. Output Example: [{"start": 0.0, "topic": "topic1"}, {"start": 10.0, "topic": "topic2"}]`,
-            },
-            {
-              role: 'system',
-              content: `Please provide the JSON output as specified, focusing on the 2 most important topics.`,
-            },
-            {
-              role: 'user',
-              content: `Here's the transcription:${JSON.stringify(segments)}`,
-            },
-          ],
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey}`,
+    splittedSegments.map(async (segments): Promise<any> => {
+      try {
+        const response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+            model: 'gpt-3.5-turbo',
+            messages: [
+              {
+                role: 'system',
+                content: `Given the following transcription, please translate it into ${targetLanguage}.`,
+              },
+              {
+                role: 'system',
+                content: `Please provide the JSON output only.`,
+              },
+              {
+                role: 'user',
+                content: `${JSON.stringify(segments)}`,
+              },
+            ],
           },
-          maxContentLength: 100000000,
-          maxBodyLength: 1000000000,
-        }
-      );
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${apiKey}`,
+            },
+            maxContentLength: 100000000,
+            maxBodyLength: 1000000000,
+          }
+        );
+        return response;
+      } catch (error) {
+        console.log('error in request translate');
+        console.log({ error });
+        throw error;
+      }
     })
   );
 
-  const results: { start: 'string'; topic: string }[] = [];
+  const results: { start: string; end: string; text: string }[] = [];
   responses.forEach((response) => {
     if (response.status !== 200) {
       return;
     }
     try {
-      // TODO: 文字列からparse可能な部分だけ抽出する関数を使い、事前にparse可能な文字列だけにしておくのもあり
+      console.log({ response });
       const responseJson: any = JSON.parse(response.data.choices[0].message.content);
       const arrangedData = responseJson.map((data: any) => ({
         start: data.start,
-        topic: data.topic,
+        end: data.end,
+        text: data.text,
       }));
       results.push(...arrangedData);
     } catch (error) {
       logger.info('error while json formatting', {
         response: response.data.choices[0].message.content,
       });
+      throw error;
     }
   });
   return results;

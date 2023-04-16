@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constans';
+import { IEpisode } from '../types/IEpisode';
 
 export const getEpisodeById = functions.region('asia-northeast1').https.onCall(async (data, _) => {
   // if (request.app == null) {
@@ -37,7 +38,7 @@ export const getEpisodeById = functions.region('asia-northeast1').https.onCall(a
     throw new functions.https.HttpsError('not-found', 'The specified episode does not exist.');
   }
 
-  return {
+  const episode: IEpisode = {
     id: episodeDoc.id,
     title: episodeData.title,
     description: episodeData.description,
@@ -49,5 +50,7 @@ export const getEpisodeById = functions.region('asia-northeast1').https.onCall(a
     pubDate: episodeData.pubDate,
     season: episodeData.season,
     episode: episodeData.episode,
+    translatedTranscripts: episodeData.translatedTranscripts || {},
   };
+  return episode;
 });

@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constans';
+import { IEpisode } from '../types/IEpisode';
 
 const PAGE_SIZE = 30;
 
@@ -38,20 +39,21 @@ export const getEpisodesByChannelId = functions
       .limit(PAGE_SIZE)
       .get();
 
-    const episodesData = episodesSnapshot.docs.map((doc) => {
+    const episodesData: IEpisode[] = episodesSnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
         title: data.title,
         description: data.description,
         url: data.url,
-        transcriptUrl: data.transcriptUrl,
         imageUrl: data.imageUrl,
         content: data.content,
         duration: data.duration,
         pubDate: data.pubDate,
         season: data.season,
         episode: data.episode,
+        transcriptUrl: data.transcriptUrl,
+        translatedTranscripts: data.translatedTranscripts || {},
       };
     });
 

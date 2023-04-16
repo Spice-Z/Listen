@@ -1,6 +1,9 @@
 import * as admin from 'firebase-admin';
 
-import { CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH } from '../constans';
+import {
+  CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH,
+  CLOUD_STORAGE_TRANSCRIPTION_TRANSLATION_DIR_PATH,
+} from '../constans';
 
 export const uploadSegmentsToGCS = async ({
   segments,
@@ -18,6 +21,25 @@ export const uploadSegmentsToGCS = async ({
   const bucket = admin.storage().bucket();
   const segmentsFirebaseFile = bucket.file(
     `${CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH}/${id}.json`
+  );
+  await segmentsFirebaseFile.save(segmentsJson, {
+    contentType: 'application/json',
+  });
+  await segmentsFirebaseFile.makePublic();
+  return segmentsFirebaseFile.publicUrl();
+};
+
+export const uploadTranslationToGCS = async ({
+  segments,
+  id,
+}: {
+  segments: { start: string; end: string; text: string }[];
+  id: string;
+}): Promise<string> => {
+  const segmentsJson = JSON.stringify({ segments });
+  const bucket = admin.storage().bucket();
+  const segmentsFirebaseFile = bucket.file(
+    `${CLOUD_STORAGE_TRANSCRIPTION_TRANSLATION_DIR_PATH}/${id}.json`
   );
   await segmentsFirebaseFile.save(segmentsJson, {
     contentType: 'application/json',
