@@ -105,6 +105,7 @@ function ModalPlayer() {
       <TranscriptScrollBox
         transcriptUrl={data?.transcriptUrl}
         height={'70%'}
+        width={'100%'}
         currentTimePosition={progress.position} />
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />

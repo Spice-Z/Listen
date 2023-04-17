@@ -5,17 +5,17 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../styles/theme';
 
-
-
 type Props = {
  transcriptUrl?: string;
  height: number | string;
+ width: number | string;
  currentTimePosition: number;
 }
 
 function TranscriptScrollBox({
  transcriptUrl,
  height,
+ width,
  currentTimePosition
 }: Props) {
  const { data } = useQuery({
@@ -57,7 +57,7 @@ function TranscriptScrollBox({
   }
  }, [currentTimePosition, data, scrollToCurrentTranscript]);
 
- return <ScrollView style={{ height }} ref={transcriptsContainerRef}>
+ return <ScrollView style={{ height, width }} ref={transcriptsContainerRef}>
   {!!data ? data.map((transcript, index) => (
    <View
     key={index}

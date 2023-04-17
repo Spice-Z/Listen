@@ -23,6 +23,12 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
       ]
     ],
     "ios": {
@@ -31,7 +37,8 @@
         "UIBackgroundModes": ["audio"]
       },
       "bundleIdentifier": "com.spicex.Listen",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
