@@ -8,6 +8,7 @@ import { downloadFile } from '../utils/file';
 import { uploadTranslationToGCS } from '../api/firebase';
 import { translateSegments } from '../api/openAI';
 import * as fs from 'fs';
+import { getLanguageName } from '../utils/language';
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 
 export const generateTranslatedTranscript = functions
@@ -18,14 +19,15 @@ export const generateTranslatedTranscript = functions
   .https.onCall(async (data, _) => {
     const channelId = data.channelId;
     const episodeId = data.episodeId;
-    const language: string = data.language;
+    const langCode: string = data.langCode;
 
-    if (!channelId || !episodeId || !language) {
+    if (!channelId || !episodeId || !langCode) {
       throw new functions.https.HttpsError(
         'invalid-argument',
         'The function must be called with "channelId", "episodeId" and "language" arguments.'
       );
     }
+    const language = getLanguageName(langCode);
 
     const episodeRef = admin
       .firestore()
@@ -77,7 +79,7 @@ export const generateTranslatedTranscript = functions
       id: ulId,
     });
     const translatedTranscripts = episodeData.translatedTranscripts || {};
-    translatedTranscripts[language] = translatedTranscriptUrl;
+    translatedTranscripts[langCode] = translatedTranscriptUrl;
 
     await episodeRef.update({
       translatedTranscripts,

@@ -40,7 +40,6 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     // 既存のポッドキャストの場合
     channelRef = channelSnapshot.docs[0].ref;
     await channelRef.update(podcastData);
-    console.log('old');
   }
 
   const episodesData = feed.items.map((item) => {

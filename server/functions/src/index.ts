@@ -8,6 +8,7 @@ import { generateTranscript } from './endPoint/generateTranscript';
 import { generateTranslatedTranscript } from './endPoint/generateTranslatedTranscript';
 import { generateTranscriptFromIds } from './endPoint/generateTranscriptFromIds';
 import { updateShow } from './endPoint/updateShow';
+import { autoUpdateShows } from './endPoint/autoUpdateShows';
 
 admin.initializeApp();
 admin.firestore().settings({
@@ -24,4 +25,5 @@ export {
   generateTranslatedTranscript,
   generateTranscriptFromIds,
   updateShow,
+  autoUpdateShows,
 };
