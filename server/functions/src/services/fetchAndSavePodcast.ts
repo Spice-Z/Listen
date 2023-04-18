@@ -61,6 +61,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     let episodeId: string | undefined;
     let pubDate: Date | undefined;
     let url = episodeData.url;
+    let updated = false;
     if (isNewPodcastShow) {
       // 新規ポッドキャストの場合、重複チェックなしでエピソードを追加
       const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
@@ -78,13 +79,14 @@ export async function fetchAndSavePodcast(feedUrl: string) {
         const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
         episodeId = episodeDocRef.id;
         pubDate = episodeData.pubDate;
+        updated = true;
       } else {
         // 既存のエピソードの場合
         const episodeDocRef = episodeSnapshot.docs[0].ref;
 
         // pubDateが一ヶ月以上前の場合、エピソードを更新しない
         if (episodeData.pubDate < new Date(new Date().setMonth(new Date().getMonth() - 1))) {
-          return { episodeId, pubDate, url };
+          return { episodeId, pubDate, url, updated };
         }
 
         // rssから取得した更新日時変更されていたらエピソードも更新
@@ -93,19 +95,28 @@ export async function fetchAndSavePodcast(feedUrl: string) {
           if (episodeData.url !== episodeSnapshot.docs[0].data().url) {
             episodeId = episodeDocRef.id;
             pubDate = episodeData.pubDate;
+            updated = true;
           }
         }
       }
     }
-    return { episodeId, pubDate, url };
+    return { episodeId, pubDate, url, updated };
   });
 
   const newEpisodes = await Promise.all(episodePromises);
   return {
     channelId: channelRef.id,
-    episodes: newEpisodes.filter<{ episodeId: string; pubDate: Date; url: string }>(
-      (episode): episode is { episodeId: string; pubDate: Date; url: string } =>
-        episode.episodeId !== undefined && episode.pubDate !== undefined
+    upDatedEpisodes: newEpisodes.filter<{
+      episodeId: string;
+      pubDate: Date;
+      url: string;
+      updated: boolean;
+    }>(
+      (episode): episode is { episodeId: string; pubDate: Date; url: string; updated: boolean } =>
+        episode.updated &&
+        episode.episodeId !== undefined &&
+        episode.pubDate !== undefined &&
+        episode.url !== undefined
     ),
   };
 }
