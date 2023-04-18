@@ -3,7 +3,6 @@ import axios from 'axios';
 export const getTranscriptFromUrl = async (
   url: string | null
 ): Promise<{ start: number; end: number; text: string }[] | null> => {
-  console.log('getTranscriptFromUrl', { url });
   if (!url) {
     return null;
   }

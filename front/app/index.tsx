@@ -2,7 +2,7 @@ import { usePathname, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import TrackPlayer, { AppKilledPlaybackBehavior, Capability } from "react-native-track-player";
 import { useDidMount } from "../feature/hooks/useDidMount";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 export default function Root() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function Root() {
     setup()
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (pathname === '/') {
       router.replace("/mainTab/home");
     }

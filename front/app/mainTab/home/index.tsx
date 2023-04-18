@@ -22,7 +22,7 @@ function App() {
     <>
       <Stack.Screen
         options={{
-          title: 'Channels'
+          title: 'Shows'
         }}
       />
       <StatusBar style="auto" />
@@ -37,6 +37,7 @@ function App() {
             </Pressable>
           }}
           ItemSeparatorComponent={SeparatorComponent}
+          contentContainerStyle={styles.contentContainer}
         />
       </View>
     </>
@@ -70,6 +71,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.bgMain,
+  },
+  contentContainer: {
     paddingHorizontal: 16,
   },
   loading: {

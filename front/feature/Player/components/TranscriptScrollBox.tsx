@@ -63,7 +63,8 @@ function TranscriptScrollBox({
     key={index}
     style={[
      styles.transcriptContainer,
-     activeTranscriptIndex >= index ? styles.highlighted : null
+     activeTranscriptIndex >= index ? styles.highlighted : null,
+     activeTranscriptIndex === index ? styles.superHighlighted : null
     ]}
     onLayout={(event) => {
      const Ys = transcriptYPositions.current
@@ -104,7 +105,8 @@ const styles = StyleSheet.create({
  },
  transcriptContainer: {
   width: '100%',
-  paddingHorizontal: 8,
+  paddingLeft: 8,
+  paddingRight: 8,
  },
  transcript: {
   fontSize: 16,
@@ -114,6 +116,10 @@ const styles = StyleSheet.create({
  },
  highlighted: {
   backgroundColor: theme.color.accent,
+ },
+ superHighlighted: {
+  borderLeftWidth: 4,
+  borderLeftColor: theme.color.textMain,
  },
  noTranscriptText: {
   width: '100%',
