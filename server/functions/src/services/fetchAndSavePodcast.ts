@@ -3,7 +3,7 @@ import * as Parser from 'rss-parser';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constans';
 
 const parser = new Parser();
-export async function fetchAndSavePodcast(feedUrl: string, isNewPodcast: boolean) {
+export async function fetchAndSavePodcast(feedUrl: string) {
   const feed = await parser.parseURL(feedUrl);
 
   const now = new Date();
@@ -27,17 +27,20 @@ export async function fetchAndSavePodcast(feedUrl: string, isNewPodcast: boolean
   const channelSnapshot = await admin
     .firestore()
     .collection(CHANNEL_DOCUMENT_NAME)
-    .where('url', '==', feedUrl)
+    .where('feedUrl', '==', feedUrl)
     .get();
   let channelRef: FirebaseFirestore.DocumentReference;
-
+  let isNewPodcastShow = false;
   if (channelSnapshot.empty) {
     // 新規ポッドキャストの場合
     channelRef = await admin.firestore().collection(CHANNEL_DOCUMENT_NAME).add(podcastData);
+    isNewPodcastShow = true;
+    console.log('new ');
   } else {
     // 既存のポッドキャストの場合
     channelRef = channelSnapshot.docs[0].ref;
     await channelRef.update(podcastData);
+    console.log('old');
   }
 
   const episodesData = feed.items.map((item) => {
@@ -59,7 +62,7 @@ export async function fetchAndSavePodcast(feedUrl: string, isNewPodcast: boolean
     let episodeId: string | undefined;
     let pubDate: Date | undefined;
     let url = episodeData.url;
-    if (isNewPodcast) {
+    if (isNewPodcastShow) {
       // 新規ポッドキャストの場合、重複チェックなしでエピソードを追加
       const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
       episodeId = episodeDocRef.id;
@@ -79,6 +82,11 @@ export async function fetchAndSavePodcast(feedUrl: string, isNewPodcast: boolean
       } else {
         // 既存のエピソードの場合
         const episodeDocRef = episodeSnapshot.docs[0].ref;
+
+        // pubDateが一ヶ月以上前の場合、エピソードを更新しない
+        if (episodeData.pubDate < new Date(new Date().setMonth(new Date().getMonth() - 1))) {
+          return { episodeId, pubDate, url };
+        }
 
         // rssから取得した更新日時変更されていたらエピソードも更新
         if (episodeData.pubDate !== episodeSnapshot.docs[0].data().pubDate) {

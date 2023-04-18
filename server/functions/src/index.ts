@@ -7,6 +7,7 @@ import { getEpisodeById } from './endPoint/getEpisodeById';
 import { generateTranscript } from './endPoint/generateTranscript';
 import { generateTranslatedTranscript } from './endPoint/generateTranslatedTranscript';
 import { generateTranscriptFromIds } from './endPoint/generateTranscriptFromIds';
+import { updateShow } from './endPoint/updateShow';
 
 admin.initializeApp();
 admin.firestore().settings({
@@ -22,4 +23,5 @@ export {
   generateTranscript,
   generateTranslatedTranscript,
   generateTranscriptFromIds,
+  updateShow,
 };

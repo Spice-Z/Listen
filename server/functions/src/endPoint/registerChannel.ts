@@ -34,7 +34,7 @@ export const registerChannel = functions
       throw new functions.https.HttpsError('already-exists', 'The channel is already registered.');
     }
 
-    const { channelId, episodes } = await fetchAndSavePodcast(feedUrl, true);
+    const { channelId, episodes } = await fetchAndSavePodcast(feedUrl);
 
     const pendingEpisodesPromises = episodes.map(async (episode) => {
       await admin.firestore().collection('transcriptPendingEpisodes').doc(episode.episodeId).set({
