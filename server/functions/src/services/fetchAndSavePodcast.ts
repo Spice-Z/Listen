@@ -67,6 +67,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
       const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
       episodeId = episodeDocRef.id;
       pubDate = episodeData.pubDate;
+      updated = true;
     } else {
       // 既存のポッドキャストの場合、重複チェックを行い、必要に応じてエピソードを更新
       const episodeSnapshot = await channelRef

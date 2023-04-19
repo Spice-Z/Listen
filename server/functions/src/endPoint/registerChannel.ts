@@ -37,6 +37,13 @@ export const registerChannel = functions
     const { channelId, upDatedEpisodes: episodes } = await fetchAndSavePodcast(feedUrl);
 
     const pendingEpisodesPromises = episodes.map(async (episode) => {
+      // pubDateが一ヶ月以上前の場合、トランスクリプトを更新しない
+      if (
+        episode.pubDate.valueOf() <
+        new Date(new Date().setMonth(new Date().getMonth() - 1)).valueOf()
+      ) {
+        return;
+      }
       await admin
         .firestore()
         .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
