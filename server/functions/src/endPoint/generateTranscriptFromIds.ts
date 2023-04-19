@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import * as os from 'os';
 import * as path from 'path';
 import { ulid } from 'ulid';
-import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constans';
+import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
 import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file';
 import { convertSpeed, splitAudio } from '../api/ffmpeg';
 import { transcribeAudioFiles } from '../api/openAI';

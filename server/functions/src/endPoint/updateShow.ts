@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { CHANNEL_DOCUMENT_NAME } from '../constans';
+import { CHANNEL_DOCUMENT_NAME } from '../constants';
 import { fetchAndSavePodcast } from '../services/fetchAndSavePodcast';
 
 export const updateShow = functions

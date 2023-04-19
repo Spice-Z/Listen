@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as Parser from 'rss-parser';
-import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constans';
+import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
 
 const parser = new Parser();
 export async function fetchAndSavePodcast(feedUrl: string) {

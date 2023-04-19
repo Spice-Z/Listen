@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { CHANNEL_DOCUMENT_NAME } from '../constans';
+import { CHANNEL_DOCUMENT_NAME } from '../constants';
 
 export const getChannels = functions.region('asia-northeast1').https.onCall(async (_) => {
   // if (request.app == null) {

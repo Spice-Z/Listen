@@ -4,7 +4,8 @@ import { getChannels } from './endPoint/getChannels';
 import { getChannelById } from './endPoint/getChannelById';
 import { getEpisodesByChannelId } from './endPoint/getEpisodesByChannelId';
 import { getEpisodeById } from './endPoint/getEpisodeById';
-import { generateTranscript } from './endPoint/generateTranscript';
+import { autoGenerateTranscript } from './endPoint/autoGenerateTranscript';
+import { autoGenerateTranslatedTranscript } from './endPoint/autoGenerateTranslatedTranscript';
 import { generateTranslatedTranscript } from './endPoint/generateTranslatedTranscript';
 import { generateTranscriptFromIds } from './endPoint/generateTranscriptFromIds';
 import { updateShow } from './endPoint/updateShow';
@@ -16,14 +17,15 @@ admin.firestore().settings({
 });
 
 export {
+  autoGenerateTranscript,
+  autoGenerateTranslatedTranscript,
+  autoUpdateShows,
   registerChannel,
   getChannels,
   getChannelById,
   getEpisodesByChannelId,
   getEpisodeById,
-  generateTranscript,
   generateTranslatedTranscript,
   generateTranscriptFromIds,
   updateShow,
-  autoUpdateShows,
 };

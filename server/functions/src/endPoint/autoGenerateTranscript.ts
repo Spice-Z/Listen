@@ -7,7 +7,8 @@ import {
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
   TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME,
-} from '../constans';
+  TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
+} from '../constants';
 import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file';
 import { convertSpeed, splitAudio } from '../api/ffmpeg';
 import { transcribeAudioFiles } from '../api/openAI';
@@ -15,41 +16,16 @@ import { uploadSegmentsToGCS } from '../api/firebase';
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 
-export const generateTranscript = functions
-  .region('asia-northeast1')
+export const autoGenerateTranscript = functions
   .runWith({
-    timeoutSeconds: 540,
+    timeoutSeconds: 300,
   })
-  .https.onCall(async (data, _) => {
-    // if (request.app == null) {
-    //   throw new functions.https.HttpsError(
-    //     'failed-precondition',
-    //     'The function must be called from an App Check verified app.'
-    //   );
-    // }
-    const channelId = data.channelId;
-
-    if (!channelId) {
-      throw new functions.https.HttpsError(
-        'invalid-argument',
-        'The function must be called with a "channelId" argument.'
-      );
-    }
-
-    if (!data.targetDate) {
-      throw new functions.https.HttpsError(
-        'invalid-argument',
-        'The function must be called with a "targetDate" argument.'
-      );
-    }
-    const targetDate = new Date(data.targetDate);
-
-    const channelRef = admin.firestore().collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
+  .region('asia-northeast1')
+  .pubsub.schedule('every 1 hours')
+  .onRun(async (context) => {
     const pendingEpisodesSnapshot = await admin
       .firestore()
       .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
-      .where('channelId', '==', channelId)
-      .where('pubDate', '>', targetDate)
       .get();
 
     const episodes = pendingEpisodesSnapshot.docs.map((doc) => {
@@ -61,10 +37,22 @@ export const generateTranscript = functions
       };
     });
 
-    console.log(`episodes length: ${episodes.length}`);
+    functions.logger.info('pandingEpisodes', {
+      length: episodes.length,
+    });
 
     for (const episode of episodes) {
       try {
+        const channelRef = admin
+          .firestore()
+          .collection(CHANNEL_DOCUMENT_NAME)
+          .doc(episode.channelId);
+        const channelDoc = await channelRef.get();
+
+        if (!channelDoc.exists) {
+          throw new functions.https.HttpsError('not-found', 'target channel does not exist.');
+        }
+
         const ulId = ulid();
         const targetFileUrl = episode.url;
         const fileExtension = getAudioFileExtensionFromUrl(targetFileUrl);
@@ -94,11 +82,21 @@ export const generateTranscript = functions
         });
         const transcriptUrl = await uploadSegmentsToGCS({ segments, id: ulId });
 
-        console.log('update channel collection');
         await channelRef.collection(EPISODE_DOCUMENT_NAME).doc(episode.id).update({
           transcriptUrl,
         });
-        console.log('update channel collection done');
+
+        // 翻訳待ちのドキュメントを作成
+        // ひとまず日本語だけ
+        await admin
+          .firestore()
+          .collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME)
+          .doc(episode.id)
+          .set({
+            channelId: episode.channelId,
+            transcriptUrl: transcriptUrl,
+            langCode: 'ja',
+          });
 
         // トランスクリプトが正常に保存された後、対象のepisodeIdを持つtranscriptPendingEpisodesドキュメントを削除
         await admin
@@ -106,7 +104,6 @@ export const generateTranscript = functions
           .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
           .doc(episode.id)
           .delete();
-        console.log('delete episode done');
       } catch (error) {
         functions.logger.info('error while transcribing', {
           error,

@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import {
   CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH,
   CLOUD_STORAGE_TRANSCRIPTION_TRANSLATION_DIR_PATH,
-} from '../constans';
+} from '../constants';
 
 export const uploadSegmentsToGCS = async ({
   segments,

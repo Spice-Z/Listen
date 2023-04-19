@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { CHANNEL_DOCUMENT_NAME } from '../constans';
+import { CHANNEL_DOCUMENT_NAME, TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME } from '../constants';
 import { fetchAndSavePodcast } from '../services/fetchAndSavePodcast';
 
 export const registerChannel = functions
@@ -37,11 +37,15 @@ export const registerChannel = functions
     const { channelId, upDatedEpisodes: episodes } = await fetchAndSavePodcast(feedUrl);
 
     const pendingEpisodesPromises = episodes.map(async (episode) => {
-      await admin.firestore().collection('transcriptPendingEpisodes').doc(episode.episodeId).set({
-        channelId: channelId,
-        pubDate: episode.pubDate,
-        url: episode.url,
-      });
+      await admin
+        .firestore()
+        .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
+        .doc(episode.episodeId)
+        .set({
+          channelId: channelId,
+          pubDate: episode.pubDate,
+          url: episode.url,
+        });
     });
     await Promise.all(pendingEpisodesPromises);
 
