@@ -8,10 +8,12 @@ import { Suspense, useCallback, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
 import { useEpisodeByIds } from '../../../feature/Episode/hooks/useEpisodeByIds';
 import { useChannelById } from '../../../feature/Channel/hooks/useChannelById';
+import { useEpisodesByChannelId } from '../../../feature/Episode/hooks/useEpisodesByChannelId';
 
 function EpisodePage() {
  const { channelId, episodeId } = useSearchParams();
  const { isLoading: isChannelLoading, data: channelData } = useChannelById(channelId as string)
+ const { data: episodesData } = useEpisodesByChannelId(channelId as string);
  const { data } = useEpisodeByIds({
   channelId: channelId as string,
   episodeId: episodeId as string,
@@ -33,7 +35,7 @@ function EpisodePage() {
   }
   return currentTrack?.url === data?.url;
  }, [currentTrack?.url, data, isPlaying])
- const onPressPlay = useCallback(() => {
+ const onPressPlay = useCallback(async () => {
   if (!data || !channelData) {
    return;
   }
@@ -45,14 +47,33 @@ function EpisodePage() {
     channelId: channelData.id,
     title: data.title,
     artist: channelData.title,
-    date: 'Tue, 04 Apr 2023 21:00:15 GMT',
     artwork: data.imageUrl || channelData.imageUrl,
     url: data.url,
     duration: data.duration,
+    // TODO: add Date from pubDate
    }
-   playTrackIfNotCurrentlyPlaying(track);
+   console.log({ track })
+   await playTrackIfNotCurrentlyPlaying(track);
+   // add queue
+   if (episodesData) {
+    const tracks: TrackPlayerTrack[] = episodesData.filter(episode => episode.id !== data.id).map((episode) => {
+     return {
+      id: episode.id,
+      channelId: channelData.id,
+      title: episode.title,
+      artist: channelData.title,
+      artwork: episode.imageUrl || channelData.imageUrl,
+      url: episode.url,
+      duration: episode.duration,
+     }
+    })
+    if (tracks.length > 1) {
+     console.log(tracks.length)
+     TrackPlayer.add(tracks)
+    }
+   }
   }
- }, [channelData, data, isThisEpisodePlaying, playTrackIfNotCurrentlyPlaying])
+ }, [channelData, data, episodesData, isThisEpisodePlaying, playTrackIfNotCurrentlyPlaying])
 
  return <>
   <Stack.Screen

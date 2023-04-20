@@ -48,6 +48,16 @@ export const useTrackPlayer = () => {
     setCurrentPlaybackRate(rate);
   }, []);
 
+  const skipToNext = useCallback(async () => {
+    await TrackPlayer.skipToNext();
+    _updateCurrentInfo();
+  }, [_updateCurrentInfo]);
+
+  const skipToPrevious = useCallback(async () => {
+    await TrackPlayer.skipToPrevious();
+    _updateCurrentInfo();
+  }, [_updateCurrentInfo]);
+
   useDidMount(() => {
     _updateCurrentInfo();
     _updateCurrentPlaybackRate();
@@ -102,5 +112,7 @@ export const useTrackPlayer = () => {
     playTrackIfNotCurrentlyPlaying,
     playingTrackDuration,
     switchPlaybackRate,
+    skipToNext,
+    skipToPrevious,
   };
 };

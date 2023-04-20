@@ -1,5 +1,6 @@
 import { firebase } from '@react-native-firebase/functions';
 import { IEpisode } from '../Types/IEpisode';
+import { getTotalSeconds } from '../format/duration';
 
 export const getEpisodesByChannelId = async (channelId: string) => {
   const app = firebase.app();
@@ -8,6 +9,7 @@ export const getEpisodesByChannelId = async (channelId: string) => {
   const response = await getEpisodesByChannelId({ channelId });
   const data: IEpisode[] = response.data.map((item) => ({
     ...item,
+    duration: getTotalSeconds(item.duration),
     pubDate: new Date(item.pubDate._seconds * 1000),
   }));
   return data;

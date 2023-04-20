@@ -18,7 +18,7 @@ import TrackPlayer, {
   useProgress,
 } from 'react-native-track-player';
 import {
-  PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon,
+  PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon, RightIcon, LeftIcon,
 } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
@@ -34,7 +34,15 @@ function ModalPlayer() {
 
   const playbackState = usePlaybackState();
 
-  const { playingTrackDuration, currentQueue, currentTrack, currentPlaybackRate, switchPlaybackRate, isPlaying, isLoading } = useTrackPlayer();
+  const { playingTrackDuration,
+    currentQueue,
+    currentTrack,
+    currentPlaybackRate,
+    switchPlaybackRate,
+    isPlaying,
+    isLoading,
+    skipToNext,
+    skipToPrevious } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
   const { data } = useEpisodeByIds({
@@ -142,6 +150,14 @@ function ModalPlayer() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.playerContainerItem}
+          onPress={skipToPrevious}
+        >
+          <View style={styles.controlButton}>
+            <LeftIcon width={24} height={24} fill='#fff' />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.playerContainerItem}
           onPress={() => handleSkip(-15)}
         >
           <View style={styles.controlButton}>
@@ -166,6 +182,14 @@ function ModalPlayer() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.playerContainerItem}
+          onPress={skipToNext}
+        >
+          <View style={styles.controlButton}>
+            <RightIcon width={24} height={24} fill="#fff" />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.playerContainerItem}
           onPress={handleOpenTranscriptModal}
         >
           <View style={styles.controlButton}>
@@ -181,6 +205,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.color.bgMain,
     color: theme.color.textMain,
+    width: '100%',
   },
   episodeContainer: {
     marginTop: 20,
@@ -227,7 +252,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   playerContainerItem: {
-    width: '20%',
+    width: '15%',
     alignItems: 'center',
   },
   playPauseButton: {
