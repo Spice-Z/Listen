@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
 import { IEpisode } from '../types/IEpisode';
+import { getTotalSeconds } from '../utils/duration';
 
 export const getEpisodeById = functions.region('asia-northeast1').https.onCall(async (data, _) => {
   // if (request.app == null) {
@@ -46,7 +47,7 @@ export const getEpisodeById = functions.region('asia-northeast1').https.onCall(a
     transcriptUrl: episodeData.transcriptUrl,
     imageUrl: episodeData.imageUrl,
     content: episodeData.content,
-    duration: episodeData.duration,
+    duration: getTotalSeconds(episodeData.duration),
     pubDate: episodeData.pubDate,
     season: episodeData.season,
     episode: episodeData.episode,

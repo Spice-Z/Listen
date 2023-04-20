@@ -7,7 +7,7 @@ export type IEpisode = {
   url: string;
   imageUrl: string;
   content: string;
-  duration: string;
+  duration: number;
   pubDate: Timestamp;
   season: any;
   episode: any;

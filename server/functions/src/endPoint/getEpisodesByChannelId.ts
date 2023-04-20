@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
 import { IEpisode } from '../types/IEpisode';
+import { getTotalSeconds } from '../utils/duration';
 
 const PAGE_SIZE = 30;
 
@@ -48,7 +49,7 @@ export const getEpisodesByChannelId = functions
         url: data.url,
         imageUrl: data.imageUrl,
         content: data.content,
-        duration: data.duration,
+        duration: getTotalSeconds(data.duration),
         pubDate: data.pubDate,
         season: data.season,
         episode: data.episode,

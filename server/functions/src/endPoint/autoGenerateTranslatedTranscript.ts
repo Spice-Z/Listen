@@ -7,7 +7,6 @@ import { ulid } from 'ulid';
 import {
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
-  TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME,
   TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
 } from '../constants';
 import { downloadFile } from '../utils/file';
@@ -18,7 +17,7 @@ const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 
 export const autoGenerateTranslatedTranscript = functions
   .runWith({
-    timeoutSeconds: 300,
+    timeoutSeconds: 540,
   })
   .region('asia-northeast1')
   .pubsub.schedule('every 1 hours')
@@ -38,9 +37,7 @@ export const autoGenerateTranslatedTranscript = functions
       };
     });
 
-    functions.logger.info('translate pending Episodes', {
-      length: episodes.length,
-    });
+    functions.logger.info(`translate pending Episodes length: ${episodes.length}`);
 
     for (const episode of episodes) {
       try {
@@ -108,10 +105,16 @@ export const autoGenerateTranslatedTranscript = functions
           translatedTranscripts,
         });
 
+        functions.logger.info('delete translate pending', {
+          episodeId: episode.id,
+          channelId: episode.channelId,
+          DBName: TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
+        });
+
         // トランスクリプトが正常に保存された後、対象のepisodeIdを持つtranscriptPendingEpisodesドキュメントを削除
         await admin
           .firestore()
-          .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
+          .collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME)
           .doc(episode.id)
           .delete();
       } catch (error) {

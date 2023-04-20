@@ -32,7 +32,7 @@ export async function transcribeAudioFiles({
       formData.append('response_format', 'verbose_json');
       formData.append(
         'prompt',
-        `This is chunked audio. This is file ${
+        `This is chunked podcast audio. This is file ${
           index + 1
         } out of ${audioFileNum}. Transcribe it not including filler words, includes punctuation.`
       );
@@ -202,7 +202,6 @@ export async function translateSegments({
       throw new Error("response status isn't 200 in translate segments");
     }
     try {
-      console.log({ response });
       const responseJson: any = JSON.parse(response.data.choices[0].message.content);
       const arrangedData = responseJson.map((data: any) => ({
         start: data.start,

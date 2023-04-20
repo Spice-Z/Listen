@@ -14,12 +14,21 @@ export const autoUpdateShows = functions
     await Promise.all(
       snapshot.docs.map(async (doc) => {
         const data = doc.data();
-        const { channelId, upDatedEpisodes: episodes } = await fetchAndSavePodcast(data.feedUrl);
+        const {
+          channelId,
+          hasChangeableAd,
+          upDatedEpisodes: episodes,
+        } = await fetchAndSavePodcast(data.feedUrl);
 
-        // TODO: 開発中はコストを抑えるため、特定Showのみでトランスクリプト生成を行う
-        if (channelId !== '8Q7yb9qiVaWZ3YN1Zwrq') {
+        // TODO: 広告が変更可能なShowは音声の中身が頻繁に変わるのでトランスクリプト生成対象外とする
+        if (hasChangeableAd) {
           return;
         }
+
+        // TODO: 開発中はコストを抑えるため、特定Showのみでトランスクリプト生成を行う
+        // if (channelId !== '8Q7yb9qiVaWZ3YN1Zwrq') {
+        //   return;
+        // }
         const pendingEpisodesPromises = episodes.map(async (episode) => {
           // TODO: 一ヶ月以上前のエピソードはトランスクリプト生成対象外とする
           // if (episode.pubDate.toDate() < new Date(new Date().setMonth(new Date().getMonth() - 1))) {

@@ -33,9 +33,15 @@ export async function fetchAndSavePodcast(feedUrl: string) {
   let isNewPodcastShow = false;
   if (channelSnapshot.empty) {
     // 新規ポッドキャストの場合
-    channelRef = await admin.firestore().collection(CHANNEL_DOCUMENT_NAME).add(podcastData);
+    channelRef = await admin
+      .firestore()
+      .collection(CHANNEL_DOCUMENT_NAME)
+      .add({
+        ...podcastData,
+        hasChangeableAd: false,
+      });
     isNewPodcastShow = true;
-    console.log('new ');
+    console.log('new');
   } else {
     // 既存のポッドキャストの場合
     channelRef = channelSnapshot.docs[0].ref;
@@ -105,8 +111,10 @@ export async function fetchAndSavePodcast(feedUrl: string) {
   });
 
   const newEpisodes = await Promise.all(episodePromises);
+  const channel = await channelRef.get();
   return {
     channelId: channelRef.id,
+    hasChangeableAd: channel.data()!.hasChangeableAd,
     upDatedEpisodes: newEpisodes.filter<{
       episodeId: string;
       pubDate: Date;
