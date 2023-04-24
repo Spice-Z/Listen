@@ -1,6 +1,10 @@
 import * as admin from 'firebase-admin';
 import * as Parser from 'rss-parser';
-import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
+import {
+  AVAILABLE_EPISODES_DOCUMENT_NAME,
+  CHANNEL_DOCUMENT_NAME,
+  EPISODE_DOCUMENT_NAME,
+} from '../constants';
 
 const parser = new Parser();
 export async function fetchAndSavePodcast(feedUrl: string) {
@@ -68,9 +72,22 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     let pubDate: Date | undefined;
     let url = episodeData.url;
     let updated = false;
+
     if (isNewPodcastShow) {
       // 新規ポッドキャストの場合、重複チェックなしでエピソードを追加
       const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
+      const addedEpisode = await episodeDocRef.get();
+
+      const availableEpisodeData = {
+        channelId: channelRef.id,
+        pubDate: episodeData.pubDate,
+      };
+      await admin
+        .firestore()
+        .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
+        .doc(addedEpisode.id)
+        .set(availableEpisodeData);
+
       episodeId = episodeDocRef.id;
       pubDate = episodeData.pubDate;
       updated = true;
@@ -84,6 +101,16 @@ export async function fetchAndSavePodcast(feedUrl: string) {
       if (episodeSnapshot.empty) {
         // 新規エピソードの場合
         const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
+        const addedEpisode = await episodeDocRef.get();
+        const availableEpisodeData = {
+          channelId: channelRef.id,
+          pubDate: episodeData.pubDate,
+        };
+        await admin
+          .firestore()
+          .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
+          .doc(addedEpisode.id)
+          .set(availableEpisodeData);
         episodeId = episodeDocRef.id;
         pubDate = episodeData.pubDate;
         updated = true;
@@ -99,6 +126,16 @@ export async function fetchAndSavePodcast(feedUrl: string) {
         // rssから取得した更新日時変更されていたらエピソードも更新
         if (episodeData.pubDate !== episodeSnapshot.docs[0].data().pubDate) {
           await episodeDocRef.update(episodeData);
+          const addedEpisode = await episodeDocRef.get();
+          const availableEpisodeData = {
+            channelId: channelRef.id,
+            pubDate: episodeData.pubDate,
+          };
+          await admin
+            .firestore()
+            .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
+            .doc(addedEpisode.id)
+            .set(availableEpisodeData);
           if (episodeData.url !== episodeSnapshot.docs[0].data().url) {
             episodeId = episodeDocRef.id;
             pubDate = episodeData.pubDate;
