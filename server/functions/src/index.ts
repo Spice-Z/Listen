@@ -10,6 +10,7 @@ import { generateTranslatedTranscript } from './endPoint/generateTranslatedTrans
 import { generateTranscriptFromIds } from './endPoint/generateTranscriptFromIds';
 import { updateShow } from './endPoint/updateShow';
 import { autoUpdateShows } from './endPoint/autoUpdateShows';
+import { getAvailableEpisodes } from './endPoint/getAvailableEpisodes';
 
 admin.initializeApp();
 admin.firestore().settings({
@@ -24,6 +25,7 @@ export {
   getChannels,
   getChannelById,
   getEpisodesByChannelId,
+  getAvailableEpisodes,
   getEpisodeById,
   generateTranslatedTranscript,
   generateTranscriptFromIds,
