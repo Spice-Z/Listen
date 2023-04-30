@@ -24,6 +24,7 @@ export const getAvailableEpisodes = functions
       .get();
 
     const episodes: any[] = [];
+    const episodesChannelIds: { [key: string]: string } = {};
 
     for (const availableEpisodeDoc of availableEpisodesSnapshot.docs) {
       const episodeId = availableEpisodeDoc.id;
@@ -47,7 +48,11 @@ export const getAvailableEpisodes = functions
         channelId,
         pubDate: episodeData.pubDate,
       });
+      episodesChannelIds[episodeId] = channelId;
     }
 
-    return episodes;
+    return {
+      episodes,
+      episodesChannelIds,
+    };
   });
