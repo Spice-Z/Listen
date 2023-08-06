@@ -2,19 +2,42 @@ import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
-import { Suspense, useCallback } from 'react';
+import { Suspense, useCallback, useEffect } from 'react';
 import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
+import { useEpisodesOfAvailable } from '../../../feature/Episode/hooks/useEpisodesOfAvailable';
+import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
 
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
 
 function App() {
   const query = useChannels();
+  const availables = useEpisodesOfAvailable()
+  const { playTrackIfNotCurrentlyPlaying } = useTrackPlayer();
+  useEffect(() => {
+    console.log(availables.data)
+  }, [availables])
   const router = useRouter();
   const onPress = useCallback(() => {
-    router.push({ pathname: '/mainTab/home/player', params: { episodeId: 2 } })
-  }, [router])
+    const availableEpisodes = availables.data.episodes
+    if (availableEpisodes.length === 0) {
+      return;
+    }
+    const channelId = availables.data.episodesChannelIds[availableEpisodes[0].id]
+    const track: TrackPlayerTrack = {
+      id: availableEpisodes[0].id,
+      channelId: channelId,
+      title: availableEpisodes[0].title,
+      artist: availableEpisodes[0].title,
+      artwork: availableEpisodes[0].imageUrl || '',
+      url: availableEpisodes[0].url,
+      duration: availableEpisodes[0].duration,
+      // TODO: add Date from pubDate
+    }
+    console.log({ track })
+    playTrackIfNotCurrentlyPlaying(track)
+  }, [availables.data.episodes, availables.data.episodesChannelIds, playTrackIfNotCurrentlyPlaying])
   const onPressChannel = useCallback((channelId: string) => {
     router.push({ pathname: '/mainTab/home/channel', params: { channelId } })
   }, [router])
@@ -27,6 +50,21 @@ function App() {
       />
       <StatusBar style="auto" />
       <View style={styles.container}>
+        <Pressable
+          onPress={onPress}
+          style={{
+            backgroundColor: theme.color.bgEmphasis,
+            borderRadius: 8,
+            paddingVertical: 12,
+            paddingHorizontal: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginHorizontal: 16,
+            marginTop: 16,
+          }}
+        >
+          <Text numberOfLines={3} style={styles.channelTitle}>Play!!</Text>
+        </Pressable>
         <FlatList
           data={query.data ?? []}
           renderItem={({ item }) => {

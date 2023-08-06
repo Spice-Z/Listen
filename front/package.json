@@ -4,7 +4,8 @@
     "start:production": "expo start --no-dev --minify",
     "lint:fix": "eslint --fix .",
     "run:android": "react-native run-android",
-    "run:ios": "react-native run-ios"
+    "run:ios": "react-native run-ios",
+    "build:local:android": "eas build --platform android --profile preview --local"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",

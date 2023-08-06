@@ -1,5 +1,5 @@
 import {
-  useState, useEffect, useMemo,
+  useState, useEffect, useMemo, useCallback,
 } from 'react';
 import {
   StyleSheet,
@@ -105,6 +105,9 @@ function ModalPlayer() {
   const handleOpenTranscriptModal = () => {
     router.push('/modalTranscriptPlayer')
   }
+  const handleOpenNextEpisodes = useCallback(() => {
+    router.push('/modalNextEpisodes')
+  }, [router])
 
   return currentQueue.length === 0 || currentTrack === null ? <View style={styles.container}>
     <Text style={{ color: theme.color.textMain }}>No Playing </Text>
@@ -197,6 +200,11 @@ function ModalPlayer() {
           </View>
         </TouchableOpacity>
       </View>
+      <View style={styles.subMenuContainer}>
+        <TouchableOpacity onPress={handleOpenNextEpisodes}>
+          <Text>aaaaa</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -245,11 +253,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   playerContainer: {
-    height: 100,
+    height: 80,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 16,
   },
   playerContainerItem: {
     width: '15%',
@@ -279,6 +286,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  subMenuContainer: {
+    height: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
+  }
 });
 
 export default ModalPlayer;

@@ -29,9 +29,10 @@ WSJ Tech News Briefing
 
 generateTranscript
 `generateTranscript({"channelId":"TBuM2ICuClvW5CjkySJ1", "targetDate":"April 1, 2023 00:00:00"})`
+
 `registerChannel({url:"https://anchor.fm/s/81fb5eec/podcast/rss"})`
 
 
-`generateTranslatedTranscript({"channelId":"8Q7yb9qiVaWZ3YN1Zwrq","episodeId": "26tyUPEzMVsNhNXCW1tF", "language": "Japanese"})`
+`generateTranslatedTranscript({"channelId":"8Q7yb9qiVaWZ3YN1Zwrq","episodeId": "p1xs6whYS0A55n26Azik", "langCode": "ja"})`
 
 `generateTranscriptFromIds({"channelId":"8Q7yb9qiVaWZ3YN1Zwrq","episodeId": "26tyUPEzMVsNhNXCW1tF"})`

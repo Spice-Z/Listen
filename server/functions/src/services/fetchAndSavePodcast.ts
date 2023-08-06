@@ -35,6 +35,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     .get();
   let channelRef: FirebaseFirestore.DocumentReference;
   let isNewPodcastShow = false;
+  let hasChangeableAd = false;
   if (channelSnapshot.empty) {
     // 新規ポッドキャストの場合
     channelRef = await admin
@@ -49,6 +50,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
   } else {
     // 既存のポッドキャストの場合
     channelRef = channelSnapshot.docs[0].ref;
+    hasChangeableAd = channelSnapshot.docs[0].data().hasChangeableAd;
     await channelRef.update(podcastData);
   }
 
@@ -102,15 +104,17 @@ export async function fetchAndSavePodcast(feedUrl: string) {
         // 新規エピソードの場合
         const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
         const addedEpisode = await episodeDocRef.get();
-        const availableEpisodeData = {
-          channelId: channelRef.id,
-          pubDate: episodeData.pubDate,
-        };
-        await admin
-          .firestore()
-          .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
-          .doc(addedEpisode.id)
-          .set(availableEpisodeData);
+        if (!hasChangeableAd) {
+          const availableEpisodeData = {
+            channelId: channelRef.id,
+            pubDate: episodeData.pubDate,
+          };
+          await admin
+            .firestore()
+            .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
+            .doc(addedEpisode.id)
+            .set(availableEpisodeData);
+        }
         episodeId = episodeDocRef.id;
         pubDate = episodeData.pubDate;
         updated = true;
@@ -127,15 +131,17 @@ export async function fetchAndSavePodcast(feedUrl: string) {
         if (episodeData.pubDate !== episodeSnapshot.docs[0].data().pubDate) {
           await episodeDocRef.update(episodeData);
           const addedEpisode = await episodeDocRef.get();
-          const availableEpisodeData = {
-            channelId: channelRef.id,
-            pubDate: episodeData.pubDate,
-          };
-          await admin
-            .firestore()
-            .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
-            .doc(addedEpisode.id)
-            .set(availableEpisodeData);
+          if (!hasChangeableAd) {
+            const availableEpisodeData = {
+              channelId: channelRef.id,
+              pubDate: episodeData.pubDate,
+            };
+            await admin
+              .firestore()
+              .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
+              .doc(addedEpisode.id)
+              .set(availableEpisodeData);
+          }
           if (episodeData.url !== episodeSnapshot.docs[0].data().url) {
             episodeId = episodeDocRef.id;
             pubDate = episodeData.pubDate;

@@ -60,7 +60,20 @@ export default function Layout() {
             fontSize: 18,
           }
         }} />
+        <Stack.Screen name="modalNextEpisodes" options={{
+          presentation: "transparentModal",
+          animation: 'slide_from_bottom',
+          headerStyle: {
+            backgroundColor: theme.color.bgMain,
+          },
+          headerTitleStyle: {
+            color: theme.color.textMain,
+            fontWeight: theme.fontWeight.bold,
+            fontSize: 18,
+          }
+        }} />
       </Stack>
+
       <View style={styles.miniPlayerContainer}>
         <MiniPlayer hide={pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer'} />
       </View>
