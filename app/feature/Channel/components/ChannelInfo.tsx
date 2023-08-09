@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import { theme } from "../../../feature/styles/theme";
+import { theme } from "../../styles/theme";
 import { memo } from "react";
 
 const ChannelInfo = memo(({ channelInfo }: { channelInfo: { title: string, imageUrl: string, description: string, author: string } }) => {

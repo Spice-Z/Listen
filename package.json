@@ -1,0 +1,13 @@
+{
+  "name": "listen",
+  "private": true,
+  "description": "Listen's monorepo root",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "app",
+    "server/functions"
+  ],
+  "author": ""
+}

@@ -15,7 +15,7 @@ import {
  PauseIcon, PlayIcon,
 } from '../icons';
 import { theme } from '../styles/theme';
-import { useEpisodeByIds } from '../Episode/hooks/useEpisodeByIds';
+import { useEpisodeByIds } from './hooks/useEpisodeByIds';
 import { useRouter } from 'expo-router';
 import { useTrackPlayer } from '../Player/hooks/useTrackPlayer';
 import EpisodeList from './components/EpisodeList';
