@@ -7,7 +7,7 @@
   },
   "workspaces": [
     "app",
-    "server/functions"
+    "firebase/functions"
   ],
   "author": ""
 }
