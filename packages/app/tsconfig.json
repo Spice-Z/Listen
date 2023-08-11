@@ -1,3 +1,4 @@
 {
-  "extends": "expo/tsconfig.base"
+  "extends": "expo/tsconfig.base",
+  "include": [".eslintrc.js"]
 }
