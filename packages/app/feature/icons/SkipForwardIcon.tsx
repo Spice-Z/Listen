@@ -11,7 +11,7 @@ const SkipForwardIcon = React.memo<Props>(({
   width = 24,
   height = 24,
   color = 'white',
-}) => {
+}: Props) => {
   return (
     <Svg width={width} height={height} viewBox="0 0 24 24">
       <Path
@@ -32,4 +32,5 @@ const SkipForwardIcon = React.memo<Props>(({
   );
 });
 
+SkipForwardIcon.displayName = 'SkipForwardIcon';
 export default SkipForwardIcon;
