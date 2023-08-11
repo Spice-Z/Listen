@@ -10,7 +10,8 @@
     "packages/app",
     "packages/firebase/functions",
     "packages/eslint-config",
-    "packages/prettier-config"
+    "packages/prettier-config",
+    "packages/cloud-run-server"
   ],
   "devDependencies": {
     "typescript": "^4.9.4"

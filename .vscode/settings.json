@@ -6,6 +6,7 @@
   "editor.formatOnSave": true,
   "eslint.workingDirectories": [
     "./packages/firebase/functions",
-    "./packages/app"
+    "./packages/app",
+    "./packages/cloud-run-server"
   ]
 }
