@@ -1,0 +1,22 @@
+schema {
+  query: Query
+}
+
+directive @external on FIELD_DEFINITION
+
+directive @requires(fields: _FieldSet!) on FIELD_DEFINITION
+
+directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
+
+directive @key(fields: _FieldSet!) on OBJECT | INTERFACE
+
+type Book {
+  author: String
+  title: String
+}
+
+type Query {
+  books: [Book]
+}
+
+scalar _FieldSet
