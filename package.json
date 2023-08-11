@@ -3,7 +3,8 @@
   "private": true,
   "description": "Listen's monorepo root",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present"
   },
   "workspaces": [
     "packages/app",
