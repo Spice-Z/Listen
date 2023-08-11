@@ -1,38 +1,30 @@
-# Expo Router Example
+# Listen Monorepo
 
-Use [`expo-router`](https://expo.github.io/router) to build native navigation using files in the `app/` directory.
+This is a monorepo for the Listen project. 
 
-## 🚀 How to use
+## Development Philosophy
 
-```sh
-npx create-react-native-app -t with-router
-```
+### 1. 本気を出さない (Don't be serious)
 
-## 📝 Notes
+持続可能な開発をするため、短期間での本気を出さない。
+燃え尽きないように、100%の本気を出さずに長く続ける。
+長期的に開発できることが善。
+完成度も7割くらいでよいのだ。
 
-- [Expo Router: Docs](https://expo.github.io/router)
-- [Expo Router: Repo](https://github.com/expo/router)
-- [Request for Comments](https://github.com/expo/router/discussions/1)
+### 2. 人に見せられる成果を (Make something to show)
 
+人に見せるところまでやりきって説得力が増す。
+動いたら出しちゃおうマインド。
+ポートフォリオのための開発で終わらせるのは癪に触る。
+リリースで差をつけろ！
 
-ニュースコネクト
-`registerChannel({url:"https://anchor.fm/s/81fb5eec/podcast/rss"})`
+（そもそも、カナダでの就活でも使いたいので
 
-Global News Podcast - BBC World Service
-`registerChannel({url:"https://podcasts.files.bbci.co.uk/p02nq0gn.rss"})`
+### 3. そして学びを (And learn something)
 
-TED Talks Daily - TED
-`registerChannel({url:"https://feeds.feedburner.com/TEDTalks_audio"})`
+就活と稼ぎが目的として大きいが、
+自分のエンジニアとしての知的好奇心を満たし、学びを得ることも楽しもう。
+楽しみがあるから続けられる。
+楽しみを持ってさらに向こうへ。
 
-WSJ Tech News Briefing
-`registerChannel({url:"https://video-api.wsj.com/podcast/rss/wsj/tech-news-briefing"})`
-
-generateTranscript
-`generateTranscript({"channelId":"TBuM2ICuClvW5CjkySJ1", "targetDate":"April 1, 2023 00:00:00"})`
-
-`registerChannel({url:"https://anchor.fm/s/81fb5eec/podcast/rss"})`
-
-
-`generateTranslatedTranscript({"channelId":"8Q7yb9qiVaWZ3YN1Zwrq","episodeId": "p1xs6whYS0A55n26Azik", "langCode": "ja"})`
-
-`generateTranscriptFromIds({"channelId":"8Q7yb9qiVaWZ3YN1Zwrq","episodeId": "26tyUPEzMVsNhNXCW1tF"})`
+Plus Ultra!
