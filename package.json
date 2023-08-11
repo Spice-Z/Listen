@@ -10,5 +10,8 @@
     "packages/firebase/functions",
     "packages/eslint-config"
   ],
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  },
   "author": ""
 }
