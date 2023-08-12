@@ -7,6 +7,8 @@
   "eslint.workingDirectories": [
     "./packages/firebase/functions",
     "./packages/app",
-    "./packages/graphql-server"
+    "./packages/graphql-server",
+    "./packages/eslint-config",
+    "./packages/prettier-config"
   ]
 }
