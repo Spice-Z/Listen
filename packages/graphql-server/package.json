@@ -33,6 +33,7 @@
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-resolvers": "^4.0.1",
-    "@types/cors": "^2.8.13"
+    "@types/cors": "^2.8.13",
+    "type-fest": "^4.2.0"
   }
 }

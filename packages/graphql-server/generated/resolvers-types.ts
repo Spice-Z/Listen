@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { PartialDeep } from '~/types/partialDeep'
+import { PartialDeep } from 'type-fest'
 import { GraphQLResolveInfo } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -100,18 +100,18 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  Book: ResolverTypeWrapper<Book>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Book: ResolverTypeWrapper<PartialDeep<Book,{recurseIntoArrays: true}>>;
+  Boolean: ResolverTypeWrapper<PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>>;
   Query: ResolverTypeWrapper<{}>;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  String: ResolverTypeWrapper<PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  Book: Book;
-  Boolean: Scalars['Boolean']['output'];
+  Book: PartialDeep<Book,{recurseIntoArrays: true}>;
+  Boolean: PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>;
   Query: {};
-  String: Scalars['String']['output'];
+  String: PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>;
 }>;
 
 export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{

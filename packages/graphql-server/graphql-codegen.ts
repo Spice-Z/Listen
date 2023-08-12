@@ -1,5 +1,5 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
- 
+
 const config: CodegenConfig = {
   schema: './src/**/*.ts',
   generates: {
@@ -13,12 +13,12 @@ const config: CodegenConfig = {
     'generated/resolvers-types.ts': {
       config: {
         useIndexSignature: true,
-        // defaultMapper: PartialDeep<{T}>
+        defaultMapper: 'PartialDeep<{T},{recurseIntoArrays: true}>'
       },
       plugins: [
         {
           add: {
-            content: ['/* eslint-disable */',"import { PartialDeep } from '~/types/partialDeep'"],
+            content: ['/* eslint-disable */',"import { PartialDeep } from 'type-fest'"],
           }
         },
         'typescript', 'typescript-resolvers'
