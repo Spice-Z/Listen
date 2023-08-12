@@ -9,7 +9,9 @@
     "clean": "rimraf dist",
     "compile": "tsc",
     "build": "npm-run-all clean compile",
-    "gql:generate": "graphql-codegen --config graphql-codegen.ts"
+    "gql:generate": "graphql-codegen --config graphql-codegen.ts",
+    "lint:fix": "eslint --fix '**/*.{ts,tsx}'",
+    "lint": "eslint '**/*.{ts,tsx}'"
   },
   "engines": {
     "node": "18"

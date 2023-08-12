@@ -14,5 +14,7 @@
     "forceConsistentCasingInFileNames": true
   },
   "compileOnSave": true,
-  "include": ["src/**/*", ".eslintrc.js", "generated/*"]
+  "include": ["src/**/*", "generated/*","graphql-codegen.ts"],
+  "exclude": ["node_modules", "dist"],
+  "files": [".eslintrc.cjs"]
 }
