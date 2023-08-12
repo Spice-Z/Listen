@@ -7,6 +7,6 @@
   "eslint.workingDirectories": [
     "./packages/firebase/functions",
     "./packages/app",
-    "./packages/cloud-run-server"
+    "./packages/graphql-server"
   ]
 }
