@@ -4,6 +4,7 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   SERVICE_NAME: Listen
   GCP_REGION: asia-northeast1
+  APP: listen-graphql
 
 on: [workflow_dispatch]
 
