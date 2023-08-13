@@ -34,13 +34,13 @@ jobs:
 
       - name: Build and Push container
         run: |-
-          docker build -f ./packages/graphql-server/Dockerfile -t "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}:${{ github.sha }}" .
-          docker push "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}:${{ github.sha }}"
+          docker build -f ./packages/graphql-server/Dockerfile -t "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}" .
+          docker push "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
 
       - name: Deploy
         uses: google-github-actions/deploy-cloudrun@v1
         with:
-          image: "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}:${{ github.sha }}"
+          image: "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
           service: "${{ env.SERVICE_NAME }}"
           region: "${{env.GCP_REGION}}"
           platform: managed
