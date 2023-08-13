@@ -3,12 +3,12 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "node .",
+    "start": "node ./dist/src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run compile && node ./dist/index.js",
+    "dev": "npm run build && node ./dist/src/index.js",
     "clean": "rimraf dist",
-    "compile": "tsc",
-    "build": "npm-run-all clean compile",
+    "build": "tsc && cp ./generated/schema.graphql ./dist/generated/schema.graphql",
+    "build:clean": "npm-run-all clean compile",
     "gql:generate": "graphql-codegen --config graphql-codegen.ts",
     "lint:fix": "eslint --fix '**/*.{ts,tsx}'",
     "lint": "eslint '**/*.{ts,tsx}'"
