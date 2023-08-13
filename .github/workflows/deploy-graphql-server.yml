@@ -34,7 +34,7 @@ jobs:
 
       - name: Build and Push container
         run: |-
-          docker build -f ./packages/graphql-server/Dockerfile -t "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}:${{ github.sha }}" ./app
+          docker build -f ./packages/graphql-server/Dockerfile -t "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}:${{ github.sha }}" .
           docker push "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}:${{ github.sha }}"
 
       - name: Deploy
