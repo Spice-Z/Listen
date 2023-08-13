@@ -2,7 +2,7 @@ name: "Deploy Graphl Server to Google Cloud Run"
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: Listen
+  SERVICE_NAME: listen
   GCP_REGION: asia-northeast1
   APP: listen-graphql
 
