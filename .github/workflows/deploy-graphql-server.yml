@@ -27,14 +27,13 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{env.PROJECT_ID}}
-          export_default_credentials: true
 
       - name: Docker Auth
         run: gcloud auth configure-docker ${{env.GCP_REGION}}-docker.pkg.dev
 
       - name: Build and Push container
         run: |-
-          docker build -f ./packages/graphql-server/Dovkerfile . -t "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}" ./app
+          docker build -f ./packages/graphql-server/Dockerfile -t "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}" ./app
           docker push "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
 
       - name: Deploy
