@@ -14,7 +14,7 @@ const server = new ApolloServer({
 });
 
 const { url } = await startStandaloneServer(server, {
-  listen: { port: 8000 },
+  listen: { port: 8080 },
 });
 
 console.log(`🚀  Server ready at: ${url}`);
