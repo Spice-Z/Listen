@@ -1,0 +1,46 @@
+name: "Deploy Graphl Server to Google Cloud Run"
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SERVICE_NAME: Listen
+  GCP_REGION: asia-northeast1
+
+on: [workflow_dispatch]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Authenticate with Google Cloud
+        uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "${{ secrets.WIF_PROVIDER }}"
+          service_account: "${{ secrets.SA_ACCOUNT }}"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{env.PROJECT_ID}}
+
+      - name: Docker Auth
+        run: gcloud auth configure-docker ${{env.GCP_REGION}}-docker.pkg.dev
+
+      - name: Build and Push container
+        run: |-
+          docker build -f ./packages/graphql-server/Dovkerfile . -t "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}" ./app
+          docker push "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
+
+      - name: Deploy
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          image: "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
+          service: "${{ env.SERVICE_NAME }}"
+          region: "${{env.GCP_REGION}}"
+          platform: managed
+          allow-unauthenticated: true
+
+      - name: "Use output"
+        run: 'curl "${{ steps.deploy.outputs.url }}"'
