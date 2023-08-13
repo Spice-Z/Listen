@@ -13,6 +13,5 @@ ENV PORT 8000
 # ENV NODE_ENV=production
 
 RUN npm run build -w graphql-server
-COPY ./packages/graphql-server/dist ./packages/graphql-server/dist
 
 CMD ["npm", "run", "start", "-w", "graphql-server"]
