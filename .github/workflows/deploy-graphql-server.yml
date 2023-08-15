@@ -45,6 +45,3 @@ jobs:
           region: "${{env.GCP_REGION}}"
           platform: managed
           allow-unauthenticated: true
-
-      - name: "Use output"
-        run: 'curl "${{ steps.deploy.outputs.url }}"'
