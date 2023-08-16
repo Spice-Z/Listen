@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useSearchParams, Stack } from "expo-router";
+import { useGlobalSearchParams, Stack } from "expo-router";
 import Episode from '../../../feature/Episode/Episode';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
@@ -11,8 +11,8 @@ import { useChannelById } from '../../../feature/Channel/hooks/useChannelById';
 import { useEpisodesByChannelId } from '../../../feature/Episode/hooks/useEpisodesByChannelId';
 
 function EpisodePage() {
- const { channelId, episodeId } = useSearchParams();
- const { isLoading: isChannelLoading, data: channelData } = useChannelById(channelId as string)
+ const { channelId, episodeId } = useGlobalSearchParams();
+ const { data: channelData } = useChannelById(channelId as string)
  const { data: episodesData } = useEpisodesByChannelId(channelId as string);
  const { data } = useEpisodeByIds({
   channelId: channelId as string,

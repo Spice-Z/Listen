@@ -1,10 +1,8 @@
 
 import { StyleSheet, Text, View } from 'react-native';
-import { useSearchParams, Link } from "expo-router";
+import { Link } from "expo-router";
 
 export default function PlayerPage() {
-  const params = useSearchParams();
-
   return (
     <View style={styles.container}>
       <Text>Notification</Text>

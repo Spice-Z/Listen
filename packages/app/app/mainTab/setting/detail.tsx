@@ -1,10 +1,8 @@
 
 import { StyleSheet, Text, View } from 'react-native';
-import { Stack, useSearchParams } from "expo-router";
+import { Stack } from "expo-router";
 
 export default function PlayerPage() {
-  const params = useSearchParams();
-
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: "detaila", animation: 'slide_from_right' }} />

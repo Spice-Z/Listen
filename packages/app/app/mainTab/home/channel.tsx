@@ -1,4 +1,4 @@
-import { Stack, useRouter, useSearchParams } from "expo-router";
+import { Stack, useRouter, useGlobalSearchParams } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { theme } from "../../../feature/styles/theme";
 import { Suspense, useCallback, useMemo } from "react";
@@ -9,7 +9,7 @@ import { useChannelById } from "../../../feature/Channel/hooks/useChannelById";
 import SquareShimmer from "../../../feature/Shimmer/SquareShimmer";
 
 function Channel() {
- const { channelId } = useSearchParams();
+ const { channelId } = useGlobalSearchParams();
  const { isLoading, error, data } = useChannelById(channelId as string)
  const { isLoading: isEpisodeLoading, error: episodeError, data: episodeData } = useEpisodesByChannelId(channelId as string);
  const router = useRouter();
