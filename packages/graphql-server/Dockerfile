@@ -9,8 +9,8 @@ COPY package*.json ./
 
 RUN npm ci
 
-ENV PORT 8000
-# ENV NODE_ENV=production
+ENV PORT 8080
+ENV NODE_ENV=production
 
 RUN npm run build -w graphql-server
 
