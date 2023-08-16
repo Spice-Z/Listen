@@ -43,5 +43,3 @@ jobs:
           image: "${{env.GCP_REGION}}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.APP }}/${{ env.APP }}:${{ github.sha }}"
           service: "${{ env.SERVICE_NAME }}"
           region: "${{env.GCP_REGION}}"
-          platform: managed
-          allow-unauthenticated: true
