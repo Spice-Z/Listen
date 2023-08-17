@@ -2,7 +2,7 @@ import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
-import { Suspense, useCallback, useEffect } from 'react';
+import { Suspense, useCallback } from 'react';
 import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { useEpisodesOfAvailable } from '../../../feature/Episode/hooks/useEpisodesOfAvailable';
@@ -15,9 +15,6 @@ function App() {
   const query = useChannels();
   const availables = useEpisodesOfAvailable()
   const { playTrackIfNotCurrentlyPlaying } = useTrackPlayer();
-  useEffect(() => {
-    console.log(availables.data)
-  }, [availables])
   const router = useRouter();
   const onPress = useCallback(() => {
     const availableEpisodes = availables.data.episodes
@@ -35,7 +32,6 @@ function App() {
       duration: availableEpisodes[0].duration,
       // TODO: add Date from pubDate
     }
-    console.log({ track })
     playTrackIfNotCurrentlyPlaying(track)
   }, [availables.data.episodes, availables.data.episodesChannelIds, playTrackIfNotCurrentlyPlaying])
   const onPressChannel = useCallback((channelId: string) => {
