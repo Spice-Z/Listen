@@ -1,5 +1,5 @@
 import { Stack, usePathname } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { theme } from "../feature/styles/theme";
 import { StyleSheet, View } from "react-native";
 import MiniPlayer from "../feature/Player/MiniPlayer";
@@ -31,6 +31,9 @@ export default function Layout() {
   }, []);
   useSetupTrackPlayer()
   const pathname = usePathname();
+  const hideMiniPlayer = useMemo(() => {
+    return pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer' || pathname === '/signIn'
+  }, [pathname])
 
   return <>
     <AuthProvider>
@@ -79,7 +82,7 @@ export default function Layout() {
         </Stack>
 
         <View style={styles.miniPlayerContainer}>
-          <MiniPlayer hide={pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer' || pathname === '/signIn'} />
+          <MiniPlayer hide={hideMiniPlayer} />
         </View>
       </QueryClientProvider>
     </AuthProvider>

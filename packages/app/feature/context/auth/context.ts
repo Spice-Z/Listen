@@ -1,24 +1,24 @@
 import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { router, usePathname } from 'expo-router';
-import React from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
-export const AuthContext = React.createContext<{
+export const AuthContext = createContext<{
   user: FirebaseAuthTypes.User | null;
 }>({
   user: null,
 });
 
-export function useAuth() {
-  return React.useContext(AuthContext);
+export function useAuthContext() {
+  return useContext(AuthContext);
 }
 
 export function useProtectedRoute(user) {
   const currentPath = usePathname();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!user && currentPath !== '/signIn') {
       router.replace('/signIn');
-    } else if (user && currentPath === '/signIn') {
+    } else if (user && (currentPath === '/signIn' || currentPath === '/')) {
       router.replace('/mainTab/home');
     }
   }, [user, currentPath]);
