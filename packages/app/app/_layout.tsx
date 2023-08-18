@@ -7,6 +7,8 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { AuthProvider } from "../feature/context/auth/AuthProvider";
+import { useSetupTrackPlayer } from "../feature/Player/hooks/useSetupTrackPlayer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,57 +29,60 @@ export default function Layout() {
       console.log("Layout unmount");
     }
   }, []);
+  useSetupTrackPlayer()
   const pathname = usePathname();
 
   return <>
-    <QueryClientProvider client={queryClient}>
-      <Stack>
-        <Stack.Screen name="mainTab" options={{
-          headerShown: false,
-        }}
-        />
-        <Stack.Screen name="modalPlayer" options={{
-          presentation: "transparentModal",
-          animation: 'slide_from_bottom',
-          headerStyle: {
-            backgroundColor: theme.color.bgMain,
-          },
-          headerTitleStyle: {
-            color: theme.color.textMain,
-            fontWeight: theme.fontWeight.bold,
-            fontSize: 18,
-          }
-        }} />
-        <Stack.Screen name="modalTranscriptPlayer" options={{
-          presentation: "transparentModal",
-          animation: 'slide_from_bottom',
-          headerStyle: {
-            backgroundColor: theme.color.bgMain,
-          },
-          headerTitleStyle: {
-            color: theme.color.textMain,
-            fontWeight: theme.fontWeight.bold,
-            fontSize: 18,
-          }
-        }} />
-        <Stack.Screen name="modalNextEpisodes" options={{
-          presentation: "transparentModal",
-          animation: 'slide_from_bottom',
-          headerStyle: {
-            backgroundColor: theme.color.bgMain,
-          },
-          headerTitleStyle: {
-            color: theme.color.textMain,
-            fontWeight: theme.fontWeight.bold,
-            fontSize: 18,
-          }
-        }} />
-      </Stack>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <Stack>
+          <Stack.Screen name="mainTab" options={{
+            headerShown: false,
+          }}
+          />
+          <Stack.Screen name="modalPlayer" options={{
+            presentation: "transparentModal",
+            animation: 'slide_from_bottom',
+            headerStyle: {
+              backgroundColor: theme.color.bgMain,
+            },
+            headerTitleStyle: {
+              color: theme.color.textMain,
+              fontWeight: theme.fontWeight.bold,
+              fontSize: 18,
+            }
+          }} />
+          <Stack.Screen name="modalTranscriptPlayer" options={{
+            presentation: "transparentModal",
+            animation: 'slide_from_bottom',
+            headerStyle: {
+              backgroundColor: theme.color.bgMain,
+            },
+            headerTitleStyle: {
+              color: theme.color.textMain,
+              fontWeight: theme.fontWeight.bold,
+              fontSize: 18,
+            }
+          }} />
+          <Stack.Screen name="modalNextEpisodes" options={{
+            presentation: "transparentModal",
+            animation: 'slide_from_bottom',
+            headerStyle: {
+              backgroundColor: theme.color.bgMain,
+            },
+            headerTitleStyle: {
+              color: theme.color.textMain,
+              fontWeight: theme.fontWeight.bold,
+              fontSize: 18,
+            }
+          }} />
+        </Stack>
 
-      <View style={styles.miniPlayerContainer}>
-        <MiniPlayer hide={pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer'} />
-      </View>
-    </QueryClientProvider>
+        <View style={styles.miniPlayerContainer}>
+          <MiniPlayer hide={pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer' || pathname === '/signIn'} />
+        </View>
+      </QueryClientProvider>
+    </AuthProvider>
   </>;
 }
 
