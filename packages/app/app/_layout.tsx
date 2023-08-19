@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-query";
 import { AuthProvider } from "../feature/context/auth/AuthProvider";
 import { useSetupTrackPlayer } from "../feature/Player/hooks/useSetupTrackPlayer";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "../feature/graphql";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,54 +39,56 @@ export default function Layout() {
 
   return <>
     <AuthProvider>
-      <QueryClientProvider client={queryClient}>
-        <Stack>
-          <Stack.Screen name="mainTab" options={{
-            headerShown: false,
-          }}
-          />
-          <Stack.Screen name="modalPlayer" options={{
-            presentation: "transparentModal",
-            animation: 'slide_from_bottom',
-            headerStyle: {
-              backgroundColor: theme.color.bgMain,
-            },
-            headerTitleStyle: {
-              color: theme.color.textMain,
-              fontWeight: theme.fontWeight.bold,
-              fontSize: 18,
-            }
-          }} />
-          <Stack.Screen name="modalTranscriptPlayer" options={{
-            presentation: "transparentModal",
-            animation: 'slide_from_bottom',
-            headerStyle: {
-              backgroundColor: theme.color.bgMain,
-            },
-            headerTitleStyle: {
-              color: theme.color.textMain,
-              fontWeight: theme.fontWeight.bold,
-              fontSize: 18,
-            }
-          }} />
-          <Stack.Screen name="modalNextEpisodes" options={{
-            presentation: "transparentModal",
-            animation: 'slide_from_bottom',
-            headerStyle: {
-              backgroundColor: theme.color.bgMain,
-            },
-            headerTitleStyle: {
-              color: theme.color.textMain,
-              fontWeight: theme.fontWeight.bold,
-              fontSize: 18,
-            }
-          }} />
-        </Stack>
+      <ApolloProvider client={client}>
+        <QueryClientProvider client={queryClient}>
+          <Stack>
+            <Stack.Screen name="mainTab" options={{
+              headerShown: false,
+            }}
+            />
+            <Stack.Screen name="modalPlayer" options={{
+              presentation: "transparentModal",
+              animation: 'slide_from_bottom',
+              headerStyle: {
+                backgroundColor: theme.color.bgMain,
+              },
+              headerTitleStyle: {
+                color: theme.color.textMain,
+                fontWeight: theme.fontWeight.bold,
+                fontSize: 18,
+              }
+            }} />
+            <Stack.Screen name="modalTranscriptPlayer" options={{
+              presentation: "transparentModal",
+              animation: 'slide_from_bottom',
+              headerStyle: {
+                backgroundColor: theme.color.bgMain,
+              },
+              headerTitleStyle: {
+                color: theme.color.textMain,
+                fontWeight: theme.fontWeight.bold,
+                fontSize: 18,
+              }
+            }} />
+            <Stack.Screen name="modalNextEpisodes" options={{
+              presentation: "transparentModal",
+              animation: 'slide_from_bottom',
+              headerStyle: {
+                backgroundColor: theme.color.bgMain,
+              },
+              headerTitleStyle: {
+                color: theme.color.textMain,
+                fontWeight: theme.fontWeight.bold,
+                fontSize: 18,
+              }
+            }} />
+          </Stack>
 
-        <View style={styles.miniPlayerContainer}>
-          <MiniPlayer hide={hideMiniPlayer} />
-        </View>
-      </QueryClientProvider>
+          <View style={styles.miniPlayerContainer}>
+            <MiniPlayer hide={hideMiniPlayer} />
+          </View>
+        </QueryClientProvider>
+      </ApolloProvider>
     </AuthProvider>
   </>;
 }

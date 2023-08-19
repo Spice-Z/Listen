@@ -2,7 +2,6 @@
   "name": "listen-app",
   "private": true,
   "scripts": {
-    "fix": "expo install --fix",
     "start": "expo start --dev-client",
     "start:production": "expo start --no-dev --minify",
     "lint:fix": "eslint --fix '**/*.{ts,tsx}'",
@@ -12,9 +11,11 @@
     "build:local:android": "eas build --platform android --profile preview --local",
     "build:local:ios": "eas build --profile development-simulator --platform ios --local",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "gql:generate": "graphql-codegen"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.1",
     "@babel/runtime": "^7.21.0",
     "@invertase/react-native-apple-authentication": "^2.2.2",
     "@react-native-community/slider": "4.4.2",
@@ -35,6 +36,7 @@
     "expo-screen-orientation": "~5.1.1",
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.2",
+    "graphql": "^16.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.2",
@@ -48,6 +50,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.1.0",
     "@types/react-native": "^0.72.2",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",

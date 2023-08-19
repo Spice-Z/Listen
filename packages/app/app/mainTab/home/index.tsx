@@ -2,20 +2,38 @@ import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
-import { Suspense, useCallback } from 'react';
+import { Suspense, useCallback, useEffect } from 'react';
 import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { useEpisodesOfAvailable } from '../../../feature/Episode/hooks/useEpisodesOfAvailable';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
 import { useSignOut } from '../../../feature/Auth/hooks/useSignOut';
+import { gql } from '../../../feature/graphql/__generated__';
+import { useSuspenseQuery } from '@apollo/client';
 
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
+
+const GET_BOOKS = gql(/* GraphQL */`
+  query GetBooks {
+    books {
+      title
+      author
+    }
+  }
+`);
+
 
 function App() {
   const query = useChannels();
   const availables = useEpisodesOfAvailable()
   const { playTrackIfNotCurrentlyPlaying } = useTrackPlayer();
+
+  const { data } = useSuspenseQuery(GET_BOOKS);
+  useEffect(() => {
+    console.log(data.books)
+  }, [data])
+
   const router = useRouter();
   const onPress = useCallback(() => {
     const availableEpisodes = availables.data.episodes
