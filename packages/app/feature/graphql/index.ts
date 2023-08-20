@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 export const client = new ApolloClient({
-  uri: 'aaa',
+  uri: 'https://api.listen-world.com',
   cache: new InMemoryCache(),
 });
