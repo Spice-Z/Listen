@@ -31,14 +31,27 @@ console.log('channelDoc')
   }
 
   const channelData = channelDoc.data();
+  console.log('channelData')
 
   if (channelData === undefined) {
     throw new Error('The requested channel does not exist.');
   }
+  console.log({
+    id: channelDoc.id,
+    channelId: channelDoc.id,
+    title: channelData.title,
+    imageUrl: channelData.imageUrl,
+    description: channelData.description,
+    author: channelData.author,
+    categories: channelData.categories,
+    categoriesWithSubs: channelData.categoriesWithSubs,
+    language: channelData.language,
+    copyright: channelData.copyright,
+  })
 
   return {
-    id: channelData.id,
-    channelId: channelData.channelId,
+    id: channelDoc.id,
+    channelId: channelDoc.id,
     title: channelData.title,
     imageUrl: channelData.imageUrl,
     description: channelData.description,
