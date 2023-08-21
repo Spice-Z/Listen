@@ -23,31 +23,16 @@ const typeDefs = gql`
 
 const resolver :QueryResolvers['channel'] = async (parent, args, context, info) => {
   const channelId = args.channelId;
-  console.log('channelId', channelId)
   const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId).get();
-console.log('channelDoc')
   if (!channelDoc.exists) {
     throw new Error('The requested channel does not exist.');
   }
 
   const channelData = channelDoc.data();
-  console.log('channelData')
 
   if (channelData === undefined) {
     throw new Error('The requested channel does not exist.');
   }
-  console.log({
-    id: channelDoc.id,
-    channelId: channelDoc.id,
-    title: channelData.title,
-    imageUrl: channelData.imageUrl,
-    description: channelData.description,
-    author: channelData.author,
-    categories: channelData.categories,
-    categoriesWithSubs: channelData.categoriesWithSubs,
-    language: channelData.language,
-    copyright: channelData.copyright,
-  })
 
   return {
     id: channelDoc.id,
