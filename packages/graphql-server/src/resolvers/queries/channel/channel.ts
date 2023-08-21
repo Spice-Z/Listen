@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import type { QueryResolvers, Resolvers } from '../../../../generated/resolvers-types';
 import { CHANNEL_DOCUMENT_NAME } from '../../../constants.js';
-import { getFirestore } from 'firebase-admin/firestore';
+import { firestore } from '../../../firebase.js';
 
 const typeDefs = gql`
   type Channel {
@@ -23,8 +23,9 @@ const typeDefs = gql`
 
 const resolver :QueryResolvers['channel'] = async (parent, args, context, info) => {
   const channelId = args.channelId;
-  const channelDoc = await getFirestore().collection(CHANNEL_DOCUMENT_NAME).doc(channelId).get();
-
+  console.log('channelId', channelId)
+  const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId).get();
+console.log('channelDoc')
   if (!channelDoc.exists) {
     throw new Error('The requested channel does not exist.');
   }
