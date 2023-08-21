@@ -15,8 +15,22 @@ type Book {
   title: String
 }
 
+type Channel {
+  author: String!
+  categories: [String!]!
+  categoriesWithSubs: [String!]!
+  channelId: String!
+  copyRight: String!
+  description: String!
+  id: ID!
+  imageUrl: String!
+  language: String!
+  title: String!
+}
+
 type Query {
   books: [Book]
+  channel(channelId: String!): Channel!
 }
 
 scalar _FieldSet

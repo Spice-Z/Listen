@@ -6,7 +6,7 @@ const typeDefs = gql`
     title: String
     author: String
   }
-  type Query {
+  extend type Query {
     books: [Book]
   }
 `;
