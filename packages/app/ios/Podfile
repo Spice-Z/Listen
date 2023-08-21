@@ -54,7 +54,8 @@ target 'Listen' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
     # Note that if you have use_frameworks! enabled, Flipper will not work if enabled
-    :flipper_configuration => flipper_config
+    :flipper_configuration => flipper_config,
+    :hermes_enabled => true
   )
 
   post_install do |installer|
