@@ -4,13 +4,29 @@ import { useGlobalSearchParams, Stack } from "expo-router";
 import Episode from '../../../feature/Episode/Episode';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
-import { Suspense, useCallback, useMemo } from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
 import { useEpisodeByIds } from '../../../feature/Episode/hooks/useEpisodeByIds';
 import { useChannelById } from '../../../feature/Channel/hooks/useChannelById';
 import { useEpisodesByChannelId } from '../../../feature/Episode/hooks/useEpisodesByChannelId';
+import { gql } from '../../../feature/graphql/__generated__';
+import { useSuspenseQuery } from '@apollo/client';
+
+
+const GET_BOOKS = gql(/* GraphQL */`
+  query GetBooks {
+    books {
+      title
+      author
+    }
+  }
+`);
 
 function EpisodePage() {
+ const { data: ddata } = useSuspenseQuery(GET_BOOKS);
+ useEffect(() => {
+  console.log(ddata.books)
+ }, [ddata])
  const { channelId, episodeId } = useGlobalSearchParams();
  const { data: channelData } = useChannelById(channelId as string)
  const { data: episodesData } = useEpisodesByChannelId(channelId as string);

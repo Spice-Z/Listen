@@ -9,8 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { AuthProvider } from "../feature/context/auth/AuthProvider";
 import { useSetupTrackPlayer } from "../feature/Player/hooks/useSetupTrackPlayer";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "../feature/graphql";
+import { ApolloProviderHelper } from "../feature/graphql/ApolloProviderHepler";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,9 +36,10 @@ export default function Layout() {
     return pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer' || pathname === '/signIn'
   }, [pathname])
 
+
   return <>
     <AuthProvider>
-      <ApolloProvider client={client}>
+      <ApolloProviderHelper>
         <QueryClientProvider client={queryClient}>
           <Stack>
             <Stack.Screen name="mainTab" options={{
@@ -88,7 +88,7 @@ export default function Layout() {
             <MiniPlayer hide={hideMiniPlayer} />
           </View>
         </QueryClientProvider>
-      </ApolloProvider>
+      </ApolloProviderHelper>
     </AuthProvider>
   </>;
 }

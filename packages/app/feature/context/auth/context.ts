@@ -4,8 +4,10 @@ import { createContext, useContext, useEffect } from 'react';
 
 export const AuthContext = createContext<{
   user: FirebaseAuthTypes.User | null;
+  firebaseToken: string | null;
 }>({
   user: null,
+  firebaseToken: null,
 });
 
 export function useAuthContext() {

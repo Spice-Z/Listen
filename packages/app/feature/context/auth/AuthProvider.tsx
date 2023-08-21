@@ -9,8 +9,16 @@ type Props = {
 
 export const AuthProvider = memo<Props>((props) => {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [firebaseToken, setFirebaseToken] = useState<string | null>(null);
   const onAuthStateChanged = (user: FirebaseAuthTypes.User) => {
     setUser(user);
+    if (user) {
+      user.getIdToken().then((token) => {
+        setFirebaseToken(token);
+      })
+    } else {
+      setFirebaseToken(null);
+    }
   }
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -25,6 +33,7 @@ export const AuthProvider = memo<Props>((props) => {
     <AuthContext.Provider
       value={{
         user,
+        firebaseToken
       }}>
       {props.children}
     </AuthContext.Provider>
