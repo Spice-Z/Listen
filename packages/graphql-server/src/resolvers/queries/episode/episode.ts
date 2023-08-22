@@ -43,6 +43,8 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
   if (episodeData === undefined) {
     throw new Error('The requested channel does not exist.');
   }
+
+  console.log({episodeData})
   
   const episode = {
     ...episodeData
