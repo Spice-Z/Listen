@@ -16,6 +16,5 @@
   },
   "compileOnSave": true,
   "include": ["src/**/*", "generated/*","graphql-codegen.ts"],
-  "exclude": ["node_modules", "dist"],
-  "files": [".eslintrc.cjs"]
+  "exclude": ["node_modules", "dist"]
 }

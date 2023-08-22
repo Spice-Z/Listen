@@ -28,9 +28,29 @@ type Channel {
   title: String!
 }
 
+type Episode {
+  content: String!
+  description: String!
+  duration: Int!
+  episodeId: String!
+  id: ID!
+  imageUrl: String!
+  pubDate: String!
+  title: String!
+  transcriptUrl: String!
+  translatedTranscripts: [TranslatedTranscript!]!
+  url: String!
+}
+
 type Query {
   books: [Book]
   channel(channelId: String!): Channel!
+  episode(episodeId: String!): Episode!
+}
+
+type TranslatedTranscript {
+  language: String!
+  transcript: String!
 }
 
 scalar _FieldSet

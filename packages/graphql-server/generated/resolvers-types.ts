@@ -38,15 +38,42 @@ export type Channel = {
   title: Scalars['String']['output'];
 };
 
+export type Episode = {
+  __typename?: 'Episode';
+  content: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  duration: Scalars['Int']['output'];
+  episodeId: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  imageUrl: Scalars['String']['output'];
+  pubDate: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  transcriptUrl: Scalars['String']['output'];
+  translatedTranscripts: Array<TranslatedTranscript>;
+  url: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   books?: Maybe<Array<Maybe<Book>>>;
   channel: Channel;
+  episode: Episode;
 };
 
 
 export type QueryChannelArgs = {
   channelId: Scalars['String']['input'];
+};
+
+
+export type QueryEpisodeArgs = {
+  episodeId: Scalars['String']['input'];
+};
+
+export type TranslatedTranscript = {
+  __typename?: 'TranslatedTranscript';
+  language: Scalars['String']['output'];
+  transcript: Scalars['String']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -124,9 +151,12 @@ export type ResolversTypes = ResolversObject<{
   Book: ResolverTypeWrapper<PartialDeep<Book,{recurseIntoArrays: true}>>;
   Boolean: ResolverTypeWrapper<PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>>;
   Channel: ResolverTypeWrapper<PartialDeep<Channel,{recurseIntoArrays: true}>>;
+  Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
   ID: ResolverTypeWrapper<PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>>;
+  Int: ResolverTypeWrapper<PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>>;
+  TranslatedTranscript: ResolverTypeWrapper<PartialDeep<TranslatedTranscript,{recurseIntoArrays: true}>>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -134,9 +164,12 @@ export type ResolversParentTypes = ResolversObject<{
   Book: PartialDeep<Book,{recurseIntoArrays: true}>;
   Boolean: PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>;
   Channel: PartialDeep<Channel,{recurseIntoArrays: true}>;
+  Episode: PartialDeep<Episode,{recurseIntoArrays: true}>;
   ID: PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>;
+  Int: PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>;
   Query: {};
   String: PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>;
+  TranslatedTranscript: PartialDeep<TranslatedTranscript,{recurseIntoArrays: true}>;
 }>;
 
 export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
@@ -159,14 +192,38 @@ export type ChannelResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type EpisodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Episode'] = ResolversParentTypes['Episode']> = ResolversObject<{
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  episodeId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pubDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transcriptUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  translatedTranscripts?: Resolver<Array<ResolversTypes['TranslatedTranscript']>, ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'channelId'>>;
+  episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'episodeId'>>;
+}>;
+
+export type TranslatedTranscriptResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedTranscript'] = ResolversParentTypes['TranslatedTranscript']> = ResolversObject<{
+  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transcript?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Book?: BookResolvers<ContextType>;
   Channel?: ChannelResolvers<ContextType>;
+  Episode?: EpisodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  TranslatedTranscript?: TranslatedTranscriptResolvers<ContextType>;
 }>;
 
