@@ -42,7 +42,7 @@ export type Episode = {
   imageUrl: Scalars['String']['output'];
   pubDate: Scalars['String']['output'];
   title: Scalars['String']['output'];
-  transcriptUrl: Scalars['String']['output'];
+  transcriptUrl?: Maybe<Scalars['String']['output']>;
   translatedTranscripts: Array<TranslatedTranscript>;
   url: Scalars['String']['output'];
 };
@@ -187,7 +187,7 @@ export type EpisodeResolvers<ContextType = any, ParentType extends ResolversPare
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pubDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  transcriptUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transcriptUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   translatedTranscripts?: Resolver<Array<ResolversTypes['TranslatedTranscript']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

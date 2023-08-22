@@ -13,7 +13,7 @@ const typeDefs = gql`
     title: String!
     description: String!
     url: String!
-    transcriptUrl: String!
+    transcriptUrl: String
     imageUrl: String!
     content: String!
     duration: Int!

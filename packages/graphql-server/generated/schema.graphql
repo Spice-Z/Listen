@@ -32,7 +32,7 @@ type Episode {
   imageUrl: String!
   pubDate: String!
   title: String!
-  transcriptUrl: String!
+  transcriptUrl: String
   translatedTranscripts: [TranslatedTranscript!]!
   url: String!
 }
