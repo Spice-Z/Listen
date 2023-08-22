@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
   extends: ['@listen/eslint-config/base'],
+  ignorePatterns: ["node_modules", "dist",".eslintrc.cjs"],
   env: {
     es2021: true,
     node: true,
