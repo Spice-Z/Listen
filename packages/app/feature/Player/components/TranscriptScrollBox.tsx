@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { Suspense, memo, useCallback, useEffect, useRef, useState } from "react";
 import { getTranscriptFromUrl } from "../../dataLoader/getTranscriptFromUrl";
 import { ScrollView } from 'react-native-gesture-handler';
-import { StyleSheet, Text, View } from 'react-native';
+import { DimensionValue, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../styles/theme';
 
 type Props = {
  transcriptUrl?: string;
- height: number | string;
- width: number | string;
+ height: number | DimensionValue;
+ width: number | DimensionValue;
  currentTimePosition: number;
 }
 
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   paddingHorizontal: 16,
   flexDirection: 'row',
   flexWrap: 'wrap',
-  backgroundColor: theme.color.bgEmphasis
+  backgroundColor: theme.color.bgDark
  },
  transcriptContainer: {
   width: '100%',
@@ -111,15 +111,18 @@ const styles = StyleSheet.create({
  transcript: {
   fontSize: 16,
   lineHeight: 22,
-  color: theme.color.textWeak,
+  color: theme.color.textMain,
   fontWeight: '600',
  },
  highlighted: {
-  backgroundColor: theme.color.accent,
+  backgroundColor: theme.color.accent90,
+  borderLeftWidth: 4,
+  borderLeftColor: theme.color.transparent,
  },
  superHighlighted: {
+  backgroundColor: theme.color.accent,
   borderLeftWidth: 4,
-  borderLeftColor: theme.color.textMain,
+  borderLeftColor: theme.color.bgMain,
  },
  noTranscriptText: {
   width: '100%',

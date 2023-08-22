@@ -29,7 +29,7 @@ export default function MiniPlayer({ hide }: Props) {
     if (isLoading) {
       return <ActivityIndicator />
     }
-    return isPlaying ? <PauseIcon fill={theme.color.textMain} width={20} height={20} /> : <PlayIcon fill={theme.color.textMain} width={20} height={20} />
+    return isPlaying ? <PauseIcon fill={theme.color.bgMain} width={20} height={20} /> : <PlayIcon fill={theme.color.bgMain} width={20} height={20} />
   }, [isLoading, isPlaying])
   return hasPlayingTrack && !hide ?
     <Pressable style={styles.container} onPress={() => { router.push('/modalPlayer') }}>
@@ -46,7 +46,7 @@ export default function MiniPlayer({ hide }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.color.bgDark,
+    backgroundColor: theme.color.bgEmphasis,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

@@ -72,7 +72,7 @@ const ModalPlayer = memo(() => {
     if (isLoading) {
       return <ActivityIndicator />
     }
-    return isPlaying ? <PauseIcon fill={theme.color.textMain} width={20} height={20} /> : <PlayIcon fill={theme.color.textMain} width={20} height={20} />
+    return isPlaying ? <PauseIcon fill={theme.color.bgMain} width={28} height={28} /> : <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
   }, [isLoading, isPlaying])
 
 
@@ -169,7 +169,7 @@ const ModalPlayer = memo(() => {
           onPress={skipToPrevious}
         >
           <View style={styles.controlButton}>
-            <LeftIcon width={24} height={24} fill='#fff' />
+            <LeftIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -177,7 +177,7 @@ const ModalPlayer = memo(() => {
           onPress={() => handleSkip(-15)}
         >
           <View style={styles.controlButton}>
-            <SkipBackwardIcon width={24} height={24} />
+            <SkipBackwardIcon width={24} height={24} color={theme.color.textMain} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -193,7 +193,7 @@ const ModalPlayer = memo(() => {
           onPress={() => handleSkip(15)}
         >
           <View style={styles.controlButton}>
-            <SkipForwardIcon width={24} height={24} color="#fff" />
+            <SkipForwardIcon width={24} height={24} color={theme.color.textMain} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -201,7 +201,7 @@ const ModalPlayer = memo(() => {
           onPress={skipToNext}
         >
           <View style={styles.controlButton}>
-            <RightIcon width={24} height={24} fill="#fff" />
+            <RightIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity

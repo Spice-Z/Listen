@@ -105,7 +105,8 @@ const styles = StyleSheet.create({
  description: {
   fontSize: 12,
   lineHeight: 18,
-  color: theme.color.textWeak,
+  color: theme.color.textMain,
+  fontWeight: '300',
   marginTop: 8,
   width: '100%'
  }

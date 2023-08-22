@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
  channelDescription: {
   fontSize: 14,
   lineHeight: 20,
-  color: theme.color.textWeak,
+  color: theme.color.textMain,
+  fontWeight: '400',
   marginTop: 16,
  },
  author: {

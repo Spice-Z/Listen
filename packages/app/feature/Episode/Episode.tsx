@@ -40,7 +40,7 @@ const Episode = memo(({
     if (isLoading) {
       return <ActivityIndicator />
     }
-    return isPlaying ? <PauseIcon fill={theme.color.textMain} width={20} height={20} /> : <PlayIcon fill={theme.color.textMain} width={20} height={20} />
+    return isPlaying ? <PauseIcon fill={theme.color.bgMain} width={28} height={28} /> : <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
   }, [isLoading, isPlaying])
   return (
     <ScrollView style={styles.container}>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
     fontWeight: '600',
-    color: theme.color.textWeak,
+    color: theme.color.textMain,
   },
   date: {
     fontSize: 12,
@@ -106,11 +106,11 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   description: {
-    color: theme.color.textWeak,
+    color: theme.color.textMain,
     marginTop: 8,
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: '600',
+    fontWeight: '400',
   },
   duration: {
     color: theme.color.textWeak
