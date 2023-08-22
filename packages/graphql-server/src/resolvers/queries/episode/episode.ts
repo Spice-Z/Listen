@@ -32,15 +32,10 @@ const typeDefs = gql`
 `;
 
 const resolver :QueryResolvers['episode'] = async (parent, args, context, info) => {
-  console.log('resolver')
   const {channelId, episodeId} = args;
-  const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
   // TODO: channel存在チェック
-  console.log({episodeId})
-  const aaa = await channelRef.collection(EPISODE_DOCUMENT_NAME).doc(episodeId).get();
-  console.log({aaa})
+  const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
   const episodeDoc = await channelRef.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
-  console.log({episodeDoc})
   if (!episodeDoc.exists) {
     throw new Error('The requested episode does not exist.');
   }
@@ -50,8 +45,6 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
     throw new Error('The requested channel does not exist.');
   }
 
-  console.log({episodeData})
-  
   const episode = {
     ...episodeData
   };
