@@ -34,7 +34,7 @@ export async function transcribeAudioFiles({
         'prompt',
         `This is chunked podcast audio. This is file ${
           index + 1
-        } out of ${audioFileNum}. Transcribe it not including filler words, includes punctuation.`
+        } out of ${audioFileNum}. Transcribe it not including filler words, includes punctuation.`,
       );
 
       return axios
@@ -51,7 +51,7 @@ export async function transcribeAudioFiles({
           console.log('transcribe', e);
           throw e;
         });
-    })
+    }),
   );
   const segments: {
     start: number;
@@ -78,41 +78,9 @@ export async function transcribeAudioFiles({
   };
 }
 
-export async function translateToEmoji({ apiKey, text }: { apiKey: string; text: string }) {
-  const response = await axios.post(
-    'https://api.openai.com/v1/chat/completions',
-    {
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: 'Just use emojis for reply. Do not use any text.',
-        },
-        {
-          role: 'user',
-          content: `Please express this content with only emojis. Do not use any text.  Content:${text}`,
-        },
-      ],
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      maxContentLength: 100000000,
-      maxBodyLength: 1000000000,
-    }
-  );
-  if (response.status !== 200) {
-    throw new Error(response.statusText);
-  }
-  const data = response.data;
-  return data.choices[0].message.content;
-}
-
 function splitSegments(
   segments: { start: string; end: string; text: string }[],
-  limitLength: number
+  limitLength: number,
 ) {
   const originalSegments = segments;
   const splittedSegments: { start: string; end: string; text: string }[][] = [];
@@ -185,7 +153,7 @@ export async function translateSegments({
             },
             maxContentLength: 100000000,
             maxBodyLength: 1000000000,
-          }
+          },
         );
         return response;
       } catch (error) {
@@ -193,7 +161,7 @@ export async function translateSegments({
         console.log({ error });
         throw error;
       }
-    })
+    }),
   );
 
   const results: { start: string; end: string; text: string }[] = [];
