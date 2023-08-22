@@ -4,6 +4,7 @@ import {
   View,
   Text,
   Dimensions,
+  ViewProps,
 } from 'react-native';
 import {
   useProgress,
@@ -50,7 +51,7 @@ function TranscriptPlayer({ targetLang }: Props) {
     }
     return '100%'
   }, [shouldTwoColumn])
-  const separatorStyle = useMemo(() => {
+  const separatorStyle: ViewProps['style'] = useMemo(() => {
     if (shouldTwoColumn) {
       return {
         width: '2%',
