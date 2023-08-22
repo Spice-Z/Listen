@@ -4,6 +4,7 @@ import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../../../constants
 import { firestore } from '../../../firebase/index.js';
 
 import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
+import { GraphQLError } from 'graphql';
 
 
 const typeDefs = gql`
@@ -35,14 +36,24 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
   const {channelId, episodeId} = args;
   // TODO: channel存在チェック
   const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
+  console.log({episodeId})
   const episodeDoc = await channelRef.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
+  console.log(episodeDoc)
   if (!episodeDoc.exists) {
-    throw new Error('The requested episode does not exist.');
+    throw new GraphQLError("The requested episode does not exist.", {
+      extensions: {
+        code: 'NOT_FOUND',
+      },
+    });
   }
   const episodeData = episodeDoc.data();
 
   if (episodeData === undefined) {
-    throw new Error('The requested channel does not exist.');
+    throw new GraphQLError("The requested episode does not exist.", {
+      extensions: {
+        code: 'NOT_FOUND',
+      },
+    });
   }
 
   const episode = {
