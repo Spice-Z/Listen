@@ -11,10 +11,11 @@ import {
 } from 'react-native-track-player';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
-import { useEpisodeByIds } from '../Episode/hooks/useEpisodeByIds';
 import TranscriptScrollBox from './components/TranscriptScrollBox';
 import { useEffect, useMemo, useState } from 'react';
 import { useDidMount } from '../hooks/useDidMount';
+import { gql } from '../graphql/__generated__';
+import { useQuery } from '@apollo/client';
 
 const windowDimensions = Dimensions.get('window');
 
@@ -22,21 +23,46 @@ type Props = {
   targetLang: string;
 }
 
-function TranscriptPlayer({ targetLang }: Props) {
+const GET_EPISODE_TRANSLATED_SCRIPTS = gql(/* GraphQL */`
+  query GetEpisodeTranslatedScripts($channelId: String!, $episodeId: String!) {
+    episode(channelId: $channelId, episodeId: $episodeId) {
+      id
+      transcriptUrl
+      translatedTranscripts {
+        language
+        transcriptUrl
+      }
+    }
+  }
+`);
+
+export default function TranscriptPlayer({ targetLang }: Props) {
   const { currentQueue, currentTrack } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
 
-  const { data } = useEpisodeByIds({
-    channelId: currentEpisodeChannelId,
-    episodeId: currentEpisodeId,
-  })
+  const { data, loading } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS,
+    {
+      variables: {
+        channelId: currentEpisodeChannelId,
+        episodeId: currentEpisodeId,
+      },
+      skip: currentEpisodeId === null || currentEpisodeChannelId === null,
+    }
+  )
+
   const translatedTranscriptUrl = useMemo(() => {
-    if (data?.translatedTranscripts) {
-      return data?.translatedTranscripts[targetLang]
+    if (data === undefined) {
+      return null
+    }
+    const targetTranscript = data.episode.translatedTranscripts.find((translatedTranscript) => {
+      return translatedTranscript.language === targetLang
+    })
+    if (targetTranscript) {
+      return targetTranscript.transcriptUrl
     }
     return null
-  }, [data?.translatedTranscripts, targetLang])
+  }, [data, targetLang])
 
   const [shouldTwoColumn, setShouldTwoColumn] = useState(false);
   const scrollBoxHeight = useMemo(() => {
@@ -90,7 +116,7 @@ function TranscriptPlayer({ targetLang }: Props) {
         shouldTwoColumn ?
           <>
             <TranscriptScrollBox
-              transcriptUrl={data?.transcriptUrl}
+              transcriptUrl={data?.episode.transcriptUrl}
               currentTimePosition={progress.position}
               width={scrollBoxWidth}
               height={scrollBoxHeight}
@@ -105,7 +131,7 @@ function TranscriptPlayer({ targetLang }: Props) {
           </>
           : <>
             <TranscriptScrollBox
-              transcriptUrl={data?.transcriptUrl}
+              transcriptUrl={data?.episode.transcriptUrl}
               currentTimePosition={progress.position}
               width={scrollBoxWidth}
               height={scrollBoxHeight}
@@ -144,5 +170,3 @@ const styles = StyleSheet.create({
     color: theme.color.textMain,
   }
 });
-
-export default TranscriptPlayer;

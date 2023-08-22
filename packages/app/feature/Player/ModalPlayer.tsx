@@ -1,5 +1,5 @@
 import {
-  useState, useEffect, useMemo, useCallback,
+  useState, useEffect, useMemo, useCallback, memo,
 } from 'react';
 import {
   StyleSheet,
@@ -23,13 +23,22 @@ import {
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
-import { useQuery } from '@tanstack/react-query';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
-import { useEpisodeByIds } from '../Episode/hooks/useEpisodeByIds';
 import { useRouter } from 'expo-router';
 import TranscriptScrollBox from './components/TranscriptScrollBox';
+import { gql } from '../graphql/__generated__';
+import { useQuery as useApolloQuery } from '@apollo/client';
+import { useQuery } from '@tanstack/react-query';
 
-function ModalPlayer() {
+const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */`
+  query GetEpisodeInModalPlayer($channelId: String!, $episodeId: String!) {
+    episode(channelId: $channelId, episodeId: $episodeId) {
+      transcriptUrl
+    }
+  }
+`);
+
+const ModalPlayer = memo(() => {
   const [playbackPosition, setPlaybackPosition] = useState(0);
 
   const playbackState = usePlaybackState();
@@ -45,14 +54,18 @@ function ModalPlayer() {
     skipToPrevious } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { data } = useEpisodeByIds({
-    channelId: currentEpisodeChannelId,
-    episodeId: currentEpisodeId,
-  })
+  const { data } = useApolloQuery(GET_EPISODE_IN_MODAL_PLAYER,
+    {
+      variables: {
+        channelId: currentEpisodeChannelId,
+        episodeId: currentEpisodeId,
+      }
+    }
+  )
   const { isLoading: _isTranscriptLoading, data: transcriptData } = useQuery({
-    queryKey: ['getTranscriptFromUrl', data?.transcriptUrl],
-    queryFn: () => getTranscriptFromUrl(data?.transcriptUrl),
-    enabled: !!data?.transcriptUrl,
+    queryKey: ['getTranscriptFromUrl', data?.episode.transcriptUrl],
+    queryFn: () => getTranscriptFromUrl(data?.episode.transcriptUrl),
+    enabled: !!data?.episode.transcriptUrl,
   })
 
   const playPauseButton = useMemo(() => {
@@ -114,7 +127,7 @@ function ModalPlayer() {
   </View> : (
     <View style={styles.container}>
       <TranscriptScrollBox
-        transcriptUrl={data?.transcriptUrl}
+        transcriptUrl={data?.episode.transcriptUrl}
         height={'70%'}
         width={'100%'}
         currentTimePosition={progress.position} />
@@ -207,7 +220,7 @@ function ModalPlayer() {
       </View>
     </View>
   );
-}
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -295,4 +308,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ModalPlayer;
+export default ModalPlayer
+
