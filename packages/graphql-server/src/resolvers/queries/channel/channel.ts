@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import type { QueryResolvers } from '../../../../generated/resolvers-types';
 import { CHANNEL_DOCUMENT_NAME } from '../../../constants.js';
 import { firestore } from '../../../firebase/index.js';
-import { removeLeadingAndTrailingNewlines } from '../../../utils/string';
+import { removeLeadingAndTrailingNewlines } from '../../../utils/string.js';
 
 const typeDefs = gql`
   type Channel {
