@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import type { QueryResolvers } from '../../../../generated/resolvers-types';
-import { EPISODE_DOCUMENT_NAME } from '../../../constants.js';
+import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../../../constants.js';
 import { firestore } from '../../../firebase/index.js';
 
 import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
@@ -27,17 +27,19 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    episode(episodeId: String!): Episode!
+    episode(channelId: String!, episodeId: String!): Episode!
   }
 `;
 
 const resolver :QueryResolvers['episode'] = async (parent, args, context, info) => {
   console.log('resolver')
-  const episodeId = args.episodeId;
+  const {channelId, episodeId} = args;
+  const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
+  // TODO: channel存在チェック
   console.log({episodeId})
-  const aaa = await firestore.collection(EPISODE_DOCUMENT_NAME).doc(episodeId).get();
+  const aaa = await channelRef.collection(EPISODE_DOCUMENT_NAME).doc(episodeId).get();
   console.log({aaa})
-  const episodeDoc = await firestore.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
+  const episodeDoc = await channelRef.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
   console.log({episodeDoc})
   if (!episodeDoc.exists) {
     throw new Error('The requested episode does not exist.');

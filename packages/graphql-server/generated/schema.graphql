@@ -39,7 +39,7 @@ type Episode {
 
 type Query {
   channel(channelId: String!): Channel!
-  episode(episodeId: String!): Episode!
+  episode(channelId: String!, episodeId: String!): Episode!
 }
 
 type TranslatedTranscript {

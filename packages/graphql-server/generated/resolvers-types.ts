@@ -60,6 +60,7 @@ export type QueryChannelArgs = {
 
 
 export type QueryEpisodeArgs = {
+  channelId: Scalars['String']['input'];
   episodeId: Scalars['String']['input'];
 };
 
@@ -194,7 +195,7 @@ export type EpisodeResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'channelId'>>;
-  episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'episodeId'>>;
+  episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'channelId' | 'episodeId'>>;
 }>;
 
 export type TranslatedTranscriptResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedTranscript'] = ResolversParentTypes['TranslatedTranscript']> = ResolversObject<{
