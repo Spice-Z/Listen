@@ -32,12 +32,14 @@ const typeDefs = gql`
 `;
 
 const resolver :QueryResolvers['episode'] = async (parent, args, context, info) => {
+  console.log('resolver')
   const episodeId = args.episodeId;
+  console.log({episodeId})
   const episodeDoc = await firestore.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
   if (!episodeDoc.exists) {
     throw new Error('The requested episode does not exist.');
   }
-
+  console.log({episodeDoc})
   const episodeData = episodeDoc.data();
 
   if (episodeData === undefined) {
