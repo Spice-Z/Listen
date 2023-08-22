@@ -67,7 +67,7 @@ export type QueryEpisodeArgs = {
 export type TranslatedTranscript = {
   __typename?: 'TranslatedTranscript';
   language: Scalars['String']['output'];
-  transcript: Scalars['String']['output'];
+  transcriptUrl: Scalars['String']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -200,7 +200,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type TranslatedTranscriptResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedTranscript'] = ResolversParentTypes['TranslatedTranscript']> = ResolversObject<{
   language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  transcript?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transcriptUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

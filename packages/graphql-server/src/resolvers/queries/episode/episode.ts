@@ -23,7 +23,7 @@ const typeDefs = gql`
   }
   type TranslatedTranscript {
     language: String!
-    transcript: String!
+    transcriptUrl: String!
   }
 
   extend type Query {

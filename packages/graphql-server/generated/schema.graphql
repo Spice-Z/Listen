@@ -44,7 +44,7 @@ type Query {
 
 type TranslatedTranscript {
   language: String!
-  transcript: String!
+  transcriptUrl: String!
 }
 
 scalar _FieldSet

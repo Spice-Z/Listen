@@ -8,7 +8,7 @@ class Episode {
   readonly title: string,
   readonly description: string,
   readonly url: string,
-  readonly transcriptUrl: string,
+  readonly transcriptUrl: string | undefined,
   readonly imageUrl: string,
   readonly content: string,
   readonly duration: number,
@@ -16,7 +16,7 @@ class Episode {
   readonly season: string,
   readonly translatedTranscripts: {
     language: string,
-    transcript: string
+    transcriptUrl: string
   }[]
   ) {}
 }
@@ -26,7 +26,7 @@ interface EpisodeDbModel {
   title: string,
   description: string,
   url: string,
-  transcriptUrl: string,
+  transcriptUrl: string | undefined,
   imageUrl: string,
   content: string,
   duration: number,
@@ -34,13 +34,13 @@ interface EpisodeDbModel {
   season: string,
   translatedTranscripts: {
    [key: string]: string;
-  }
+  } | undefined
 }
 
 export const episodeConverter:FirestoreDataConverter<Episode> = {
  toFirestore(episode: Episode): Omit<EpisodeDbModel,'id'> {
   const translatedTranscripts = episode.translatedTranscripts.reduce((acc, cur) => {
-   acc[cur.language] = cur.transcript;
+   acc[cur.language] = cur.transcriptUrl;
    return acc;
   }, {} as { [key: string]: string })
    return {
@@ -61,10 +61,11 @@ export const episodeConverter:FirestoreDataConverter<Episode> = {
  ): Episode {
    const data = snapshot.data() as EpisodeDbModel;
    console.log({data})
-   const translatedTranscripts = Object.keys(data.translatedTranscripts || {}).map((language) => {
+   const translatedTranscripts = data.translatedTranscripts === undefined ? [] : Object.keys(data.translatedTranscripts || {}).map((language) => {
+    const translatedTranscripts = data.translatedTranscripts || {};
      return {
        language,
-       transcript: data.translatedTranscripts[language],
+       transcriptUrl: translatedTranscripts[language],
      };
    });
    console.log({translatedTranscripts})
