@@ -38,7 +38,7 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
   const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
   console.log({episodeId})
   const episodeDoc = await channelRef.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
-  console.log(episodeDoc)
+  console.log('episodeDoc')
   if (!episodeDoc.exists) {
     throw new GraphQLError("The requested episode does not exist.", {
       extensions: {
@@ -47,6 +47,8 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
     });
   }
   const episodeData = episodeDoc.data();
+  console.log('episodeData')
+
 
   if (episodeData === undefined) {
     throw new GraphQLError("The requested episode does not exist.", {
@@ -55,6 +57,7 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
       },
     });
   }
+  console.log('episode')
 
   const episode = {
     ...episodeData
