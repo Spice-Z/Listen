@@ -1,25 +1,25 @@
 import gql from 'graphql-tag';
 import type { QueryResolvers, Resolvers } from '../../../../generated/resolvers-types';
 import { EPISODE_DOCUMENT_NAME } from '../../../constants.js';
-import { firestore } from '../../../firebase.js';
+import { firestore } from '../../../firebase/index.js';
 
-import { getTotalSeconds } from '../../../utils/duration';
+import { episodeConverter } from '../../../firebase/converters/episodeConverter';
 
 
 const typeDefs = gql`
   type Episode {
-  id: ID!
-  episodeId: String!
-  title: String!
-  description: String!
-  url: String!
-  transcriptUrl: String!
-  imageUrl: String!
-  content: String!
-  duration: Int!
-  pubDate: String!
-  # season: String!
-  translatedTranscripts: [TranslatedTranscript!]!
+    id: ID!
+    episodeId: String!
+    title: String!
+    description: String!
+    url: String!
+    transcriptUrl: String!
+    imageUrl: String!
+    content: String!
+    duration: Int!
+    pubDate: String!
+    # season: String!
+    translatedTranscripts: [TranslatedTranscript!]!
   }
   type TranslatedTranscript {
     language: String!
@@ -33,7 +33,7 @@ const typeDefs = gql`
 
 const resolver :QueryResolvers['episode'] = async (parent, args, context, info) => {
   const episodeId = args.episodeId;
-  const episodeDoc = await firestore.collection(EPISODE_DOCUMENT_NAME).doc(episodeId).get();
+  const episodeDoc = await firestore.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
   if (!episodeDoc.exists) {
     throw new Error('The requested episode does not exist.');
   }
@@ -44,25 +44,8 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
     throw new Error('The requested channel does not exist.');
   }
   
-  const translatedTranscripts = Object.keys(episodeData.translatedTranscripts || {}).map((language) => {
-    return {
-      language,
-      transcript: episodeData.translatedTranscripts[language],
-    };
-  });
   const episode = {
-    id: episodeDoc.id,
-    episodeId: episodeDoc.id,
-    title: episodeData.title,
-    description: episodeData.description,
-    url: episodeData.url,
-    transcriptUrl: episodeData.transcriptUrl,
-    imageUrl: episodeData.imageUrl,
-    content: episodeData.content,
-    duration: getTotalSeconds(episodeData.duration),
-    pubDate: episodeData.pubDate,
-    season: episodeData.season,
-    translatedTranscripts,
+    ...episodeData
   };
   return episode;
 }
