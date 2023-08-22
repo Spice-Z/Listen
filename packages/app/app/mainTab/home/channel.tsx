@@ -1,13 +1,14 @@
 import { Stack, useRouter, useGlobalSearchParams } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { theme } from "../../../feature/styles/theme";
-import { Suspense, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import ChannelInfo from "../../../feature/Channel/components/ChannelInfo";
 import EpisodeCard from "../../../feature/Episode/components/EpisodeCard";
 import { useEpisodesByChannelId } from "../../../feature/Episode/hooks/useEpisodesByChannelId";
 import SquareShimmer from "../../../feature/Shimmer/SquareShimmer";
 import { gql } from "../../../feature/graphql/__generated__";
 import { useSuspenseQuery } from "@apollo/client";
+import WithSuspense from "../../../feature/Suspense/WithSuspense";
 
 const GET_CHANNEL = gql(/* GraphQL */`
   query GetChannel($channelId: String!) {
@@ -113,9 +114,9 @@ function FallBack() {
 }
 
 export default function withSuspense() {
-  return <Suspense fallback={<FallBack />}>
+  return <WithSuspense fallback={<FallBack />}>
     <Channel />
-  </Suspense>
+  </WithSuspense>
 }
 
 const styles = StyleSheet.create({

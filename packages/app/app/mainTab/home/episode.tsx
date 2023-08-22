@@ -4,11 +4,12 @@ import { useGlobalSearchParams, Stack } from "expo-router";
 import Episode from '../../../feature/Episode/Episode';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
-import { Suspense, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
 import { useEpisodesByChannelId } from '../../../feature/Episode/hooks/useEpisodesByChannelId';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
+import WithSuspense from '../../../feature/Suspense/WithSuspense';
 
 
 const GET_EPISODE = gql(/* GraphQL */`
@@ -142,9 +143,9 @@ function FallBack() {
 }
 
 export default function withSuspense() {
-  return <Suspense fallback={<FallBack />}>
+  return <WithSuspense fallback={<FallBack />}>
     <EpisodePage />
-  </Suspense>
+  </WithSuspense>
 }
 
 const styles = StyleSheet.create({
