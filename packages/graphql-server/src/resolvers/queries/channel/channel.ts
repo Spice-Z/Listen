@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import type { QueryResolvers } from '../../../../generated/resolvers-types';
 import { CHANNEL_DOCUMENT_NAME } from '../../../constants.js';
 import { firestore } from '../../../firebase/index.js';
+import { removeLeadingAndTrailingNewlines } from '../../../utils/string';
 
 const typeDefs = gql`
   type Channel {
@@ -37,9 +38,9 @@ const resolver :QueryResolvers['channel'] = async (parent, args, context, info) 
   return {
     id: channelDoc.id,
     channelId: channelDoc.id,
-    title: channelData.title,
+    title: removeLeadingAndTrailingNewlines(channelData.title),
     imageUrl: channelData.imageUrl,
-    description: channelData.description,
+    description: removeLeadingAndTrailingNewlines(channelData.description),
     author: channelData.author,
     categories: channelData.categories,
     categoriesWithSubs: channelData.categoriesWithSubs,

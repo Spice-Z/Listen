@@ -4,3 +4,7 @@ export function removeLeadingNewline(input: string): string {
  }
  return input;
 }
+
+export function removeLeadingAndTrailingNewlines(input: string): string {
+ return input.replace(/^\n+|\n+$/g, '');
+}

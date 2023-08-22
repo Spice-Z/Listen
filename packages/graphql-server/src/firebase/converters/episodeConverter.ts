@@ -1,6 +1,6 @@
 import type { FirestoreDataConverter } from 'firebase-admin/firestore';
 import { getTotalSeconds } from '../../utils/duration.js';
-import { removeLeadingNewline } from '../../utils/string.js';
+import { removeLeadingAndTrailingNewlines } from '../../utils/string.js';
 
 class Episode {
  constructor(
@@ -73,7 +73,7 @@ export const episodeConverter:FirestoreDataConverter<Episode> = {
    return new Episode(
     snapshot.id,
     snapshot.id,
-    removeLeadingNewline(data.title),
+    removeLeadingAndTrailingNewlines(data.title),
     data.description,
     data.url,
     data.transcriptUrl,
