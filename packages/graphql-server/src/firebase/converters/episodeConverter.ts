@@ -1,5 +1,6 @@
 import type { FirestoreDataConverter } from 'firebase-admin/firestore';
 import { getTotalSeconds } from '../../utils/duration.js';
+import { removeLeadingNewline } from '../../utils/string.js';
 
 class Episode {
  constructor(
@@ -60,7 +61,6 @@ export const episodeConverter:FirestoreDataConverter<Episode> = {
    snapshot,
  ): Episode {
    const data = snapshot.data() as EpisodeDbModel;
-   console.log({data})
    const translatedTranscripts = data.translatedTranscripts === undefined ? [] : Object.keys(data.translatedTranscripts || {}).map((language) => {
     const translatedTranscripts = data.translatedTranscripts || {};
      return {
@@ -73,7 +73,7 @@ export const episodeConverter:FirestoreDataConverter<Episode> = {
    return new Episode(
     snapshot.id,
     snapshot.id,
-    data.title,
+    removeLeadingNewline(data.title),
     data.description,
     data.url,
     data.transcriptUrl,
