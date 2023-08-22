@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import type { QueryResolvers, Resolvers } from '../../../../generated/resolvers-types';
 import { CHANNEL_DOCUMENT_NAME } from '../../../constants.js';
-import { firestore } from '../../../firebase.js';
+import { firestore } from '../../../firebase/index.js';
 
 const typeDefs = gql`
   type Channel {

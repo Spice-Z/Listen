@@ -4,7 +4,7 @@ import { resolvers } from './resolvers/index.js';
 import { readFileSync } from 'node:fs'
 
 import { dirname, join } from 'path'
-import { getFirebaseUIdFromTokenOrThrow } from './firebase.js';
+import { getFirebaseUIdFromTokenOrThrow } from './firebase/index.js';
 
 const port = process.env.PORT || 8080
 
