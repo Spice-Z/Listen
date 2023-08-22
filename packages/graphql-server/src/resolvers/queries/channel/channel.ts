@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import type { QueryResolvers, Resolvers } from '../../../../generated/resolvers-types';
+import type { QueryResolvers } from '../../../../generated/resolvers-types';
 import { CHANNEL_DOCUMENT_NAME } from '../../../constants.js';
 import { firestore } from '../../../firebase/index.js';
 
@@ -48,10 +48,8 @@ const resolver :QueryResolvers['channel'] = async (parent, args, context, info) 
   }
 }
 
-const resolvers:Resolvers = {
-  Query: {
-    channel: resolver,
-  },
+const resolvers:QueryResolvers = {
+  channel: resolver,
 };
 
 

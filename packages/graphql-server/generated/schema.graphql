@@ -10,11 +10,6 @@ directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
 
 directive @key(fields: _FieldSet!) on OBJECT | INTERFACE
 
-type Book {
-  author: String
-  title: String
-}
-
 type Channel {
   author: String!
   categories: [String!]!
@@ -43,7 +38,6 @@ type Episode {
 }
 
 type Query {
-  books: [Book]
   channel(channelId: String!): Channel!
   episode(episodeId: String!): Episode!
 }

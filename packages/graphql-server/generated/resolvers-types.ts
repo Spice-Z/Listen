@@ -18,12 +18,6 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type Book = {
-  __typename?: 'Book';
-  author?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-};
-
 export type Channel = {
   __typename?: 'Channel';
   author: Scalars['String']['output'];
@@ -55,7 +49,6 @@ export type Episode = {
 
 export type Query = {
   __typename?: 'Query';
-  books?: Maybe<Array<Maybe<Book>>>;
   channel: Channel;
   episode: Episode;
 };
@@ -148,7 +141,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  Book: ResolverTypeWrapper<PartialDeep<Book,{recurseIntoArrays: true}>>;
   Boolean: ResolverTypeWrapper<PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>>;
   Channel: ResolverTypeWrapper<PartialDeep<Channel,{recurseIntoArrays: true}>>;
   Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
@@ -161,7 +153,6 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  Book: PartialDeep<Book,{recurseIntoArrays: true}>;
   Boolean: PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>;
   Channel: PartialDeep<Channel,{recurseIntoArrays: true}>;
   Episode: PartialDeep<Episode,{recurseIntoArrays: true}>;
@@ -170,12 +161,6 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {};
   String: PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>;
   TranslatedTranscript: PartialDeep<TranslatedTranscript,{recurseIntoArrays: true}>;
-}>;
-
-export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
-  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type ChannelResolvers<ContextType = any, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = ResolversObject<{
@@ -208,7 +193,6 @@ export type EpisodeResolvers<ContextType = any, ParentType extends ResolversPare
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'channelId'>>;
   episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'episodeId'>>;
 }>;
@@ -220,7 +204,6 @@ export type TranslatedTranscriptResolvers<ContextType = any, ParentType extends 
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
-  Book?: BookResolvers<ContextType>;
   Channel?: ChannelResolvers<ContextType>;
   Episode?: EpisodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
