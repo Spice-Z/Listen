@@ -17,12 +17,6 @@ export type Scalars = {
   _FieldSet: { input: any; output: any; }
 };
 
-export type Book = {
-  __typename?: 'Book';
-  author?: Maybe<Scalars['String']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-};
-
 export type Channel = {
   __typename?: 'Channel';
   author: Scalars['String']['output'];
@@ -37,15 +31,42 @@ export type Channel = {
   title: Scalars['String']['output'];
 };
 
+export type Episode = {
+  __typename?: 'Episode';
+  content: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  duration: Scalars['Int']['output'];
+  episodeId: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  imageUrl: Scalars['String']['output'];
+  pubDate: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  transcriptUrl: Scalars['String']['output'];
+  translatedTranscripts: Array<TranslatedTranscript>;
+  url: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  books?: Maybe<Array<Maybe<Book>>>;
   channel: Channel;
+  episode: Episode;
 };
 
 
 export type QueryChannelArgs = {
   channelId: Scalars['String']['input'];
+};
+
+
+export type QueryEpisodeArgs = {
+  channelId: Scalars['String']['input'];
+  episodeId: Scalars['String']['input'];
+};
+
+export type TranslatedTranscript = {
+  __typename?: 'TranslatedTranscript';
+  language: Scalars['String']['output'];
+  transcript: Scalars['String']['output'];
 };
 
 export type GetChannelQueryVariables = Exact<{
@@ -55,11 +76,22 @@ export type GetChannelQueryVariables = Exact<{
 
 export type GetChannelQuery = { __typename?: 'Query', channel: { __typename?: 'Channel', id: string, title: string, description: string, imageUrl: string, author: string } };
 
-export type GetBooksQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetEpisodeQueryVariables = Exact<{
+  channelId: Scalars['String']['input'];
+  episodeId: Scalars['String']['input'];
+}>;
 
 
-export type GetBooksQuery = { __typename?: 'Query', books?: Array<{ __typename?: 'Book', title?: string | null, author?: string | null } | null> | null };
+export type GetEpisodeQuery = { __typename?: 'Query', episode: { __typename?: 'Episode', id: string, title: string, content: string, url: string, imageUrl: string, duration: number, pubDate: string } };
+
+export type GetChannelInEpisodeQueryVariables = Exact<{
+  channelId: Scalars['String']['input'];
+}>;
+
+
+export type GetChannelInEpisodeQuery = { __typename?: 'Query', channel: { __typename?: 'Channel', id: string, title: string, imageUrl: string, author: string } };
 
 
 export const GetChannelDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetChannel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"channelId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"channel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"channelId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"channelId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"author"}}]}}]}}]} as unknown as DocumentNode<GetChannelQuery, GetChannelQueryVariables>;
-export const GetBooksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetBooks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"books"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"author"}}]}}]}}]} as unknown as DocumentNode<GetBooksQuery, GetBooksQueryVariables>;
+export const GetEpisodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEpisode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"channelId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"episodeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"episode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"channelId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"channelId"}}},{"kind":"Argument","name":{"kind":"Name","value":"episodeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"episodeId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}},{"kind":"Field","name":{"kind":"Name","value":"pubDate"}}]}}]}}]} as unknown as DocumentNode<GetEpisodeQuery, GetEpisodeQueryVariables>;
+export const GetChannelInEpisodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetChannelInEpisode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"channelId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"channel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"channelId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"channelId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"author"}}]}}]}}]} as unknown as DocumentNode<GetChannelInEpisodeQuery, GetChannelInEpisodeQueryVariables>;
