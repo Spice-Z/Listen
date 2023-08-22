@@ -3,9 +3,10 @@ import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import { BackDownIcon, TranslateIcon } from '../feature/icons';
 import TranscriptPlayer from '../feature/Player/TranscriptPlayer';
-import { useCallback, useMemo, useState } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { useTrackPlayer } from '../feature/Player/hooks/useTrackPlayer';
-import { useEpisodeByIds } from '../feature/Episode/hooks/useEpisodeByIds';
+import { gql } from '../feature/graphql/__generated__';
+import { useSuspenseQuery } from '@apollo/client';
 
 function BackButton() {
  const navigation = useNavigation();
@@ -28,23 +29,41 @@ function TranslateIconButton({ onPress }: { onPress: () => void }) {
  );
 }
 
-export default function ModalTranscriptPlayer() {
+const GET_EPISODE_IN_MODAL = gql(/* GraphQL */`
+  query GetEpisodeInModalTranscript($channelId: String!, $episodeId: String!) {
+    episode(channelId: $channelId, episodeId: $episodeId) {
+      id
+      title
+      content
+      url
+      imageUrl
+      duration
+      pubDate
+      translatedTranscripts {
+        language
+        transcript
+      }
+    }
+  }
+`);
+
+export function ModalTranscriptPlayer() {
  const [targetLang, setTargetLang] = useState('ja');
  const { currentTrack } = useTrackPlayer();
  const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
  const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
 
- const { data } = useEpisodeByIds({
-  channelId: currentEpisodeChannelId,
-  episodeId: currentEpisodeId,
+ const { data } = useSuspenseQuery(GET_EPISODE_IN_MODAL, {
+  variables: {
+   channelId: currentEpisodeChannelId,
+   episodeId: currentEpisodeId,
+  }
  })
+ const episode = data.episode
 
  const targetLangList = useMemo(() => {
-  if (data?.translatedTranscripts) {
-   return Object.keys(data?.translatedTranscripts)
-  }
-  return []
- }, [data?.translatedTranscripts])
+  return episode.translatedTranscripts.map((t) => t.language)
+ }, [episode.translatedTranscripts])
 
  const switchTargetLang = useCallback(() => {
   const currentIndex = targetLangList.indexOf(targetLang)
@@ -67,6 +86,12 @@ export default function ModalTranscriptPlayer() {
    </View>
   </>
  );
+}
+
+export default function withSuspense() {
+ return <Suspense>
+  <ModalTranscriptPlayer />
+ </Suspense>
 }
 
 const styles = StyleSheet.create({
