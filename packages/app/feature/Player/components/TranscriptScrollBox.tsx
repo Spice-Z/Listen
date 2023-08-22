@@ -108,21 +108,17 @@ const styles = StyleSheet.create({
   paddingLeft: 8,
   paddingRight: 8,
  },
+ highlighted: {
+  backgroundColor: theme.color.accent,
+ },
+ superHighlighted: {
+  backgroundColor: theme.color.accent90,
+ },
  transcript: {
   fontSize: 16,
   lineHeight: 22,
   color: theme.color.textMain,
   fontWeight: '600',
- },
- highlighted: {
-  backgroundColor: theme.color.accent90,
-  borderLeftWidth: 4,
-  borderLeftColor: theme.color.transparent,
- },
- superHighlighted: {
-  backgroundColor: theme.color.accent,
-  borderLeftWidth: 4,
-  borderLeftColor: theme.color.bgMain,
  },
  noTranscriptText: {
   width: '100%',
