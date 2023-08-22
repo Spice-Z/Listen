@@ -1,4 +1,4 @@
-import type { QueryDocumentSnapshot} from 'firebase-admin/firestore';
+import type { FirestoreDataConverter } from 'firebase-admin/firestore';
 import { getTotalSeconds } from '../../utils/duration.js';
 
 class Episode {
@@ -37,7 +37,7 @@ interface EpisodeDbModel {
   }
 }
 
-export const episodeConverter = {
+export const episodeConverter:FirestoreDataConverter<Episode> = {
  toFirestore(episode: Episode): Omit<EpisodeDbModel,'id'> {
   const translatedTranscripts = episode.translatedTranscripts.reduce((acc, cur) => {
    acc[cur.language] = cur.transcript;
@@ -57,15 +57,17 @@ export const episodeConverter = {
    };
  },
  fromFirestore(
-   snapshot: QueryDocumentSnapshot,
+   snapshot,
  ): Episode {
    const data = snapshot.data() as EpisodeDbModel;
+   console.log({data})
    const translatedTranscripts = Object.keys(data.translatedTranscripts || {}).map((language) => {
      return {
        language,
        transcript: data.translatedTranscripts[language],
      };
    });
+   console.log({translatedTranscripts})
    const duration = getTotalSeconds(data.duration);
    return new Episode(
     snapshot.id,

@@ -35,11 +35,13 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
   console.log('resolver')
   const episodeId = args.episodeId;
   console.log({episodeId})
+  const aaa = await firestore.collection(EPISODE_DOCUMENT_NAME).doc(episodeId).get();
+  console.log({aaa})
   const episodeDoc = await firestore.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
+  console.log({episodeDoc})
   if (!episodeDoc.exists) {
     throw new Error('The requested episode does not exist.');
   }
-  console.log({episodeDoc})
   const episodeData = episodeDoc.data();
 
   if (episodeData === undefined) {
