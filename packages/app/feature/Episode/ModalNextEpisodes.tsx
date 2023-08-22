@@ -15,7 +15,6 @@ import {
  PauseIcon, PlayIcon,
 } from '../icons';
 import { theme } from '../styles/theme';
-import { useEpisodeByIds } from './hooks/useEpisodeByIds';
 import { useRouter } from 'expo-router';
 import { useTrackPlayer } from '../Player/hooks/useTrackPlayer';
 import EpisodeList from './components/EpisodeList';
@@ -39,10 +38,6 @@ function ModalNextEpisodes() {
  } = useTrackPlayer();
  const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
  const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
- const { data } = useEpisodeByIds({
-  channelId: currentEpisodeChannelId,
-  episodeId: currentEpisodeId,
- })
 
  const playPauseButton = useMemo(() => {
   if (isLoading) {
