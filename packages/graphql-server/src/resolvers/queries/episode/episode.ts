@@ -3,7 +3,7 @@ import type { QueryResolvers } from '../../../../generated/resolvers-types';
 import { EPISODE_DOCUMENT_NAME } from '../../../constants.js';
 import { firestore } from '../../../firebase/index.js';
 
-import { episodeConverter } from '../../../firebase/converters/episodeConverter';
+import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
 
 
 const typeDefs = gql`

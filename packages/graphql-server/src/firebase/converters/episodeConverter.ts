@@ -1,5 +1,5 @@
 import type { QueryDocumentSnapshot} from 'firebase-admin/firestore';
-import { getTotalSeconds } from '../../utils/duration';
+import { getTotalSeconds } from '../../utils/duration.js';
 
 class Episode {
  constructor(
