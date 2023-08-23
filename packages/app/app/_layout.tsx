@@ -93,6 +93,6 @@ export default function Layout() {
 const styles = StyleSheet.create({
   miniPlayerContainer: {
     position: "absolute",
-    bottom: 60,
+    bottom: 84,
   }
 })
