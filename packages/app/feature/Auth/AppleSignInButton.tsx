@@ -9,8 +9,8 @@ const AppleSignInButton = memo(() => {
    buttonStyle={AppleButton.Style.WHITE}
    buttonType={AppleButton.Type.SIGN_IN}
    style={{
-    width: 160,
-    height: 45,
+    width: '80%',
+    height: 40,
    }}
    onPress={signInWithApple}
   />

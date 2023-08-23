@@ -11,11 +11,13 @@ const SignIn = memo(() => {
    headerShown: false,
   }} />
   <SafeAreaView style={styles.container}>
-   <Image width={2292} height={2292} style={styles.image} source={require('../assets/image/login-artwork.png')} />
-   <Text style={styles.text}>{`Listen English Podcast\nwith your language transcript`}</Text>
+   <View>
+    <Image width={2292} height={2292} style={styles.image} source={require('../assets/image/login-artwork.png')} />
+    <Text style={styles.text}>{`Listen English Podcast\nwith your language transcript`}</Text>
+   </View>
    <View style={styles.buttonContainer}>
     <AppleSignInButton />
-    <View style={{ height: 16 }} />
+    <View style={{ height: 20 }} />
     <AppleSignInButton />
    </View>
   </SafeAreaView >
