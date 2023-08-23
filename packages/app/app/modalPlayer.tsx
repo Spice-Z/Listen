@@ -3,6 +3,7 @@ import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import ModalPlayer from '../feature/Player/ModalPlayer';
 import { BackDownIcon } from '../feature/icons';
+import { memo } from 'react';
 
 function BackButton() {
   const navigation = useNavigation();
@@ -15,7 +16,7 @@ function BackButton() {
   );
 }
 
-export default function modalPlayer() {
+const modalPlayer = memo(() => {
   return (
     <>
       <Stack.Screen
@@ -30,7 +31,11 @@ export default function modalPlayer() {
       </View>
     </>
   );
-}
+})
+
+modalPlayer.displayName = 'ModalPlayer';
+
+export default modalPlayer;
 
 const styles = StyleSheet.create({
   container: {

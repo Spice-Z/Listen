@@ -3,7 +3,7 @@ import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import { BackDownIcon, TranslateIcon } from '../feature/icons';
 import TranscriptPlayer from '../feature/Player/TranscriptPlayer';
-import { useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { useTrackPlayer } from '../feature/Player/hooks/useTrackPlayer';
 import { gql } from '../feature/graphql/__generated__';
 import { useQuery } from '@apollo/client';
@@ -47,7 +47,7 @@ const GET_EPISODE_IN_MODAL = gql(/* GraphQL */`
   }
 `);
 
-export default function ModalTranscriptPlayer() {
+const ModalTranscriptPlayer = memo(() => {
   const [targetLang, setTargetLang] = useState('ja');
   const { currentTrack } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
@@ -89,13 +89,11 @@ export default function ModalTranscriptPlayer() {
       </View>
     </>
   );
-}
+})
 
-// export default function withSuspense() {
-//   return <Suspense>
-//     <ModalTranscriptPlayer />
-//   </Suspense>
-// }
+ModalTranscriptPlayer.displayName = 'ModalTranscriptPlayer';
+
+export default ModalTranscriptPlayer;
 
 const styles = StyleSheet.create({
   container: {
