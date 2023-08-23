@@ -1,5 +1,5 @@
 import { Stack, usePathname } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { theme } from "../feature/styles/theme";
 import { StyleSheet, View } from "react-native";
 import MiniPlayer from "../feature/Player/MiniPlayer";
@@ -10,6 +10,7 @@ import {
 import { AuthProvider } from "../feature/context/auth/AuthProvider";
 import { useSetupTrackPlayer } from "../feature/Player/hooks/useSetupTrackPlayer";
 import { ApolloProviderHelper } from "../feature/graphql/ApolloProviderHepler";
+import { StatusBar } from "expo-status-bar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,12 +25,7 @@ export const unstable_settings = {
 };
 
 export default function Layout() {
-  useEffect(() => {
-    console.log("Layout");
-    return () => {
-      console.log("Layout unmount");
-    }
-  }, []);
+
   useSetupTrackPlayer()
   const pathname = usePathname();
   const hideMiniPlayer = useMemo(() => {
@@ -41,6 +37,7 @@ export default function Layout() {
     <AuthProvider>
       <ApolloProviderHelper>
         <QueryClientProvider client={queryClient}>
+          <StatusBar style="inverted" />
           <Stack>
             <Stack.Screen name="mainTab" options={{
               headerShown: false,

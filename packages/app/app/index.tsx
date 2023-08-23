@@ -6,7 +6,7 @@ import { Stack } from "expo-router";
 export default function Root() {
   return <>
     <Stack.Screen options={{ headerShown: false }} />
-    <StatusBar style="auto" />
+    <StatusBar style="inverted" />
     <View style={styles.container} />
   </>
 }

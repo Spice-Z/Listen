@@ -25,7 +25,7 @@ export const useTrackPlayer = () => {
   const isPlaying = useMemo(() => playbackState === State.Playing, [playbackState]);
   const isLoading = useMemo(
     () => playbackState === State.Buffering || playbackState === State.Connecting,
-    [playbackState]
+    [playbackState],
   );
 
   const getCurrentTrack = useCallback(async (): Promise<TrackPlayerTrack | null> => {
@@ -35,6 +35,7 @@ export const useTrackPlayer = () => {
   }, []);
 
   const _updateCurrentInfo = useCallback(async () => {
+    // TODO: TrackPlayerが初期化されていなかったら何もしない
     const currentTrack = await getCurrentTrack();
     setCurrentTrack(currentTrack);
     const duration = await TrackPlayer.getDuration();

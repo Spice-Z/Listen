@@ -7,7 +7,6 @@ import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { useEpisodesOfAvailable } from '../../../feature/Episode/hooks/useEpisodesOfAvailable';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
-import { useSignOut } from '../../../feature/Auth/hooks/useSignOut';
 
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
@@ -39,7 +38,6 @@ function App() {
   const onPressChannel = useCallback((channelId: string) => {
     router.push({ pathname: '/mainTab/home/channel', params: { channelId } })
   }, [router])
-  const { signOut } = useSignOut()
   return (
     <>
       <Stack.Screen
@@ -47,7 +45,7 @@ function App() {
           title: 'Shows'
         }}
       />
-      <StatusBar style="auto" />
+      <StatusBar style="inverted" />
       <View style={styles.container}>
         <Pressable
           onPress={onPress}
@@ -63,9 +61,6 @@ function App() {
           }}
         >
           <Text numberOfLines={3} style={styles.channelTitle}>Play!!</Text>
-        </Pressable>
-        <Pressable onPress={signOut}>
-          <Text style={styles.channelTitle}>sign out!!</Text>
         </Pressable>
         <FlatList
           data={query.data ?? []}
