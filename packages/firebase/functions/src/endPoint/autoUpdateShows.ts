@@ -31,9 +31,12 @@ export const autoUpdateShows = functions
         // }
         const pendingEpisodesPromises = episodes.map(async (episode) => {
           // TODO: 一ヶ月以上前のエピソードはトランスクリプト生成対象外とする
-          // if (episode.pubDate.toDate() < new Date(new Date().setMonth(new Date().getMonth() - 1))) {
-          //   return;
-          // }
+          if (
+            episode.pubDate.valueOf() <
+            new Date(new Date().setMonth(new Date().getMonth() - 1)).valueOf()
+          ) {
+            return;
+          }
           await admin
             .firestore()
             .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
@@ -45,6 +48,6 @@ export const autoUpdateShows = functions
             });
         });
         await Promise.all(pendingEpisodesPromises);
-      })
+      }),
     );
   });

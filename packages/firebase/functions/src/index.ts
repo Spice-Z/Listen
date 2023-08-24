@@ -3,7 +3,6 @@ import { registerChannel } from './endPoint/registerChannel';
 import { getChannels } from './endPoint/getChannels';
 import { getChannelById } from './endPoint/getChannelById';
 import { getEpisodesByChannelId } from './endPoint/getEpisodesByChannelId';
-import { getEpisodeById } from './endPoint/getEpisodeById';
 import { autoGenerateTranscript } from './endPoint/autoGenerateTranscript';
 import { autoGenerateTranslatedTranscript } from './endPoint/autoGenerateTranslatedTranscript';
 import { generateTranslatedTranscript } from './endPoint/generateTranslatedTranscript';
@@ -26,7 +25,6 @@ export {
   getChannelById,
   getEpisodesByChannelId,
   getAvailableEpisodes,
-  getEpisodeById,
   generateTranslatedTranscript,
   generateTranscriptFromIds,
   updateShow,
