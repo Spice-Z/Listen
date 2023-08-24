@@ -10,6 +10,7 @@
     "run:ios": "react-native run-ios",
     "build:local:android": "eas build --platform android --profile preview --local",
     "build:local:ios": "eas build --profile development-simulator --platform ios --local",
+    "build:local:ios-preview": "eas build --profile preview --platform ios --local",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "gql:generate": "graphql-codegen"
