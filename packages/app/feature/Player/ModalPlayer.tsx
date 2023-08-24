@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.color.bgMain,
     color: theme.color.textMain,
     width: '100%',
+    height: '100%',
   },
   episodeContainer: {
     marginTop: 20,

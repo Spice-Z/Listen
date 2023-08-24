@@ -57,7 +57,6 @@ function App() {
             flexDirection: 'row',
             alignItems: 'center',
             marginHorizontal: 16,
-            marginTop: 16,
           }}
         >
           <Text numberOfLines={3} style={styles.channelTitle}>Play!!</Text>
