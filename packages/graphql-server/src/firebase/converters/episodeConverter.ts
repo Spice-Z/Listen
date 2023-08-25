@@ -71,7 +71,7 @@ export const episodeConverter:FirestoreDataConverter<Episode> = {
    });
    const duration = getTotalSeconds(data.duration);
    return new Episode(
-    toGlobalId('Episode', data.id),
+    toGlobalId('Episode', snapshot.id),
     snapshot.id,
     removeLeadingAndTrailingNewlines(data.title),
     data.description,
