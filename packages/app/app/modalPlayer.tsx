@@ -31,7 +31,7 @@ const modalPlayer = memo(() => {
       </View>
     </>
   );
-})
+});
 
 modalPlayer.displayName = 'ModalPlayer';
 

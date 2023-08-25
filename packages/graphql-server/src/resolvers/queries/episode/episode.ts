@@ -31,14 +31,18 @@ const typeDefs = gql`
   }
 `;
 
-const resolver :QueryResolvers['episode'] = async (parent, args, context, info) => {
-  const {channelId, episodeId} = args;
+const resolver: QueryResolvers['episode'] = async (parent, args, context, info) => {
+  const { channelId, episodeId } = args;
   // TODO: channel存在チェック
   const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
-  console.log({episodeId})
-  const episodeDoc = await channelRef.collection(EPISODE_DOCUMENT_NAME).withConverter(episodeConverter).doc(episodeId).get();
+  console.log({ episodeId });
+  const episodeDoc = await channelRef
+    .collection(EPISODE_DOCUMENT_NAME)
+    .withConverter(episodeConverter)
+    .doc(episodeId)
+    .get();
   if (!episodeDoc.exists) {
-    throw new GraphQLError("The requested episode does not exist.", {
+    throw new GraphQLError('The requested episode does not exist.', {
       extensions: {
         code: 'NOT_FOUND',
       },
@@ -46,9 +50,8 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
   }
   const episodeData = episodeDoc.data();
 
-
   if (episodeData === undefined) {
-    throw new GraphQLError("The requested episode does not exist.", {
+    throw new GraphQLError('The requested episode does not exist.', {
       extensions: {
         code: 'NOT_FOUND',
       },
@@ -56,17 +59,16 @@ const resolver :QueryResolvers['episode'] = async (parent, args, context, info) 
   }
 
   const episode = {
-    ...episodeData
+    ...episodeData,
   };
   return episode;
-}
-
-const resolvers:QueryResolvers = {
-    episode: resolver,
 };
 
+const resolvers: QueryResolvers = {
+  episode: resolver,
+};
 
 export default {
   typeDefs,
-  resolvers
+  resolvers,
 };

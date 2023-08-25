@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useGlobalSearchParams, Stack } from "expo-router";
+import { useGlobalSearchParams, Stack } from 'expo-router';
 import Episode from '../../../feature/Episode/Episode';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
@@ -11,8 +11,7 @@ import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import WithSuspense from '../../../feature/Suspense/WithSuspense';
 
-
-const GET_EPISODE = gql(/* GraphQL */`
+const GET_EPISODE = gql(/* GraphQL */ `
   query GetEpisode($channelId: String!, $episodeId: String!) {
     episode(channelId: $channelId, episodeId: $episodeId) {
       id
@@ -27,7 +26,7 @@ const GET_EPISODE = gql(/* GraphQL */`
   }
 `);
 
-const GET_CHANNEL = gql(/* GraphQL */`
+const GET_CHANNEL = gql(/* GraphQL */ `
   query GetChannelInEpisode($channelId: String!) {
     channel(channelId: $channelId) {
       id
@@ -44,16 +43,16 @@ function EpisodePage() {
     variables: {
       channelId: channelId as string,
       episodeId: episodeId as string,
-    }
+    },
   });
-  const episode = data.episode
+  const episode = data.episode;
 
   const { data: channelData } = useSuspenseQuery(GET_CHANNEL, {
     variables: {
       channelId: channelId as string,
-    }
-  })
-  const channel = channelData.channel
+    },
+  });
+  const channel = channelData.channel;
 
   const { data: episodesData } = useEpisodesByChannelId(channelId as string);
 
@@ -62,20 +61,20 @@ function EpisodePage() {
     if (isLoading) {
       return currentTrack?.url === episode.url;
     }
-    return false
-  }, [currentTrack?.url, episode, isLoading])
+    return false;
+  }, [currentTrack?.url, episode, isLoading]);
   const isThisEpisodePlaying = useMemo(() => {
     if (!episode) {
-      return false
+      return false;
     }
     if (!isPlaying) {
       return false;
     }
     return currentTrack?.url === episode.url;
-  }, [currentTrack?.url, episode, isPlaying])
+  }, [currentTrack?.url, episode, isPlaying]);
   const onPressPlay = useCallback(async () => {
     if (isThisEpisodePlaying) {
-      TrackPlayer.pause()
+      TrackPlayer.pause();
     } else {
       const track: TrackPlayerTrack = {
         id: episode.episodeId,
@@ -86,68 +85,89 @@ function EpisodePage() {
         url: episode.url,
         duration: episode.duration,
         // TODO: add Date from pubDate
-      }
-      console.log({ track })
+      };
+      console.log({ track });
       await playTrackIfNotCurrentlyPlaying(track);
       // add queue
       if (episodesData) {
-        const tracks: TrackPlayerTrack[] = episodesData.filter(episode => episode.id !== episode.id).map((episode) => {
-          return {
-            id: episode.id,
-            episodeId: episode.id,
-            channelId: channel.id,
-            title: episode.title,
-            artist: channel.title,
-            artwork: episode.imageUrl || channel.imageUrl,
-            url: episode.url,
-            duration: episode.duration,
-          }
-        })
+        const tracks: TrackPlayerTrack[] = episodesData
+          .filter((episode) => episode.id !== episode.id)
+          .map((episode) => {
+            return {
+              id: episode.id,
+              episodeId: episode.id,
+              channelId: channel.id,
+              title: episode.title,
+              artist: channel.title,
+              artwork: episode.imageUrl || channel.imageUrl,
+              url: episode.url,
+              duration: episode.duration,
+            };
+          });
         if (tracks.length > 1) {
-          console.log(tracks.length)
-          TrackPlayer.add(tracks)
+          console.log(tracks.length);
+          TrackPlayer.add(tracks);
         }
       }
     }
-  }, [channel.id, channel.imageUrl, channel.title, episode.duration, episode.episodeId, episode.id, episode.imageUrl, episode.title, episode.url, episodesData, isThisEpisodePlaying, playTrackIfNotCurrentlyPlaying])
+  }, [
+    channel.id,
+    channel.imageUrl,
+    channel.title,
+    episode.duration,
+    episode.episodeId,
+    episode.id,
+    episode.imageUrl,
+    episode.title,
+    episode.url,
+    episodesData,
+    isThisEpisodePlaying,
+    playTrackIfNotCurrentlyPlaying,
+  ]);
 
-  return <>
-    <Stack.Screen
-      options={{
-        title: ''
-      }}
-    />
-    <View style={styles.container}>
+  return (
+    <>
       <Stack.Screen
         options={{
-          title: episode.title || '',
+          title: '',
         }}
       />
-      <Episode
-        channelTitle={channel.title}
-        date={new Date()}
-        episodeTitle={episode.title}
-        episodeDescription={episode.content}
-        episodeImageUrl={episode.imageUrl || channel.imageUrl}
-        duration={episode.duration}
-        isPlaying={isThisEpisodePlaying}
-        isLoading={isThisEpisodeLoading}
-        onPressPlay={onPressPlay}
-      />
-    </View>
-  </>;
+      <View style={styles.container}>
+        <Stack.Screen
+          options={{
+            title: episode.title || '',
+          }}
+        />
+        <Episode
+          channelTitle={channel.title}
+          date={new Date()}
+          episodeTitle={episode.title}
+          episodeDescription={episode.content}
+          episodeImageUrl={episode.imageUrl || channel.imageUrl}
+          duration={episode.duration}
+          isPlaying={isThisEpisodePlaying}
+          isLoading={isThisEpisodeLoading}
+          onPressPlay={onPressPlay}
+        />
+      </View>
+    </>
+  );
 }
 
 function FallBack() {
-  return <View style={styles.container}>
-    <Text style={{ color: 'white' }}>loading...</Text>
-  </View>
+  return (
+    <View style={styles.container}>
+      <Text style={{ color: 'white' }}>loading...</Text>
+    </View>
+  );
 }
 
 export default function withSuspense() {
-  return <WithSuspense fallback={<FallBack />}>
-    <EpisodePage />
-  </WithSuspense>
+  return (
+    <WithSuspense fallback={<FallBack />}>
+      <EpisodePage />
+    </WithSuspense>
+  );
 }
 
 const styles = StyleSheet.create({

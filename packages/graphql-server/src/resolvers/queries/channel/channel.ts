@@ -21,31 +21,34 @@ const typeDefs = gql`
   }
 `;
 
-const resolver :QueryResolvers['channel'] = async (parent, args, context, info) => {
+const resolver: QueryResolvers['channel'] = async (parent, args, context, info) => {
   const channelId = args.channelId;
-  const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).withConverter(channelConverter).doc(channelId).get();
-  console.log({channelDoc})
+  const channelDoc = await firestore
+    .collection(CHANNEL_DOCUMENT_NAME)
+    .withConverter(channelConverter)
+    .doc(channelId)
+    .get();
+  console.log({ channelDoc });
   if (!channelDoc.exists) {
     throw new Error('The requested channel does not exist.');
   }
 
   const channelData = channelDoc.data();
-  console.log({channelData})
+  console.log({ channelData });
   if (channelData === undefined) {
     throw new Error('The requested channel does not exist.');
   }
 
   return {
-    ...channelData
-  }
-}
+    ...channelData,
+  };
+};
 
-const resolvers:QueryResolvers = {
+const resolvers: QueryResolvers = {
   channel: resolver,
 };
 
-
 export default {
   typeDefs,
-  resolvers
+  resolvers,
 };

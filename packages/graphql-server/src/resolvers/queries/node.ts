@@ -1,6 +1,6 @@
-import gql from "graphql-tag";
-import type { QueryResolvers} from "../../../generated/resolvers-types";
-import { fromGlobalIdOrThrow } from "../../utils/globalId.js";
+import gql from 'graphql-tag';
+import type { QueryResolvers } from '../../../generated/resolvers-types';
+import { fromGlobalIdOrThrow } from '../../utils/globalId.js';
 
 const typeDefs = gql`
   interface Node {
@@ -11,25 +11,24 @@ const typeDefs = gql`
   }
 `;
 
-const resolver :QueryResolvers['node'] = async (parent, args, context, info) => {
+const resolver: QueryResolvers['node'] = async (parent, args, context, info) => {
   const _id = args.id;
-  const {type} = fromGlobalIdOrThrow(_id);
+  const { type } = fromGlobalIdOrThrow(_id);
   //TODO: 実装
-  if(type === 'Episode') {
-    return null
+  if (type === 'Episode') {
+    return null;
   }
   if (type === 'Channel') {
-    return null
+    return null;
   }
-  return null
-}
+  return null;
+};
 
-const resolvers:QueryResolvers = {
+const resolvers: QueryResolvers = {
   node: resolver,
 };
 
-
 export default {
   typeDefs,
-  resolvers
+  resolvers,
 };

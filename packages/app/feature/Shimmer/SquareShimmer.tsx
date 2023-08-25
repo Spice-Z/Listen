@@ -11,66 +11,68 @@ const LOCATIONS = [0.3, 0.5, 0.7];
 const ANIMATION = new Animated.Value(START);
 
 const runAnimation = () => {
- ANIMATION.setValue(START);
- Animated.timing(ANIMATION, {
-  toValue: END,
-  duration: DURATION,
-  easing: Easing.linear,
-  useNativeDriver: true,
- }).start(runAnimation);
+  ANIMATION.setValue(START);
+  Animated.timing(ANIMATION, {
+    toValue: END,
+    duration: DURATION,
+    easing: Easing.linear,
+    useNativeDriver: true,
+  }).start(runAnimation);
 };
 
 const linear = ANIMATION.interpolate({
- inputRange: [START, END],
- outputRange: [-SCREEN_WIDTH, SCREEN_WIDTH],
+  inputRange: [START, END],
+  outputRange: [-SCREEN_WIDTH, SCREEN_WIDTH],
 });
 
 runAnimation();
 
 type Props = {
- width: number | string;
- height: number | string;
+  width: number | string;
+  height: number | string;
 };
 
 function Shimmer({ width, height }: Props) {
- const [positionX, setPositionX] = useState(null);
- let viewRef = null;
- return (
-  <View
-   style={[styles.shimmer, { width, height }]}
-   ref={ref => (viewRef = ref)}
-   onLayout={() => {
-    if (viewRef) {
-     viewRef.measure((_x, _y, _width, _height, pageX, _pageY) => {
-      setPositionX(pageX);
-     });
-    }
-   }}>
-   {positionX !== null && (
-    <Animated.View
-     style={{
-      flex: 1,
-      left: -positionX,
-      transform: [{ translateX: linear }],
-     }}>
-     <LinearGradient
-      style={{ flex: 1, width: SCREEN_WIDTH }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      locations={LOCATIONS}
-      colors={COLORS}
-     />
-    </Animated.View>
-   )}
-  </View>
- );
-};
+  const [positionX, setPositionX] = useState(null);
+  let viewRef = null;
+  return (
+    <View
+      style={[styles.shimmer, { width, height }]}
+      ref={(ref) => (viewRef = ref)}
+      onLayout={() => {
+        if (viewRef) {
+          viewRef.measure((_x, _y, _width, _height, pageX, _pageY) => {
+            setPositionX(pageX);
+          });
+        }
+      }}
+    >
+      {positionX !== null && (
+        <Animated.View
+          style={{
+            flex: 1,
+            left: -positionX,
+            transform: [{ translateX: linear }],
+          }}
+        >
+          <LinearGradient
+            style={{ flex: 1, width: SCREEN_WIDTH }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            locations={LOCATIONS}
+            colors={COLORS}
+          />
+        </Animated.View>
+      )}
+    </View>
+  );
+}
 
 export default memo(Shimmer);
 
 const styles = StyleSheet.create({
- shimmer: {
-  overflow: 'hidden',
-  backgroundColor: '#eee',
- },
+  shimmer: {
+    overflow: 'hidden',
+    backgroundColor: '#eee',
+  },
 });

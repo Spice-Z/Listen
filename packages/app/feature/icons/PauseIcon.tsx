@@ -1,10 +1,10 @@
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
 type Props = {
-  width: number,
-  height: number,
-  fill?: string
-}
+  width: number;
+  height: number;
+  fill?: string;
+};
 
 const PauseIcon = React.memo<Props>((props) => (
   <Svg viewBox="0 0 24 24" {...props}>

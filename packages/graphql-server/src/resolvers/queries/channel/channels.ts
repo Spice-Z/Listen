@@ -14,31 +14,33 @@ const typeDefs = gql`
     pageInfo: PageInfo!
   }
   input ChannelsInput {
-    first: Int!,
-    after: String,
-    before: String,
+    first: Int!
+    after: String
+    before: String
     last: Int
   }
   extend type Query {
-    channels(input:ChannelsInput!): ChannelConnection!
+    channels(input: ChannelsInput!): ChannelConnection!
   }
 `;
 
-
-const resolver :QueryResolvers['channels'] = async (parent, args, context, info) => {
+const resolver: QueryResolvers['channels'] = async (parent, args, context, info) => {
   const input = args.input;
-  const {first} = input;
-  const snapshot = await firestore.collection(CHANNEL_DOCUMENT_NAME).withConverter(channelConverter).limit(first).get();
+  const { first } = input;
+  const snapshot = await firestore
+    .collection(CHANNEL_DOCUMENT_NAME)
+    .withConverter(channelConverter)
+    .limit(first)
+    .get();
   const edges = snapshot.docs.map((doc) => {
     const data = doc.data();
     return {
       cursor: doc.id,
       node: {
-        ...data
-      }
-    }
+        ...data,
+      },
+    };
   });
-
 
   return {
     edges,
@@ -47,16 +49,15 @@ const resolver :QueryResolvers['channels'] = async (parent, args, context, info)
       hasPreviousPage: false,
       startCursor: edges[0].cursor,
       endCursor: edges[edges.length - 1].cursor,
-  }
-}
-}
+    },
+  };
+};
 
-const resolvers:QueryResolvers = {
+const resolvers: QueryResolvers = {
   channels: resolver,
 };
 
-
 export default {
   typeDefs,
-  resolvers
+  resolvers,
 };

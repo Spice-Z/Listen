@@ -1,11 +1,11 @@
-import { ReactNode, memo, useEffect, useState } from "react";
-import { useProtectedRoute } from "./context";
-import { AuthContext } from "./context";
+import { ReactNode, memo, useEffect, useState } from 'react';
+import { useProtectedRoute } from './context';
+import { AuthContext } from './context';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 type Props = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export const AuthProvider = memo<Props>((props) => {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
@@ -15,17 +15,16 @@ export const AuthProvider = memo<Props>((props) => {
     if (user) {
       user.getIdToken().then((token) => {
         setFirebaseToken(token);
-      })
+      });
     } else {
       setFirebaseToken(null);
     }
-  }
+  };
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   useProtectedRoute(user);
 
@@ -33,11 +32,12 @@ export const AuthProvider = memo<Props>((props) => {
     <AuthContext.Provider
       value={{
         user,
-        firebaseToken
-      }}>
+        firebaseToken,
+      }}
+    >
       {props.children}
     </AuthContext.Provider>
   );
-})
+});
 
-AuthProvider.displayName = "AuthProvider";
+AuthProvider.displayName = 'AuthProvider';

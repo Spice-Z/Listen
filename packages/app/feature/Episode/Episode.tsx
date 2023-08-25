@@ -1,5 +1,13 @@
 import { memo, useMemo } from 'react';
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { theme } from '../styles/theme';
 import { PauseIcon, PlayIcon } from '../icons';
 import { formatDMMMYY } from '../format/date';
@@ -17,51 +25,63 @@ type Props = {
   onPressPlay: () => void;
 };
 
-const Episode = memo(({
-  channelTitle,
-  episodeTitle,
-  episodeDescription,
-  episodeImageUrl,
-  duration,
-  date,
-  isPlaying,
-  isLoading,
-  onPressPlay
-}: Props) => {
-  const formattedDate = useMemo(() => {
-    return formatDMMMYY(date)
-  }, [date])
+const Episode = memo(
+  ({
+    channelTitle,
+    episodeTitle,
+    episodeDescription,
+    episodeImageUrl,
+    duration,
+    date,
+    isPlaying,
+    isLoading,
+    onPressPlay,
+  }: Props) => {
+    const formattedDate = useMemo(() => {
+      return formatDMMMYY(date);
+    }, [date]);
 
-  const formattedDuration = useMemo(() => {
-    return formatDuration(duration)
-  }, [duration])
+    const formattedDuration = useMemo(() => {
+      return formatDuration(duration);
+    }, [duration]);
 
-  const playPauseButton = useMemo(() => {
-    if (isLoading) {
-      return <ActivityIndicator />
-    }
-    return isPlaying ? <PauseIcon fill={theme.color.bgMain} width={28} height={28} /> : <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
-  }, [isLoading, isPlaying])
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.head}>
-        <Image style={styles.image} source={{ uri: episodeImageUrl }} />
-        <View style={styles.texts}>
-          <Text numberOfLines={2} style={styles.channelTitle}>{channelTitle}</Text>
-          <Text style={styles.date}>{formattedDate}</Text>
+    const playPauseButton = useMemo(() => {
+      if (isLoading) {
+        return <ActivityIndicator />;
+      }
+      return isPlaying ? (
+        <PauseIcon fill={theme.color.bgMain} width={28} height={28} />
+      ) : (
+        <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
+      );
+    }, [isLoading, isPlaying]);
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.head}>
+          <Image style={styles.image} source={{ uri: episodeImageUrl }} />
+          <View style={styles.texts}>
+            <Text numberOfLines={2} style={styles.channelTitle}>
+              {channelTitle}
+            </Text>
+            <Text style={styles.date}>{formattedDate}</Text>
+          </View>
         </View>
-      </View>
-      <Text selectable style={styles.episodeTitle}>{episodeTitle}</Text>
-      <View style={styles.buttonContainer}>
-        <Text style={styles.duration} >{formattedDuration}</Text>
-        <Pressable style={styles.playButton} onPress={onPressPlay}>
-          {playPauseButton}
-        </Pressable>
-      </View>
-      <Text selectable style={styles.description}>{episodeDescription}</Text>
-    </ScrollView>
-  );
-})
+        <Text selectable style={styles.episodeTitle}>
+          {episodeTitle}
+        </Text>
+        <View style={styles.buttonContainer}>
+          <Text style={styles.duration}>{formattedDuration}</Text>
+          <Pressable style={styles.playButton} onPress={onPressPlay}>
+            {playPauseButton}
+          </Pressable>
+        </View>
+        <Text selectable style={styles.description}>
+          {episodeDescription}
+        </Text>
+      </ScrollView>
+    );
+  },
+);
 
 Episode.displayName = 'Episode';
 
@@ -69,7 +89,7 @@ export default Episode;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16
+    padding: 16,
   },
   head: {
     flexDirection: 'row',
@@ -113,7 +133,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   duration: {
-    color: theme.color.textWeak
+    color: theme.color.textWeak,
   },
   buttonContainer: {
     marginTop: 8,
@@ -129,5 +149,5 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

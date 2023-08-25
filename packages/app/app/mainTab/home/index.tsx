@@ -6,20 +6,23 @@ import { Suspense, useCallback } from 'react';
 import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 
-const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
+const SeparatorComponent = () => <View style={{ marginTop: 12 }} />;
 
 function App() {
   const query = useChannels();
 
   const router = useRouter();
-  const onPressChannel = useCallback((channelId: string) => {
-    router.push({ pathname: '/mainTab/home/channel', params: { channelId } })
-  }, [router])
+  const onPressChannel = useCallback(
+    (channelId: string) => {
+      router.push({ pathname: '/mainTab/home/channel', params: { channelId } });
+    },
+    [router],
+  );
   return (
     <>
       <Stack.Screen
         options={{
-          title: 'Shows'
+          title: 'Shows',
         }}
       />
       <StatusBar style="inverted" />
@@ -27,11 +30,15 @@ function App() {
         <FlatList
           data={query.data ?? []}
           renderItem={({ item }) => {
-            return <Pressable style={styles.channelCard} onPress={() => onPressChannel(item.id)}>
-              {/* @ts-ignore */}
-              <Image style={styles.artwork} src={item.imageUrl} />
-              <Text numberOfLines={3} style={styles.channelTitle}>{item.title}</Text>
-            </Pressable>
+            return (
+              <Pressable style={styles.channelCard} onPress={() => onPressChannel(item.id)}>
+                {/* @ts-ignore */}
+                <Image style={styles.artwork} src={item.imageUrl} />
+                <Text numberOfLines={3} style={styles.channelTitle}>
+                  {item.title}
+                </Text>
+              </Pressable>
+            );
           }}
           ItemSeparatorComponent={SeparatorComponent}
           contentContainerStyle={styles.contentContainer}
@@ -42,18 +49,20 @@ function App() {
 }
 
 function FallBack() {
-  return <View style={styles.container}>
-    <View style={{ height: 16 }} />
-    <SquareShimmer width='100%' height={80} />
-    <View style={{ height: 16 }} />
-    <SquareShimmer width='100%' height={80} />
-    <View style={{ height: 16 }} />
-    <SquareShimmer width='100%' height={80} />
-    <View style={{ height: 16 }} />
-    <SquareShimmer width='100%' height={80} />
-    <View style={{ height: 16 }} />
-    <SquareShimmer width='100%' height={80} />
-  </View>
+  return (
+    <View style={styles.container}>
+      <View style={{ height: 16 }} />
+      <SquareShimmer width="100%" height={80} />
+      <View style={{ height: 16 }} />
+      <SquareShimmer width="100%" height={80} />
+      <View style={{ height: 16 }} />
+      <SquareShimmer width="100%" height={80} />
+      <View style={{ height: 16 }} />
+      <SquareShimmer width="100%" height={80} />
+      <View style={{ height: 16 }} />
+      <SquareShimmer width="100%" height={80} />
+    </View>
+  );
 }
 
 export default function withSuspense() {
@@ -61,7 +70,7 @@ export default function withSuspense() {
     <Suspense fallback={<FallBack />}>
       <App />
     </Suspense>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -98,4 +107,3 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
 });
-

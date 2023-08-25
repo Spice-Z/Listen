@@ -29,7 +29,7 @@ function TranslateIconButton({ onPress }: { onPress: () => void }) {
   );
 }
 
-const GET_EPISODE_IN_MODAL = gql(/* GraphQL */`
+const GET_EPISODE_IN_MODAL = gql(/* GraphQL */ `
   query GetEpisodeInModalTranscript($channelId: String!, $episodeId: String!) {
     episode(channelId: $channelId, episodeId: $episodeId) {
       id
@@ -59,18 +59,18 @@ const ModalTranscriptPlayer = memo(() => {
       episodeId: currentEpisodeId,
     },
     skip: currentEpisodeId === null || currentEpisodeChannelId === null,
-  })
-  const episode = data?.episode
+  });
+  const episode = data?.episode;
 
   const targetLangList = useMemo(() => {
-    return episode ? episode.translatedTranscripts.map((t) => t.language) : []
-  }, [episode])
+    return episode ? episode.translatedTranscripts.map((t) => t.language) : [];
+  }, [episode]);
 
   const switchTargetLang = useCallback(() => {
-    const currentIndex = targetLangList.indexOf(targetLang)
-    const nextIndex = (currentIndex + 1) % targetLangList.length
-    setTargetLang(targetLangList[nextIndex])
-  }, [targetLang, targetLangList])
+    const currentIndex = targetLangList.indexOf(targetLang);
+    const nextIndex = (currentIndex + 1) % targetLangList.length;
+    setTargetLang(targetLangList[nextIndex]);
+  }, [targetLang, targetLangList]);
 
   return (
     <>
@@ -83,13 +83,11 @@ const ModalTranscriptPlayer = memo(() => {
         }}
       />
       <View style={styles.container}>
-        {
-          loading ? <ActivityIndicator /> : <TranscriptPlayer targetLang={targetLang} />
-        }
+        {loading ? <ActivityIndicator /> : <TranscriptPlayer targetLang={targetLang} />}
       </View>
     </>
   );
-})
+});
 
 ModalTranscriptPlayer.displayName = 'ModalTranscriptPlayer';
 

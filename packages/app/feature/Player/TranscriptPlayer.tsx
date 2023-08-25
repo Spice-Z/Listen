@@ -1,14 +1,5 @@
-
-import {
-  StyleSheet,
-  View,
-  Text,
-  Dimensions,
-  ViewProps,
-} from 'react-native';
-import {
-  useProgress,
-} from 'react-native-track-player';
+import { StyleSheet, View, Text, Dimensions, ViewProps } from 'react-native';
+import { useProgress } from 'react-native-track-player';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import TranscriptScrollBox from './components/TranscriptScrollBox';
@@ -21,9 +12,9 @@ const windowDimensions = Dimensions.get('window');
 
 type Props = {
   targetLang: string;
-}
+};
 
-const GET_EPISODE_TRANSLATED_SCRIPTS = gql(/* GraphQL */`
+const GET_EPISODE_TRANSLATED_SCRIPTS = gql(/* GraphQL */ `
   query GetEpisodeTranslatedScripts($channelId: String!, $episodeId: String!) {
     episode(channelId: $channelId, episodeId: $episodeId) {
       id
@@ -41,111 +32,106 @@ export default function TranscriptPlayer({ targetLang }: Props) {
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
 
-  const { data, loading } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS,
-    {
-      variables: {
-        channelId: currentEpisodeChannelId,
-        episodeId: currentEpisodeId,
-      },
-      skip: currentEpisodeId === null || currentEpisodeChannelId === null,
-    }
-  )
+  const { data, loading } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS, {
+    variables: {
+      channelId: currentEpisodeChannelId,
+      episodeId: currentEpisodeId,
+    },
+    skip: currentEpisodeId === null || currentEpisodeChannelId === null,
+  });
 
   const translatedTranscriptUrl = useMemo(() => {
     if (data === undefined) {
-      return null
+      return null;
     }
     const targetTranscript = data.episode.translatedTranscripts.find((translatedTranscript) => {
-      return translatedTranscript.language === targetLang
-    })
+      return translatedTranscript.language === targetLang;
+    });
     if (targetTranscript) {
-      return targetTranscript.transcriptUrl
+      return targetTranscript.transcriptUrl;
     }
-    return null
-  }, [data, targetLang])
+    return null;
+  }, [data, targetLang]);
 
   const [shouldTwoColumn, setShouldTwoColumn] = useState(false);
   const scrollBoxHeight = useMemo(() => {
     if (shouldTwoColumn) {
-      return '100%'
+      return '100%';
     }
-    return '49%'
-  }, [shouldTwoColumn])
+    return '49%';
+  }, [shouldTwoColumn]);
   const scrollBoxWidth = useMemo(() => {
     if (shouldTwoColumn) {
-      return '49%'
+      return '49%';
     }
-    return '100%'
-  }, [shouldTwoColumn])
+    return '100%';
+  }, [shouldTwoColumn]);
   const separatorStyle: ViewProps['style'] = useMemo(() => {
     if (shouldTwoColumn) {
       return {
         width: '2%',
         height: '100%',
-      }
+      };
     }
     return {
       width: '100%',
       height: 4,
-    }
-  }, [shouldTwoColumn])
+    };
+  }, [shouldTwoColumn]);
 
   useDidMount(() => {
     setShouldTwoColumn(windowDimensions.width > windowDimensions.height);
-  })
+  });
 
   useEffect(() => {
-    const subscription = Dimensions.addEventListener(
-      'change',
-      ({ window }) => {
-        setShouldTwoColumn(window.width > window.height);
-      },
-    );
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setShouldTwoColumn(window.width > window.height);
+    });
     return () => subscription?.remove();
   });
 
-
   const progress = useProgress(500);
 
-  return currentQueue.length === 0 || currentTrack === null ? <View style={styles.container}>
-    <Text style={{ color: theme.color.textMain }}>No Playing </Text>
-  </View> : (
+  return currentQueue.length === 0 || currentTrack === null ? (
+    <View style={styles.container}>
+      <Text style={{ color: theme.color.textMain }}>No Playing </Text>
+    </View>
+  ) : (
     <View style={[styles.container, { flexDirection: shouldTwoColumn ? 'row' : 'column' }]}>
       {/* 再レンダリングしないとコンポーネントのonLayoutが発火しないので同じ要素を出し分けている */}
-      {
-        shouldTwoColumn ?
-          <>
-            <TranscriptScrollBox
-              transcriptUrl={data?.episode.transcriptUrl}
-              currentTimePosition={progress.position}
-              width={scrollBoxWidth}
-              height={scrollBoxHeight}
-            />
-            <View style={separatorStyle}></View>
-            <TranscriptScrollBox
-              transcriptUrl={translatedTranscriptUrl}
-              currentTimePosition={progress.position}
-              width={scrollBoxWidth}
-              height={scrollBoxHeight}
-            />
-          </>
-          : <>
-            <TranscriptScrollBox
-              transcriptUrl={data?.episode.transcriptUrl}
-              currentTimePosition={progress.position}
-              width={scrollBoxWidth}
-              height={scrollBoxHeight}
-            />
-            <View style={separatorStyle}></View>
-            <TranscriptScrollBox
-              transcriptUrl={translatedTranscriptUrl}
-              currentTimePosition={progress.position}
-              width={scrollBoxWidth}
-              height={scrollBoxHeight}
-            />
-          </>
-      }
-
+      {shouldTwoColumn ? (
+        <>
+          <TranscriptScrollBox
+            transcriptUrl={data?.episode.transcriptUrl}
+            currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
+          />
+          <View style={separatorStyle}></View>
+          <TranscriptScrollBox
+            transcriptUrl={translatedTranscriptUrl}
+            currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
+          />
+        </>
+      ) : (
+        <>
+          <TranscriptScrollBox
+            transcriptUrl={data?.episode.transcriptUrl}
+            currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
+          />
+          <View style={separatorStyle}></View>
+          <TranscriptScrollBox
+            transcriptUrl={translatedTranscriptUrl}
+            currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
+          />
+        </>
+      )}
     </View>
   );
 }
@@ -168,5 +154,5 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     textAlign: 'center',
     color: theme.color.textMain,
-  }
+  },
 });

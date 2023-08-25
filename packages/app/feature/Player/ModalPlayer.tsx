@@ -1,6 +1,4 @@
-import {
-  useState, useEffect, useMemo, useCallback, memo,
-} from 'react';
+import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import {
   StyleSheet,
   View,
@@ -18,7 +16,12 @@ import TrackPlayer, {
   useProgress,
 } from 'react-native-track-player';
 import {
-  PauseIcon, PlayIcon, SkipForwardIcon, SkipBackwardIcon, RightIcon, LeftIcon,
+  PauseIcon,
+  PlayIcon,
+  SkipForwardIcon,
+  SkipBackwardIcon,
+  RightIcon,
+  LeftIcon,
 } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
@@ -30,7 +33,7 @@ import { gql } from '../graphql/__generated__';
 import { useQuery as useApolloQuery } from '@apollo/client';
 import { useQuery } from '@tanstack/react-query';
 
-const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */`
+const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
   query GetEpisodeInModalPlayer($channelId: String!, $episodeId: String!) {
     episode(channelId: $channelId, episodeId: $episodeId) {
       transcriptUrl
@@ -43,7 +46,8 @@ const ModalPlayer = memo(() => {
 
   const playbackState = usePlaybackState();
 
-  const { playingTrackDuration,
+  const {
+    playingTrackDuration,
     currentQueue,
     currentTrack,
     currentPlaybackRate,
@@ -51,30 +55,32 @@ const ModalPlayer = memo(() => {
     isPlaying,
     isLoading,
     skipToNext,
-    skipToPrevious } = useTrackPlayer();
+    skipToPrevious,
+  } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { data } = useApolloQuery(GET_EPISODE_IN_MODAL_PLAYER,
-    {
-      variables: {
-        channelId: currentEpisodeChannelId,
-        episodeId: currentEpisodeId,
-      }
-    }
-  )
+  const { data } = useApolloQuery(GET_EPISODE_IN_MODAL_PLAYER, {
+    variables: {
+      channelId: currentEpisodeChannelId,
+      episodeId: currentEpisodeId,
+    },
+  });
   const { isLoading: _isTranscriptLoading, data: transcriptData } = useQuery({
     queryKey: ['getTranscriptFromUrl', data?.episode.transcriptUrl],
     queryFn: () => getTranscriptFromUrl(data?.episode.transcriptUrl),
     enabled: !!data?.episode.transcriptUrl,
-  })
+  });
 
   const playPauseButton = useMemo(() => {
     if (isLoading) {
-      return <ActivityIndicator />
+      return <ActivityIndicator />;
     }
-    return isPlaying ? <PauseIcon fill={theme.color.bgMain} width={28} height={28} /> : <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
-  }, [isLoading, isPlaying])
-
+    return isPlaying ? (
+      <PauseIcon fill={theme.color.bgMain} width={28} height={28} />
+    ) : (
+      <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
+    );
+  }, [isLoading, isPlaying]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setPlaybackPosition(0);
@@ -102,7 +108,7 @@ const ModalPlayer = memo(() => {
     }
   };
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSkip = async (seconds) => {
     const newPosition = playbackPosition + seconds;
@@ -113,39 +119,42 @@ const ModalPlayer = memo(() => {
     await TrackPlayer.seekTo(newPosition);
   };
   const handlePlaybackRate = async () => {
-    await switchPlaybackRate()
+    await switchPlaybackRate();
   };
   const handleOpenTranscriptModal = () => {
-    router.push('/modalTranscriptPlayer')
-  }
+    router.push('/modalTranscriptPlayer');
+  };
   const handleOpenNextEpisodes = useCallback(() => {
-    router.push('/modalNextEpisodes')
-  }, [router])
+    router.push('/modalNextEpisodes');
+  }, [router]);
 
-  return currentQueue.length === 0 || currentTrack === null ? <View style={styles.container}>
-    <Text style={{ color: theme.color.textMain }}>No Playing </Text>
-  </View> : (
+  return currentQueue.length === 0 || currentTrack === null ? (
+    <View style={styles.container}>
+      <Text style={{ color: theme.color.textMain }}>No Playing </Text>
+    </View>
+  ) : (
     <View style={styles.container}>
       <TranscriptScrollBox
         transcriptUrl={data?.episode.transcriptUrl}
         height={'70%'}
         width={'100%'}
-        currentTimePosition={progress.position} />
+        currentTimePosition={progress.position}
+      />
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
         <View style={styles.episodeInfo}>
-          <Text style={styles.episodeTitle} numberOfLines={1}>{currentTrack.title}</Text>
-          <Text style={styles.channelName} numberOfLines={1}>{currentTrack.artist}</Text>
+          <Text style={styles.episodeTitle} numberOfLines={1}>
+            {currentTrack.title}
+          </Text>
+          <Text style={styles.channelName} numberOfLines={1}>
+            {currentTrack.artist}
+          </Text>
         </View>
       </View>
       <View style={styles.sliderContainer}>
         <Slider
           style={styles.seekBar}
-          value={
-            playingTrackDuration > 0
-              ? playbackPosition / playingTrackDuration
-              : 0
-          }
+          value={playingTrackDuration > 0 ? playbackPosition / playingTrackDuration : 0}
           onSlidingComplete={handleSeek}
           minimumTrackTintColor={theme.color.accent}
           maximumTrackTintColor={theme.color.bgEmphasis}
@@ -156,58 +165,35 @@ const ModalPlayer = memo(() => {
         />
       </View>
       <View style={styles.playerContainer}>
-        <TouchableOpacity
-          style={styles.playerContainerItem}
-          onPress={handlePlaybackRate}
-        >
+        <TouchableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
           <View style={styles.controlButton}>
             <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerContainerItem}
-          onPress={skipToPrevious}
-        >
+        <TouchableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
           <View style={styles.controlButton}>
             <LeftIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerContainerItem}
-          onPress={() => handleSkip(-15)}
-        >
+        <TouchableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
           <View style={styles.controlButton}>
             <SkipBackwardIcon width={24} height={24} color={theme.color.textMain} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerContainerItem}
-          onPress={handlePlayPause}
-        >
-          <View style={styles.playPauseButton}>
-            {playPauseButton}
-          </View>
+        <TouchableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
+          <View style={styles.playPauseButton}>{playPauseButton}</View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerContainerItem}
-          onPress={() => handleSkip(15)}
-        >
+        <TouchableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(15)}>
           <View style={styles.controlButton}>
             <SkipForwardIcon width={24} height={24} color={theme.color.textMain} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerContainerItem}
-          onPress={skipToNext}
-        >
+        <TouchableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
           <View style={styles.controlButton}>
             <RightIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.playerContainerItem}
-          onPress={handleOpenTranscriptModal}
-        >
+        <TouchableOpacity style={styles.playerContainerItem} onPress={handleOpenTranscriptModal}>
           <View style={styles.controlButton}>
             <Text>✨</Text>
           </View>
@@ -220,7 +206,7 @@ const ModalPlayer = memo(() => {
       </View>
     </View>
   );
-})
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -250,7 +236,7 @@ const styles = StyleSheet.create({
     color: theme.color.textMain,
     fontSize: 20,
     lineHeight: 26,
-    fontWeight: '800'
+    fontWeight: '800',
   },
   channelName: {
     fontSize: 14,
@@ -287,7 +273,7 @@ const styles = StyleSheet.create({
   playbackRate: {
     color: theme.color.textMain,
     fontSize: 16,
-    fontWeight: '800'
+    fontWeight: '800',
   },
   controlButton: {
     height: 56,
@@ -305,9 +291,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff'
-  }
+    backgroundColor: '#fff',
+  },
 });
 
-export default ModalPlayer
-
+export default ModalPlayer;
