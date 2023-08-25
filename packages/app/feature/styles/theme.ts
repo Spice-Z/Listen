@@ -5,7 +5,7 @@ export const theme = {
     bold: '800' as const,
   },
   color: {
-    bgMain: '#ffffff',
+    bgMain: '#f8f8f8',
     bgEmphasis: '#F6F2FF',
     bgDark: '#FAF0DB',
     accent: '#9F74EB',

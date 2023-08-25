@@ -25,6 +25,7 @@
     "express": "^4.18.2",
     "firebase-admin": "^11.10.1",
     "graphql": "^16.7.1",
+    "graphql-relay": "^0.10.0",
     "graphql-tag": "^2.12.6",
     "npm-run-all": "^4.1.5",
     "ts-node-dev": "^2.0.0"

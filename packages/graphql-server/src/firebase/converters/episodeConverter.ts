@@ -1,6 +1,7 @@
 import type { FirestoreDataConverter } from 'firebase-admin/firestore';
 import { getTotalSeconds } from '../../utils/duration.js';
 import { removeLeadingAndTrailingNewlines } from '../../utils/string.js';
+import { toGlobalId } from '../../utils/globalId.js';
 
 class Episode {
  constructor(
@@ -68,10 +69,9 @@ export const episodeConverter:FirestoreDataConverter<Episode> = {
        transcriptUrl: translatedTranscripts[language],
      };
    });
-   console.log({translatedTranscripts})
    const duration = getTotalSeconds(data.duration);
    return new Episode(
-    snapshot.id,
+    toGlobalId('Episode', data.id),
     snapshot.id,
     removeLeadingAndTrailingNewlines(data.title),
     data.description,

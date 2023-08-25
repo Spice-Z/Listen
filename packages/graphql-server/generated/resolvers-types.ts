@@ -32,7 +32,7 @@ export type Channel = {
   title: Scalars['String']['output'];
 };
 
-export type Episode = {
+export type Episode = Node & {
   __typename?: 'Episode';
   content: Scalars['String']['output'];
   description: Scalars['String']['output'];
@@ -47,10 +47,15 @@ export type Episode = {
   url: Scalars['String']['output'];
 };
 
+export type Node = {
+  id: Scalars['ID']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   channel: Channel;
   episode: Episode;
+  node?: Maybe<Node>;
 };
 
 
@@ -62,6 +67,11 @@ export type QueryChannelArgs = {
 export type QueryEpisodeArgs = {
   channelId: Scalars['String']['input'];
   episodeId: Scalars['String']['input'];
+};
+
+
+export type QueryNodeArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type TranslatedTranscript = {
@@ -139,6 +149,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 
+/** Mapping of interface types */
+export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = ResolversObject<{
+  Node: ( PartialDeep<Episode,{recurseIntoArrays: true}> );
+}>;
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
@@ -147,6 +161,7 @@ export type ResolversTypes = ResolversObject<{
   Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
   ID: ResolverTypeWrapper<PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>>;
   Int: ResolverTypeWrapper<PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>>;
+  Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>>;
   TranslatedTranscript: ResolverTypeWrapper<PartialDeep<TranslatedTranscript,{recurseIntoArrays: true}>>;
@@ -159,6 +174,7 @@ export type ResolversParentTypes = ResolversObject<{
   Episode: PartialDeep<Episode,{recurseIntoArrays: true}>;
   ID: PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>;
   Int: PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>;
+  Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   Query: {};
   String: PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>;
   TranslatedTranscript: PartialDeep<TranslatedTranscript,{recurseIntoArrays: true}>;
@@ -193,9 +209,15 @@ export type EpisodeResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Episode', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'channelId'>>;
   episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'channelId' | 'episodeId'>>;
+  node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 }>;
 
 export type TranslatedTranscriptResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedTranscript'] = ResolversParentTypes['TranslatedTranscript']> = ResolversObject<{
@@ -207,6 +229,7 @@ export type TranslatedTranscriptResolvers<ContextType = any, ParentType extends 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Channel?: ChannelResolvers<ContextType>;
   Episode?: EpisodeResolvers<ContextType>;
+  Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   TranslatedTranscript?: TranslatedTranscriptResolvers<ContextType>;
 }>;

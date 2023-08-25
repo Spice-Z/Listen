@@ -6,9 +6,8 @@ import { firestore } from '../../../firebase/index.js';
 import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
 import { GraphQLError } from 'graphql';
 
-
 const typeDefs = gql`
-  type Episode {
+  type Episode implements Node {
     id: ID!
     episodeId: String!
     title: String!

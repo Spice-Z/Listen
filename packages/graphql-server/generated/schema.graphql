@@ -23,7 +23,7 @@ type Channel {
   title: String!
 }
 
-type Episode {
+type Episode implements Node {
   content: String!
   description: String!
   duration: Int!
@@ -37,9 +37,14 @@ type Episode {
   url: String!
 }
 
+interface Node {
+  id: ID!
+}
+
 type Query {
   channel(channelId: String!): Channel!
   episode(channelId: String!, episodeId: String!): Episode!
+  node(id: ID!): Node
 }
 
 type TranslatedTranscript {
