@@ -32,13 +32,6 @@ type ChannelEdge {
   node: Channel!
 }
 
-input ChannelsInput {
-  after: String
-  before: String
-  first: Int!
-  last: Int
-}
-
 type Episode implements Node {
   content: String!
   description: String!
@@ -66,7 +59,7 @@ type PageInfo {
 
 type Query {
   channel(channelId: String!): Channel!
-  channels(input: ChannelsInput!): ChannelConnection!
+  channels(after: String, before: String, first: Int = 30, last: Int): ChannelConnection!
   episode(channelId: String!, episodeId: String!): Episode!
   node(id: ID!): Node
 }

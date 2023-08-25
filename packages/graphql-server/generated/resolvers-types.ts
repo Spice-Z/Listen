@@ -43,13 +43,6 @@ export type ChannelEdge = {
   node: Channel;
 };
 
-export type ChannelsInput = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  before?: InputMaybe<Scalars['String']['input']>;
-  first: Scalars['Int']['input'];
-  last?: InputMaybe<Scalars['Int']['input']>;
-};
-
 export type Episode = Node & {
   __typename?: 'Episode';
   content: Scalars['String']['output'];
@@ -92,7 +85,10 @@ export type QueryChannelArgs = {
 
 
 export type QueryChannelsArgs = {
-  input: ChannelsInput;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -192,7 +188,6 @@ export type ResolversTypes = ResolversObject<{
   Channel: ResolverTypeWrapper<PartialDeep<Channel,{recurseIntoArrays: true}>>;
   ChannelConnection: ResolverTypeWrapper<PartialDeep<ChannelConnection,{recurseIntoArrays: true}>>;
   ChannelEdge: ResolverTypeWrapper<PartialDeep<ChannelEdge,{recurseIntoArrays: true}>>;
-  ChannelsInput: ResolverTypeWrapper<PartialDeep<ChannelsInput,{recurseIntoArrays: true}>>;
   Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
   ID: ResolverTypeWrapper<PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>>;
   Int: ResolverTypeWrapper<PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>>;
@@ -209,7 +204,6 @@ export type ResolversParentTypes = ResolversObject<{
   Channel: PartialDeep<Channel,{recurseIntoArrays: true}>;
   ChannelConnection: PartialDeep<ChannelConnection,{recurseIntoArrays: true}>;
   ChannelEdge: PartialDeep<ChannelEdge,{recurseIntoArrays: true}>;
-  ChannelsInput: PartialDeep<ChannelsInput,{recurseIntoArrays: true}>;
   Episode: PartialDeep<Episode,{recurseIntoArrays: true}>;
   ID: PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>;
   Int: PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>;
@@ -275,7 +269,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'channelId'>>;
-  channels?: Resolver<ResolversTypes['ChannelConnection'], ParentType, ContextType, RequireFields<QueryChannelsArgs, 'input'>>;
+  channels?: Resolver<ResolversTypes['ChannelConnection'], ParentType, ContextType, RequireFields<QueryChannelsArgs, 'first'>>;
   episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'channelId' | 'episodeId'>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 }>;

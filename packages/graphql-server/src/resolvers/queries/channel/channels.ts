@@ -13,20 +13,13 @@ const typeDefs = gql`
     edges: [ChannelEdge!]!
     pageInfo: PageInfo!
   }
-  input ChannelsInput {
-    first: Int!
-    after: String
-    before: String
-    last: Int
-  }
   extend type Query {
-    channels(input: ChannelsInput!): ChannelConnection!
+    channels(first: Int = 30, after: String, before: String, last: Int): ChannelConnection!
   }
 `;
 
 const resolver: QueryResolvers['channels'] = async (parent, args, context, info) => {
-  const input = args.input;
-  const { first } = input;
+  const { first } = args;
   const snapshot = await firestore
     .collection(CHANNEL_DOCUMENT_NAME)
     .withConverter(channelConverter)
