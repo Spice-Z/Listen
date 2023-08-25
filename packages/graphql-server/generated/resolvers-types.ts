@@ -25,10 +25,19 @@ export type Channel = {
   channelId: Scalars['String']['output'];
   copyRight: Scalars['String']['output'];
   description: Scalars['String']['output'];
+  episodes: EpisodeConnection;
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   language: Scalars['String']['output'];
   title: Scalars['String']['output'];
+};
+
+
+export type ChannelEpisodesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type ChannelConnection = {
@@ -56,6 +65,18 @@ export type Episode = Node & {
   transcriptUrl?: Maybe<Scalars['String']['output']>;
   translatedTranscripts: Array<TranslatedTranscript>;
   url: Scalars['String']['output'];
+};
+
+export type EpisodeConnection = {
+  __typename?: 'EpisodeConnection';
+  edges: Array<EpisodeEdge>;
+  pageInfo: PageInfo;
+};
+
+export type EpisodeEdge = {
+  __typename?: 'EpisodeEdge';
+  cursor: Scalars['String']['output'];
+  node: Episode;
 };
 
 export type Node = {
@@ -189,6 +210,8 @@ export type ResolversTypes = ResolversObject<{
   ChannelConnection: ResolverTypeWrapper<PartialDeep<ChannelConnection,{recurseIntoArrays: true}>>;
   ChannelEdge: ResolverTypeWrapper<PartialDeep<ChannelEdge,{recurseIntoArrays: true}>>;
   Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
+  EpisodeConnection: ResolverTypeWrapper<PartialDeep<EpisodeConnection,{recurseIntoArrays: true}>>;
+  EpisodeEdge: ResolverTypeWrapper<PartialDeep<EpisodeEdge,{recurseIntoArrays: true}>>;
   ID: ResolverTypeWrapper<PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>>;
   Int: ResolverTypeWrapper<PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
@@ -205,6 +228,8 @@ export type ResolversParentTypes = ResolversObject<{
   ChannelConnection: PartialDeep<ChannelConnection,{recurseIntoArrays: true}>;
   ChannelEdge: PartialDeep<ChannelEdge,{recurseIntoArrays: true}>;
   Episode: PartialDeep<Episode,{recurseIntoArrays: true}>;
+  EpisodeConnection: PartialDeep<EpisodeConnection,{recurseIntoArrays: true}>;
+  EpisodeEdge: PartialDeep<EpisodeEdge,{recurseIntoArrays: true}>;
   ID: PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>;
   Int: PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>;
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
@@ -220,6 +245,7 @@ export type ChannelResolvers<ContextType = any, ParentType extends ResolversPare
   channelId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   copyRight?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  episodes?: Resolver<ResolversTypes['EpisodeConnection'], ParentType, ContextType, RequireFields<ChannelEpisodesArgs, 'first'>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -254,6 +280,18 @@ export type EpisodeResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type EpisodeConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['EpisodeConnection'] = ResolversParentTypes['EpisodeConnection']> = ResolversObject<{
+  edges?: Resolver<Array<ResolversTypes['EpisodeEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type EpisodeEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['EpisodeEdge'] = ResolversParentTypes['EpisodeEdge']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Episode'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
   __resolveType: TypeResolveFn<'Episode', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -285,6 +323,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   ChannelConnection?: ChannelConnectionResolvers<ContextType>;
   ChannelEdge?: ChannelEdgeResolvers<ContextType>;
   Episode?: EpisodeResolvers<ContextType>;
+  EpisodeConnection?: EpisodeConnectionResolvers<ContextType>;
+  EpisodeEdge?: EpisodeEdgeResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

@@ -16,6 +16,7 @@ type Channel {
   channelId: String!
   copyRight: String!
   description: String!
+  episodes(after: String, before: String, first: Int = 30, last: Int): EpisodeConnection!
   id: ID!
   imageUrl: String!
   language: String!
@@ -44,6 +45,16 @@ type Episode implements Node {
   transcriptUrl: String
   translatedTranscripts: [TranslatedTranscript!]!
   url: String!
+}
+
+type EpisodeConnection {
+  edges: [EpisodeEdge!]!
+  pageInfo: PageInfo!
+}
+
+type EpisodeEdge {
+  cursor: String!
+  node: Episode!
 }
 
 interface Node {
