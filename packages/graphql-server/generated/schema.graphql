@@ -13,7 +13,6 @@ directive @key(fields: _FieldSet!) on OBJECT | INTERFACE
 type Channel {
   author: String!
   categories: [String!]!
-  categoriesWithSubs: [String!]!
   channelId: String!
   copyRight: String!
   description: String!

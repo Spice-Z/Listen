@@ -74,7 +74,7 @@ export const episodeConverter:FirestoreDataConverter<Episode> = {
     toGlobalId('Episode', snapshot.id),
     snapshot.id,
     removeLeadingAndTrailingNewlines(data.title),
-    data.description,
+    removeLeadingAndTrailingNewlines(data.description),
     data.url,
     data.transcriptUrl,
     data.imageUrl,

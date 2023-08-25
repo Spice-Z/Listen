@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import type { QueryResolvers } from '../../../../generated/resolvers-types';
 import { CHANNEL_DOCUMENT_NAME } from '../../../constants.js';
 import { firestore } from '../../../firebase/index.js';
-import { removeLeadingAndTrailingNewlines } from '../../../utils/string.js';
+import { channelConverter } from '../../../firebase/converters/channelConverter.js';
 
 const typeDefs = gql`
   type Channel {
@@ -13,7 +13,6 @@ const typeDefs = gql`
     description: String!
     author: String!
     categories: [String!]!
-    categoriesWithSubs: [String!]!
     language: String!
     copyRight: String!
   }
@@ -24,28 +23,20 @@ const typeDefs = gql`
 
 const resolver :QueryResolvers['channel'] = async (parent, args, context, info) => {
   const channelId = args.channelId;
-  const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId).get();
+  const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).withConverter(channelConverter).doc(channelId).get();
+  console.log({channelDoc})
   if (!channelDoc.exists) {
     throw new Error('The requested channel does not exist.');
   }
 
   const channelData = channelDoc.data();
-
+  console.log({channelData})
   if (channelData === undefined) {
     throw new Error('The requested channel does not exist.');
   }
 
   return {
-    id: channelDoc.id,
-    channelId: channelDoc.id,
-    title: removeLeadingAndTrailingNewlines(channelData.title),
-    imageUrl: channelData.imageUrl,
-    description: removeLeadingAndTrailingNewlines(channelData.description),
-    author: channelData.author,
-    categories: channelData.categories,
-    categoriesWithSubs: channelData.categoriesWithSubs,
-    language: channelData.language,
-    copyright: channelData.copyright,
+    ...channelData
   }
 }
 

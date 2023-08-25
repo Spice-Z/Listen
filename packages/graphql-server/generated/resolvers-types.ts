@@ -22,7 +22,6 @@ export type Channel = {
   __typename?: 'Channel';
   author: Scalars['String']['output'];
   categories: Array<Scalars['String']['output']>;
-  categoriesWithSubs: Array<Scalars['String']['output']>;
   channelId: Scalars['String']['output'];
   copyRight: Scalars['String']['output'];
   description: Scalars['String']['output'];
@@ -183,7 +182,6 @@ export type ResolversParentTypes = ResolversObject<{
 export type ChannelResolvers<ContextType = any, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = ResolversObject<{
   author?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   categories?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  categoriesWithSubs?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   channelId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   copyRight?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
