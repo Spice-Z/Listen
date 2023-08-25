@@ -31,6 +31,7 @@ const resolver: ChannelResolvers['episodes'] = async (parent, args, context, inf
   const snapshot = await channelRef
     .collection(EPISODE_DOCUMENT_NAME)
     .withConverter(episodeConverter)
+    .orderBy('pubDate', 'desc')
     .limit(first)
     .get();
 
