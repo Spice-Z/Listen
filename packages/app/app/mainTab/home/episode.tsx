@@ -6,7 +6,6 @@ import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
 import { useCallback, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
-import { useEpisodesByChannelId } from '../../../feature/Episode/hooks/useEpisodesByChannelId';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import WithSuspense from '../../../feature/Suspense/WithSuspense';
@@ -54,8 +53,6 @@ function EpisodePage() {
   });
   const channel = channelData.channel;
 
-  const { data: episodesData } = useEpisodesByChannelId(channelId as string);
-
   const { playTrackIfNotCurrentlyPlaying, currentTrack, isPlaying, isLoading } = useTrackPlayer();
   const isThisEpisodeLoading = useMemo(() => {
     if (isLoading) {
@@ -88,27 +85,7 @@ function EpisodePage() {
       };
       console.log({ track });
       await playTrackIfNotCurrentlyPlaying(track);
-      // add queue
-      if (episodesData) {
-        const tracks: TrackPlayerTrack[] = episodesData
-          .filter((episode) => episode.id !== episode.id)
-          .map((episode) => {
-            return {
-              id: episode.id,
-              episodeId: episode.id,
-              channelId: channel.id,
-              title: episode.title,
-              artist: channel.title,
-              artwork: episode.imageUrl || channel.imageUrl,
-              url: episode.url,
-              duration: episode.duration,
-            };
-          });
-        if (tracks.length > 1) {
-          console.log(tracks.length);
-          TrackPlayer.add(tracks);
-        }
-      }
+      // TODO: 連続再生のために、次のエピソードをqueueに入れる
     }
   }, [
     channel.id,
@@ -120,7 +97,6 @@ function EpisodePage() {
     episode.imageUrl,
     episode.title,
     episode.url,
-    episodesData,
     isThisEpisodePlaying,
     playTrackIfNotCurrentlyPlaying,
   ]);

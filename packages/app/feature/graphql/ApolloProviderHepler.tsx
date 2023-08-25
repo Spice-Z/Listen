@@ -19,6 +19,11 @@ const createApolloClient = (authToken) => {
             channels: relayStylePagination(),
           },
         },
+        Channel: {
+          fields: {
+            episodes: relayStylePagination(),
+          },
+        }
       },
     }),
   });

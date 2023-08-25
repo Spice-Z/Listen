@@ -27,6 +27,7 @@ const resolver: ChannelResolvers['episodes'] = async (parent, args, context, inf
   const { first } = args;
   // TODO: channel存在チェック
   const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
+  // TODO: ページング
   const snapshot = await channelRef
     .collection(EPISODE_DOCUMENT_NAME)
     .withConverter(episodeConverter)

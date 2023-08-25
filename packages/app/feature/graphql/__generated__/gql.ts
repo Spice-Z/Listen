@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query GetChannel($channelId: String!) {\n    channel(channelId: $channelId) {\n      id\n      title\n      description\n      imageUrl\n      author\n    }\n  }\n": types.GetChannelDocument,
+    "\n  query GetChannel($channelId: String!) {\n    channel(channelId: $channelId) {\n      id\n      title\n      description\n      imageUrl\n      author\n      episodes {\n        edges {\n          node {\n            id\n            episodeId\n            title\n            content\n            url\n            imageUrl\n            duration\n            pubDate\n          }\n      }\n      }\n    }\n  }\n": types.GetChannelDocument,
     "\n  query GetEpisode($channelId: String!, $episodeId: String!) {\n    episode(channelId: $channelId, episodeId: $episodeId) {\n      id\n      episodeId\n      title\n      content\n      url\n      imageUrl\n      duration\n      pubDate\n    }\n  }\n": types.GetEpisodeDocument,
     "\n  query GetChannelInEpisode($channelId: String!) {\n    channel(channelId: $channelId) {\n      id\n      title\n      imageUrl\n      author\n    }\n  }\n": types.GetChannelInEpisodeDocument,
     "\n  query GetChannels($cursor: String) {\n    channels(after: $cursor) {\n      edges {\n        node {\n          id\n          channelId\n          title\n          description\n          imageUrl\n          author\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n": types.GetChannelsDocument,
@@ -39,7 +39,7 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetChannel($channelId: String!) {\n    channel(channelId: $channelId) {\n      id\n      title\n      description\n      imageUrl\n      author\n    }\n  }\n"): (typeof documents)["\n  query GetChannel($channelId: String!) {\n    channel(channelId: $channelId) {\n      id\n      title\n      description\n      imageUrl\n      author\n    }\n  }\n"];
+export function gql(source: "\n  query GetChannel($channelId: String!) {\n    channel(channelId: $channelId) {\n      id\n      title\n      description\n      imageUrl\n      author\n      episodes {\n        edges {\n          node {\n            id\n            episodeId\n            title\n            content\n            url\n            imageUrl\n            duration\n            pubDate\n          }\n      }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChannel($channelId: String!) {\n    channel(channelId: $channelId) {\n      id\n      title\n      description\n      imageUrl\n      author\n      episodes {\n        edges {\n          node {\n            id\n            episodeId\n            title\n            content\n            url\n            imageUrl\n            duration\n            pubDate\n          }\n      }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

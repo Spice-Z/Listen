@@ -4,7 +4,6 @@ import { theme } from '../../../feature/styles/theme';
 import { useCallback, useMemo } from 'react';
 import ChannelInfo from '../../../feature/Channel/components/ChannelInfo';
 import EpisodeCard from '../../../feature/Episode/components/EpisodeCard';
-import { useEpisodesByChannelId } from '../../../feature/Episode/hooks/useEpisodesByChannelId';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
@@ -18,6 +17,20 @@ const GET_CHANNEL = gql(/* GraphQL */ `
       description
       imageUrl
       author
+      episodes {
+        edges {
+          node {
+            id
+            episodeId
+            title
+            content
+            url
+            imageUrl
+            duration
+            pubDate
+          }
+      }
+      }
     }
   }
 `);
@@ -29,11 +42,9 @@ function Channel() {
       channelId: channelId as string,
     },
   });
-  const {
-    isLoading: isEpisodeLoading,
-    error: episodeError,
-    data: episodeData,
-  } = useEpisodesByChannelId(channelId as string);
+  const episodeList = useMemo(() => {
+    return data.channel.episodes.edges.map((edge) => edge.node);
+  }, [data]);
   const router = useRouter();
   const channelInfo = useMemo(() => {
     if (data.channel) {
@@ -78,17 +89,18 @@ function Channel() {
       <View style={styles.container}>
         <FlatList
           ListHeaderComponent={ChanelInfoComponent}
-          data={episodeData}
+          data={episodeList}
           renderItem={({ item }) => {
             return (
               <EpisodeCard
                 key={item.id}
-                id={item.id}
+                id={item.episodeId}
                 title={item.title}
-                description={item.description}
+                description={item.content}
                 duration={item.duration}
                 imageUrl={item.imageUrl || channelInfo.imageUrl}
-                date={item.pubDate}
+                // TODO: fix pubDate
+                date={new Date()}
                 onPress={onPressEpisode}
               />
             );
