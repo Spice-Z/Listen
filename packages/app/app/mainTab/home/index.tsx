@@ -5,13 +5,11 @@ import { StatusBar } from 'expo-status-bar';
 import { Suspense, useCallback } from 'react';
 import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
-import { useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />
 
 function App() {
   const query = useChannels();
-  const { playTrackIfNotCurrentlyPlaying } = useTrackPlayer();
 
   const router = useRouter();
   const onPressChannel = useCallback((channelId: string) => {

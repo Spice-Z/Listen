@@ -16,6 +16,7 @@ const GET_EPISODE = gql(/* GraphQL */`
   query GetEpisode($channelId: String!, $episodeId: String!) {
     episode(channelId: $channelId, episodeId: $episodeId) {
       id
+      episodeId
       title
       content
       url
@@ -77,7 +78,7 @@ function EpisodePage() {
       TrackPlayer.pause()
     } else {
       const track: TrackPlayerTrack = {
-        id: episode.id,
+        id: episode.episodeId,
         channelId: channel.id,
         title: episode.title,
         artist: channel.title,
@@ -93,6 +94,7 @@ function EpisodePage() {
         const tracks: TrackPlayerTrack[] = episodesData.filter(episode => episode.id !== episode.id).map((episode) => {
           return {
             id: episode.id,
+            episodeId: episode.id,
             channelId: channel.id,
             title: episode.title,
             artist: channel.title,
@@ -107,7 +109,7 @@ function EpisodePage() {
         }
       }
     }
-  }, [channel.id, channel.imageUrl, channel.title, episode.duration, episode.id, episode.imageUrl, episode.title, episode.url, episodesData, isThisEpisodePlaying, playTrackIfNotCurrentlyPlaying])
+  }, [channel.id, channel.imageUrl, channel.title, episode.duration, episode.episodeId, episode.id, episode.imageUrl, episode.title, episode.url, episodesData, isThisEpisodePlaying, playTrackIfNotCurrentlyPlaying])
 
   return <>
     <Stack.Screen
