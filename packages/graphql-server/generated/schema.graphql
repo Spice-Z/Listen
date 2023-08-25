@@ -22,6 +22,23 @@ type Channel {
   title: String!
 }
 
+type ChannelConnection {
+  edges: [ChannelEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ChannelEdge {
+  cursor: String!
+  node: Channel!
+}
+
+input ChannelsInput {
+  after: String
+  before: String
+  first: Int!
+  last: Int
+}
+
 type Episode implements Node {
   content: String!
   description: String!
@@ -40,8 +57,16 @@ interface Node {
   id: ID!
 }
 
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
 type Query {
   channel(channelId: String!): Channel!
+  channels(input: ChannelsInput!): ChannelConnection!
   episode(channelId: String!, episodeId: String!): Episode!
   node(id: ID!): Node
 }

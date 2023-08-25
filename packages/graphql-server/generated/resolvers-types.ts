@@ -31,6 +31,25 @@ export type Channel = {
   title: Scalars['String']['output'];
 };
 
+export type ChannelConnection = {
+  __typename?: 'ChannelConnection';
+  edges: Array<ChannelEdge>;
+  pageInfo: PageInfo;
+};
+
+export type ChannelEdge = {
+  __typename?: 'ChannelEdge';
+  cursor: Scalars['String']['output'];
+  node: Channel;
+};
+
+export type ChannelsInput = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first: Scalars['Int']['input'];
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type Episode = Node & {
   __typename?: 'Episode';
   content: Scalars['String']['output'];
@@ -50,9 +69,18 @@ export type Node = {
   id: Scalars['ID']['output'];
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   channel: Channel;
+  channels: ChannelConnection;
   episode: Episode;
   node?: Maybe<Node>;
 };
@@ -60,6 +88,11 @@ export type Query = {
 
 export type QueryChannelArgs = {
   channelId: Scalars['String']['input'];
+};
+
+
+export type QueryChannelsArgs = {
+  input: ChannelsInput;
 };
 
 
@@ -157,10 +190,14 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = R
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>>;
   Channel: ResolverTypeWrapper<PartialDeep<Channel,{recurseIntoArrays: true}>>;
+  ChannelConnection: ResolverTypeWrapper<PartialDeep<ChannelConnection,{recurseIntoArrays: true}>>;
+  ChannelEdge: ResolverTypeWrapper<PartialDeep<ChannelEdge,{recurseIntoArrays: true}>>;
+  ChannelsInput: ResolverTypeWrapper<PartialDeep<ChannelsInput,{recurseIntoArrays: true}>>;
   Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
   ID: ResolverTypeWrapper<PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>>;
   Int: ResolverTypeWrapper<PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
+  PageInfo: ResolverTypeWrapper<PartialDeep<PageInfo,{recurseIntoArrays: true}>>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>>;
   TranslatedTranscript: ResolverTypeWrapper<PartialDeep<TranslatedTranscript,{recurseIntoArrays: true}>>;
@@ -170,10 +207,14 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   Boolean: PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>;
   Channel: PartialDeep<Channel,{recurseIntoArrays: true}>;
+  ChannelConnection: PartialDeep<ChannelConnection,{recurseIntoArrays: true}>;
+  ChannelEdge: PartialDeep<ChannelEdge,{recurseIntoArrays: true}>;
+  ChannelsInput: PartialDeep<ChannelsInput,{recurseIntoArrays: true}>;
   Episode: PartialDeep<Episode,{recurseIntoArrays: true}>;
   ID: PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>;
   Int: PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>;
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
+  PageInfo: PartialDeep<PageInfo,{recurseIntoArrays: true}>;
   Query: {};
   String: PartialDeep<Scalars['String']['output'],{recurseIntoArrays: true}>;
   TranslatedTranscript: PartialDeep<TranslatedTranscript,{recurseIntoArrays: true}>;
@@ -189,6 +230,18 @@ export type ChannelResolvers<ContextType = any, ParentType extends ResolversPare
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ChannelConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChannelConnection'] = ResolversParentTypes['ChannelConnection']> = ResolversObject<{
+  edges?: Resolver<Array<ResolversTypes['ChannelEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ChannelEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChannelEdge'] = ResolversParentTypes['ChannelEdge']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Channel'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -212,8 +265,17 @@ export type NodeResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
+export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
+  endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'channelId'>>;
+  channels?: Resolver<ResolversTypes['ChannelConnection'], ParentType, ContextType, RequireFields<QueryChannelsArgs, 'input'>>;
   episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'channelId' | 'episodeId'>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 }>;
@@ -226,8 +288,11 @@ export type TranslatedTranscriptResolvers<ContextType = any, ParentType extends 
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Channel?: ChannelResolvers<ContextType>;
+  ChannelConnection?: ChannelConnectionResolvers<ContextType>;
+  ChannelEdge?: ChannelEdgeResolvers<ContextType>;
   Episode?: EpisodeResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
+  PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   TranslatedTranscript?: TranslatedTranscriptResolvers<ContextType>;
 }>;
