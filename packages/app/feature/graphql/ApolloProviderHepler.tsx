@@ -2,6 +2,7 @@ import { ReactNode, memo, useMemo } from 'react';
 import { ApolloProvider } from '@apollo/client/react/context';
 import { useAuthContext } from '../context/auth/context';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { relayStylePagination } from "@apollo/client/utilities";
 
 const createApolloClient = (authToken) => {
   return new ApolloClient({
@@ -11,7 +12,15 @@ const createApolloClient = (authToken) => {
         authorization: `Bearer ${authToken}`,
       },
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            channels: relayStylePagination(),
+          },
+        },
+      },
+    }),
   });
 };
 

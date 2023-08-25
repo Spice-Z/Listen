@@ -3,13 +3,35 @@ import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
 import { Suspense, useCallback } from 'react';
-import { useChannels } from '../../../feature/Channel/hooks/useChannels';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
+import { gql } from '../../../feature/graphql/__generated__';
+import { useSuspenseQuery } from '@apollo/client';
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />;
 
+const GET_CHANNELS = gql(/* GraphQL */`
+  query GetChannels($cursor: String) {
+    channels(after: $cursor) {
+      edges {
+        node {
+          id
+          channelId
+          title
+          description
+          imageUrl
+          author
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`);
+
 function App() {
-  const query = useChannels();
+  const { data } = useSuspenseQuery(GET_CHANNELS);
 
   const router = useRouter();
   const onPressChannel = useCallback(
@@ -28,14 +50,14 @@ function App() {
       <StatusBar style="inverted" />
       <View style={styles.container}>
         <FlatList
-          data={query.data ?? []}
+          data={data.channels.edges ?? []}
           renderItem={({ item }) => {
             return (
-              <Pressable style={styles.channelCard} onPress={() => onPressChannel(item.id)}>
+              <Pressable style={styles.channelCard} onPress={() => onPressChannel(item.node.channelId)}>
                 {/* @ts-ignore */}
-                <Image style={styles.artwork} src={item.imageUrl} />
+                <Image style={styles.artwork} src={item.node.imageUrl} />
                 <Text numberOfLines={3} style={styles.channelTitle}>
-                  {item.title}
+                  {item.node.title}
                 </Text>
               </Pressable>
             );
