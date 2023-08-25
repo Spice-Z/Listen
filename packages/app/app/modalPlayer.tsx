@@ -10,7 +10,7 @@ function BackButton() {
   return (
     <TouchableOpacity onPress={navigation.goBack}>
       <Text>
-        <BackDownIcon width={24} height={24} color={theme.color.textMain} />,
+        <BackDownIcon width={24} height={24} color={theme.color.textMain} />
       </Text>
     </TouchableOpacity>
   );

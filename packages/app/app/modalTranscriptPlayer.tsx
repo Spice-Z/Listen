@@ -13,7 +13,7 @@ function BackButton() {
   return (
     <TouchableOpacity onPress={navigation.goBack}>
       <Text>
-        <BackDownIcon width={24} height={24} color={theme.color.textMain} />,
+        <BackDownIcon width={24} height={24} color={theme.color.textMain} />
       </Text>
     </TouchableOpacity>
   );
@@ -23,7 +23,7 @@ function TranslateIconButton({ onPress }: { onPress: () => void }) {
   return (
     <TouchableOpacity onPress={onPress}>
       <Text>
-        <TranslateIcon width={28} height={28} color={theme.color.textMain} />,
+        <TranslateIcon width={28} height={28} color={theme.color.textMain} />
       </Text>
     </TouchableOpacity>
   );
@@ -79,7 +79,7 @@ const ModalTranscriptPlayer = memo(() => {
           headerTitle: 'Transcript',
           // eslint-disable-next-line react/no-unstable-nested-components
           headerLeft: () => <BackButton />,
-          headerRight: () => <TranslateIconButton onPress={switchTargetLang} />,
+          headerRight: () => <TranslateIconButton onPress={switchTargetLang} />
         }}
       />
       <View style={styles.container}>
