@@ -3,15 +3,28 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../../feature/styles/theme';
 import SettingListItemComponent from '../../../feature/Setting/components/SettingListItem';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { Props as SettingListItemProps } from '../../../feature/Setting/components/SettingListItem';
 import { useSignOut } from '../../../feature/Auth/hooks/useSignOut';
+import { useAuthContext } from '../../../feature/context/auth/context';
 
 export default function SettingPage() {
   const renderListItem = useCallback(({ item }: { item: SettingListItemProps }) => {
     return <SettingListItemComponent {...item} />;
   }, []);
   const { signOut } = useSignOut();
+  const { user } = useAuthContext();
+  const currentLoginExplanation = useMemo(() => {
+    const provider = user?.providerData[0]?.providerId;
+    switch (provider) {
+      case 'google.com':
+        return 'Googleでログイン中';
+      case 'apple.com':
+        return 'Appleでログイン中';
+      default:
+        return 'メールアドレスでログイン中';
+    }
+  }, [user?.providerData]);
 
   return (
     <>
@@ -29,22 +42,31 @@ export default function SettingPage() {
             {
               id: '1',
               text: 'Account',
-              onPress: () => {},
+              subText: currentLoginExplanation,
+              onPress: () => {
+                /* */
+              },
             },
             {
               id: '2',
               text: 'Notifications',
-              onPress: () => {},
+              onPress: () => {
+                /* */
+              },
             },
             {
               id: '3',
               text: 'Licenses',
-              onPress: () => {},
+              onPress: () => {
+                /* */
+              },
             },
             {
               id: '4',
               text: "App's future",
-              onPress: () => {},
+              onPress: () => {
+                /* */
+              },
             },
             {
               id: '5',
