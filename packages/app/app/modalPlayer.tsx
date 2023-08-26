@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import ModalPlayer from '../feature/Player/ModalPlayer';
@@ -9,10 +9,8 @@ import PressableOpacity from '../feature/Pressable/PressableOpacity';
 function BackButton() {
   const navigation = useNavigation();
   return (
-    <PressableOpacity onPress={navigation.goBack}>
-      <Text>
-        <BackDownIcon width={24} height={24} color={theme.color.textMain} />
-      </Text>
+    <PressableOpacity hitSlop={4} onPress={navigation.goBack}>
+      <BackDownIcon width={24} height={24} color={theme.color.textMain} />
     </PressableOpacity>
   );
 }

@@ -5,11 +5,16 @@ type Props = {
   children: React.ReactNode;
   style?: Object;
   onPress?: () => void;
+  hitSlop?: number;
 };
 
-const PressableOpacity = memo<Props>(({ children, style, onPress }) => {
+const PressableOpacity = memo<Props>(({ children, style, onPress, hitSlop }) => {
   return (
-    <Pressable style={({ pressed }) => [style, pressed && { opacity: 0.8 }]} onPress={onPress}>
+    <Pressable
+      style={({ pressed }) => [style, pressed && { opacity: 0.8 }]}
+      onPress={onPress}
+      hitSlop={hitSlop}
+    >
       {children}
     </Pressable>
   );

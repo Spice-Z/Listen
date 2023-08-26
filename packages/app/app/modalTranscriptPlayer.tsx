@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import { BackDownIcon, TranslateIcon } from '../feature/icons';
@@ -12,20 +12,16 @@ import PressableOpacity from '../feature/Pressable/PressableOpacity';
 function BackButton() {
   const navigation = useNavigation();
   return (
-    <PressableOpacity onPress={navigation.goBack}>
-      <Text>
-        <BackDownIcon width={24} height={24} color={theme.color.textMain} />
-      </Text>
+    <PressableOpacity hitSlop={4} onPress={navigation.goBack}>
+      <BackDownIcon width={24} height={24} color={theme.color.textMain} />
     </PressableOpacity>
   );
 }
 
 function TranslateIconButton({ onPress }: { onPress: () => void }) {
   return (
-    <PressableOpacity onPress={onPress}>
-      <Text>
-        <TranslateIcon width={28} height={28} color={theme.color.textMain} />
-      </Text>
+    <PressableOpacity hitSlop={4} onPress={onPress}>
+      <TranslateIcon width={28} height={28} color={theme.color.textMain} />
     </PressableOpacity>
   );
 }
