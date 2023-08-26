@@ -1,12 +1,22 @@
-const base = require.resolve('@listen/eslint-config/base');
-
 module.exports = {
   root: true,
-  extends: [base, 'plugin:react-hooks/recommended', 'plugin:react/jsx-runtime'],
+  extends: [
+    '@listen/eslint-config/base',
+    'plugin:react-hooks/recommended',
+    'plugin:react/jsx-runtime',
+  ],
   plugins: ['react', 'react-native', 'unused-imports'],
   env: {
     es2021: true,
     node: true,
+  },
+  parserOptions: {
+    project: './tsconfig.json',
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 'latest',
+    sourceType: 'module',
   },
   settings: {
     react: {
@@ -29,13 +39,5 @@ module.exports = {
       },
     ],
     'react/no-array-index-key': 'off',
-  },
-  parserOptions: {
-    project: './tsconfig.json',
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 'latest',
-    sourceType: 'module',
   },
 };
