@@ -8,7 +8,7 @@
     "lint": "eslint '**/*.{ts,tsx}'",
     "run:android": "react-native run-android",
     "run:ios": "react-native run-ios",
-    "build:local:android": "eas build --platform android --profile preview --local",
+    "build:local:android-preview": "eas build --platform android --profile preview --local",
     "build:local:ios": "eas build --profile development-simulator --platform ios --local",
     "build:local:ios-preview": "eas build --profile preview --platform ios --local",
     "android": "expo run:android",
