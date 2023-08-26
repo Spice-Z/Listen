@@ -23,6 +23,7 @@
     "@react-native-firebase/app": "18.3.0",
     "@react-native-firebase/auth": "^18.3.0",
     "@react-native-firebase/functions": "18.3.0",
+    "@react-native-google-signin/google-signin": "^10.0.1",
     "@tanstack/react-query": "^4.28.0",
     "@types/react": "~18.0.27",
     "axios": "^1.3.5",

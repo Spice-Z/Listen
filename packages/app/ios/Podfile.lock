@@ -1,4 +1,10 @@
 PODS:
+  - AppAuth (1.6.2):
+    - AppAuth/Core (= 1.6.2)
+    - AppAuth/ExternalUserAgent (= 1.6.2)
+  - AppAuth/Core (1.6.2)
+  - AppAuth/ExternalUserAgent (1.6.2):
+    - AppAuth/Core
   - boost (1.76.0)
   - DoubleConversion (1.1.6)
   - EXApplication (5.3.0):
@@ -86,6 +92,10 @@ PODS:
     - expo-dev-menu/GestureHandler
     - expo-dev-menu/Reanimated
     - expo-dev-menu/SafeAreaView
+  - ExpoAdapterGoogleSignIn (10.0.1):
+    - ExpoModulesCore
+    - GoogleSignIn (~> 7.0)
+    - React-Core
   - ExpoHead (0.0.11):
     - ExpoModulesCore
   - ExpoKeepAwake (12.3.0):
@@ -149,6 +159,10 @@ PODS:
   - FirebaseSharedSwift (10.13.0)
   - fmt (6.2.1)
   - glog (0.3.5)
+  - GoogleSignIn (7.0.0):
+    - AppAuth (~> 1.5)
+    - GTMAppAuth (< 3.0, >= 1.3)
+    - GTMSessionFetcher/Core (< 4.0, >= 1.1)
   - GoogleUtilities/AppDelegateSwizzler (7.11.5):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -164,6 +178,9 @@ PODS:
   - "GoogleUtilities/NSData+zlib (7.11.5)"
   - GoogleUtilities/Reachability (7.11.5):
     - GoogleUtilities/Logger
+  - GTMAppAuth (2.0.0):
+    - AppAuth/Core (~> 1.6)
+    - GTMSessionFetcher/Core (< 4.0, >= 1.5)
   - GTMSessionFetcher/Core (3.1.1)
   - hermes-engine (0.72.2):
     - hermes-engine/Pre-built (= 0.72.2)
@@ -606,6 +623,9 @@ PODS:
     - RNFBApp
   - RNGestureHandler (2.9.0):
     - React-Core
+  - RNGoogleSignin (10.0.1):
+    - GoogleSignIn (~> 7.0)
+    - React-Core
   - RNReanimated (3.4.2):
     - DoubleConversion
     - FBLazyVector
@@ -658,6 +678,7 @@ DEPENDENCIES:
   - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
   - expo-dev-menu (from `../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../../../node_modules/expo-dev-menu-interface/ios`)
+  - "ExpoAdapterGoogleSignIn (from `../../../node_modules/@react-native-google-signin/google-signin/expo/ios`)"
   - ExpoHead (from `../../../node_modules/expo-head/ios`)
   - ExpoKeepAwake (from `../../../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
@@ -711,6 +732,7 @@ DEPENDENCIES:
   - "RNFBAuth (from `../../../node_modules/@react-native-firebase/auth`)"
   - "RNFBFunctions (from `../../../node_modules/@react-native-firebase/functions`)"
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
+  - "RNGoogleSignin (from `../../../node_modules/@react-native-google-signin/google-signin`)"
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -718,6 +740,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AppAuth
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -729,7 +752,9 @@ SPEC REPOS:
     - FirebaseMessagingInterop
     - FirebaseSharedSwift
     - fmt
+    - GoogleSignIn
     - GoogleUtilities
+    - GTMAppAuth
     - GTMSessionFetcher
     - libevent
     - PromisesObjC
@@ -763,6 +788,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-dev-menu"
   expo-dev-menu-interface:
     :path: "../../../node_modules/expo-dev-menu-interface/ios"
+  ExpoAdapterGoogleSignIn:
+    :path: "../../../node_modules/@react-native-google-signin/google-signin/expo/ios"
   ExpoHead:
     :path: "../../../node_modules/expo-head/ios"
   ExpoKeepAwake:
@@ -866,6 +893,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/@react-native-firebase/functions"
   RNGestureHandler:
     :path: "../../../node_modules/react-native-gesture-handler"
+  RNGoogleSignin:
+    :path: "../../../node_modules/@react-native-google-signin/google-signin"
   RNReanimated:
     :path: "../../../node_modules/react-native-reanimated"
   RNScreens:
@@ -876,6 +905,7 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 02655a251434d564bb0e73291f5a490c74b5b76f
@@ -889,6 +919,7 @@ SPEC CHECKSUMS:
   expo-dev-launcher: 5275974e9f825f70a33bb79301a8ab894179fa94
   expo-dev-menu: d3bc3aa45760cac1e4f5fa59fb1b75819980b0e3
   expo-dev-menu-interface: 6c82ae323c4b8724dead4763ce3ff24a2108bdb1
+  ExpoAdapterGoogleSignIn: b6e7ca3d25261737d31c274460b503ff1b6cb303
   ExpoHead: 8da645502363b53eeb99d99276a0adbe0ec8cff0
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
   ExpoLinearGradient: 8eaab76b7f55c612ed8348c8be8c2a18a9b4529f
@@ -910,7 +941,9 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: 5c4906ecf0441ed23efff399454dc791eff8ad54
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
+  GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
   hermes-engine: 3f42310d66bcbc814b3771b79ad8d5a3f8df3df1
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
@@ -955,6 +988,7 @@ SPEC CHECKSUMS:
   RNFBAuth: 7f10a8eb8b55ec604946d071bdd9a228d80c4486
   RNFBFunctions: b47c4124ef4835053b4307361599a4f114febb39
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
+  RNGoogleSignin: ccaa4a81582cf713eea562c5dd9dc1961a715fd0
   RNReanimated: 79025fdede9665be5b1eec93abcd95ce19bf5ad4
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNSVG: 07dbd870b0dcdecc99b3a202fa37c8ca163caec2
