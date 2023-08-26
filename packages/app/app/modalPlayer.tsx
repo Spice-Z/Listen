@@ -1,18 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import ModalPlayer from '../feature/Player/ModalPlayer';
 import { BackDownIcon } from '../feature/icons';
 import { memo } from 'react';
+import PressableOpacity from '../feature/Pressable/PressableOpacity';
 
 function BackButton() {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity onPress={navigation.goBack}>
+    <PressableOpacity onPress={navigation.goBack}>
       <Text>
         <BackDownIcon width={24} height={24} color={theme.color.textMain} />
       </Text>
-    </TouchableOpacity>
+    </PressableOpacity>
   );
 }
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Pressable, Animated } from 'react-native';
+import React, { memo } from 'react';
+import { Pressable, Animated } from 'react-native';
 
 type PressableScaleProps = {
   children: React.ReactNode;
@@ -7,7 +7,7 @@ type PressableScaleProps = {
   onPress?: () => void;
 };
 
-const PressableScale: React.FC<PressableScaleProps> = ({ children, style, onPress }) => {
+const PressableScale = memo<PressableScaleProps>(({ children, style, onPress }) => {
   const scaleAnim = new Animated.Value(1);
 
   const handlePressIn = () => {
@@ -33,10 +33,5 @@ const PressableScale: React.FC<PressableScaleProps> = ({ children, style, onPres
       </Animated.View>
     </Pressable>
   );
-};
-
-const styles = StyleSheet.create({
-  // ... あなたのスタイルをここに追加
 });
-
 export default PressableScale;

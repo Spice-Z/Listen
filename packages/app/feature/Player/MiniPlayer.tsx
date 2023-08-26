@@ -1,4 +1,4 @@
-import { ActivityIndicator, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { useRouter } from 'expo-router';
@@ -6,6 +6,8 @@ import { PauseIcon, PlayIcon } from '../icons';
 import TrackPlayer from 'react-native-track-player';
 import ArtworkImage from './components/ArtworkImage';
 import { useMemo } from 'react';
+import PressableScale from '../Pressable/PressableScale';
+import PressableOpacity from '../Pressable/PressableOpacity';
 
 type Props = {
   hide: boolean;
@@ -36,7 +38,7 @@ export default function MiniPlayer({ hide }: Props) {
     );
   }, [isLoading, isPlaying]);
   return hasPlayingTrack && !hide ? (
-    <Pressable
+    <PressableScale
       style={styles.container}
       onPress={() => {
         router.push('/modalPlayer');
@@ -51,10 +53,10 @@ export default function MiniPlayer({ hide }: Props) {
           {currentTrack.artist}
         </Text>
       </View>
-      <Pressable style={styles.button} onPress={handlePlayPause}>
+      <PressableOpacity style={styles.button} onPress={handlePlayPause}>
         {playPauseButton}
-      </Pressable>
-    </Pressable>
+      </PressableOpacity>
+    </PressableScale>
   ) : null;
 }
 

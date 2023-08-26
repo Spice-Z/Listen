@@ -1,12 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
+import { StyleSheet, View, Text, Dimensions, ActivityIndicator } from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
   usePlaybackState,
@@ -32,6 +25,7 @@ import TranscriptScrollBox from './components/TranscriptScrollBox';
 import { gql } from '../graphql/__generated__';
 import { useQuery as useApolloQuery } from '@apollo/client';
 import { useQuery } from '@tanstack/react-query';
+import PressableOpacity from '../Pressable/PressableOpacity';
 
 const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
   query GetEpisodeInModalPlayer($channelId: String!, $episodeId: String!) {
@@ -165,44 +159,44 @@ const ModalPlayer = memo(() => {
         />
       </View>
       <View style={styles.playerContainer}>
-        <TouchableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
+        <PressableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
           <View style={styles.controlButton}>
             <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
+        </PressableOpacity>
+        <PressableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
           <View style={styles.controlButton}>
             <LeftIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
+        </PressableOpacity>
+        <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
           <View style={styles.controlButton}>
             <SkipBackwardIcon width={24} height={24} color={theme.color.textMain} />
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
+        </PressableOpacity>
+        <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
           <View style={styles.playPauseButton}>{playPauseButton}</View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(15)}>
+        </PressableOpacity>
+        <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(15)}>
           <View style={styles.controlButton}>
             <SkipForwardIcon width={24} height={24} color={theme.color.textMain} />
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
+        </PressableOpacity>
+        <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
           <View style={styles.controlButton}>
             <RightIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.playerContainerItem} onPress={handleOpenTranscriptModal}>
+        </PressableOpacity>
+        <PressableOpacity style={styles.playerContainerItem} onPress={handleOpenTranscriptModal}>
           <View style={styles.controlButton}>
             <Text>✨</Text>
           </View>
-        </TouchableOpacity>
+        </PressableOpacity>
       </View>
       <View style={styles.subMenuContainer}>
-        <TouchableOpacity onPress={handleOpenNextEpisodes}>
+        <PressableOpacity onPress={handleOpenNextEpisodes}>
           <Text>aaaaa</Text>
-        </TouchableOpacity>
+        </PressableOpacity>
       </View>
     </View>
   );

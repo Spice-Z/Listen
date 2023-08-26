@@ -1,6 +1,7 @@
 import { memo } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../styles/theme';
+import PressableScale from '../../Pressable/PressableScale';
 
 type Props = {
   id: string;
@@ -13,7 +14,7 @@ const EpisodeList = memo(({ id, title, imageUrl, onPress }: Props) => {
   const onPressItem = () => onPress(id);
 
   return (
-    <Pressable style={styles.container} onPress={onPressItem}>
+    <PressableScale style={styles.container} onPress={onPressItem}>
       <View style={styles.cardHead}>
         {/* @ts-ignore */}
         <Image style={styles.artwork} src={imageUrl} />
@@ -23,7 +24,7 @@ const EpisodeList = memo(({ id, title, imageUrl, onPress }: Props) => {
           </Text>
         </View>
       </View>
-    </Pressable>
+    </PressableScale>
   );
 });
 

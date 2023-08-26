@@ -29,7 +29,7 @@ const GET_CHANNEL = gql(/* GraphQL */ `
             duration
             pubDate
           }
-      }
+        }
       }
     }
   }

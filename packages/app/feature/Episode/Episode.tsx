@@ -1,17 +1,10 @@
 import { memo, useMemo } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
 import { PauseIcon, PlayIcon } from '../icons';
 import { formatDMMMYY } from '../format/date';
 import { formatDuration } from '../format/duration';
+import PressableOpacity from '../Pressable/PressableOpacity';
 
 type Props = {
   channelTitle: string;
@@ -71,9 +64,9 @@ const Episode = memo(
         </Text>
         <View style={styles.buttonContainer}>
           <Text style={styles.duration}>{formattedDuration}</Text>
-          <Pressable style={styles.playButton} onPress={onPressPlay}>
+          <PressableOpacity style={styles.playButton} onPress={onPressPlay}>
             {playPauseButton}
-          </Pressable>
+          </PressableOpacity>
         </View>
         <Text selectable style={styles.description}>
           {episodeDescription}

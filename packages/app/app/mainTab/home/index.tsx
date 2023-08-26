@@ -1,4 +1,4 @@
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
@@ -6,10 +6,11 @@ import { Suspense, useCallback } from 'react';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
+import PressableScale from '../../../feature/Pressable/PressableScale';
 
 const SeparatorComponent = () => <View style={{ marginTop: 12 }} />;
 
-const GET_CHANNELS = gql(/* GraphQL */`
+const GET_CHANNELS = gql(/* GraphQL */ `
   query GetChannels($cursor: String) {
     channels(after: $cursor) {
       edges {
@@ -53,13 +54,16 @@ function App() {
           data={data.channels.edges ?? []}
           renderItem={({ item }) => {
             return (
-              <Pressable style={styles.channelCard} onPress={() => onPressChannel(item.node.channelId)}>
+              <PressableScale
+                style={styles.channelCard}
+                onPress={() => onPressChannel(item.node.channelId)}
+              >
                 {/* @ts-ignore */}
                 <Image style={styles.artwork} src={item.node.imageUrl} />
                 <Text numberOfLines={3} style={styles.channelTitle}>
                   {item.node.title}
                 </Text>
-              </Pressable>
+              </PressableScale>
             );
           }}
           ItemSeparatorComponent={SeparatorComponent}

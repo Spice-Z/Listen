@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import { BackDownIcon, TranslateIcon } from '../feature/icons';
@@ -7,25 +7,26 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import { useTrackPlayer } from '../feature/Player/hooks/useTrackPlayer';
 import { gql } from '../feature/graphql/__generated__';
 import { useQuery } from '@apollo/client';
+import PressableOpacity from '../feature/Pressable/PressableOpacity';
 
 function BackButton() {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity onPress={navigation.goBack}>
+    <PressableOpacity onPress={navigation.goBack}>
       <Text>
         <BackDownIcon width={24} height={24} color={theme.color.textMain} />
       </Text>
-    </TouchableOpacity>
+    </PressableOpacity>
   );
 }
 
 function TranslateIconButton({ onPress }: { onPress: () => void }) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <PressableOpacity onPress={onPress}>
       <Text>
         <TranslateIcon width={28} height={28} color={theme.color.textMain} />
       </Text>
-    </TouchableOpacity>
+    </PressableOpacity>
   );
 }
 
@@ -79,7 +80,7 @@ const ModalTranscriptPlayer = memo(() => {
           headerTitle: 'Transcript',
           // eslint-disable-next-line react/no-unstable-nested-components
           headerLeft: () => <BackButton />,
-          headerRight: () => <TranslateIconButton onPress={switchTargetLang} />
+          headerRight: () => <TranslateIconButton onPress={switchTargetLang} />,
         }}
       />
       <View style={styles.container}>
