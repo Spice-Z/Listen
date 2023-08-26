@@ -29,6 +29,7 @@ const GET_CHANNEL = gql(/* GraphQL */ `
   query GetChannelInEpisode($channelId: String!) {
     channel(channelId: $channelId) {
       id
+      channelId
       title
       imageUrl
       author
@@ -75,7 +76,7 @@ function EpisodePage() {
     } else {
       const track: TrackPlayerTrack = {
         id: episode.episodeId,
-        channelId: channel.id,
+        channelId: channel.channelId,
         title: episode.title,
         artist: channel.title,
         artwork: episode.imageUrl || channel.imageUrl,
@@ -88,7 +89,7 @@ function EpisodePage() {
       // TODO: 連続再生のために、次のエピソードをqueueに入れる
     }
   }, [
-    channel.id,
+    channel.channelId,
     channel.imageUrl,
     channel.title,
     episode.duration,

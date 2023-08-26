@@ -79,15 +79,7 @@ function TranscriptScrollBox({ transcriptUrl, height, width, currentTimePosition
   );
 }
 
-function withSuspense(props: Props) {
-  return (
-    <Suspense>
-      <TranscriptScrollBox {...props} />
-    </Suspense>
-  );
-}
-
-export default memo(withSuspense);
+export default memo(TranscriptScrollBox);
 
 const styles = StyleSheet.create({
   transcriptsContainer: {

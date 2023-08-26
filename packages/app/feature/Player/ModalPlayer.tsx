@@ -19,12 +19,10 @@ import {
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
-import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 import { useRouter } from 'expo-router';
 import TranscriptScrollBox from './components/TranscriptScrollBox';
 import { gql } from '../graphql/__generated__';
-import { useQuery as useApolloQuery } from '@apollo/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@apollo/client';
 import PressableOpacity from '../Pressable/PressableOpacity';
 
 const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
@@ -53,17 +51,17 @@ const ModalPlayer = memo(() => {
   } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { data } = useApolloQuery(GET_EPISODE_IN_MODAL_PLAYER, {
+  const { data } = useQuery(GET_EPISODE_IN_MODAL_PLAYER, {
     variables: {
       channelId: currentEpisodeChannelId,
       episodeId: currentEpisodeId,
     },
+    skip: !currentEpisodeChannelId || !currentEpisodeId,
   });
-  const { isLoading: _isTranscriptLoading, data: transcriptData } = useQuery({
-    queryKey: ['getTranscriptFromUrl', data?.episode.transcriptUrl],
-    queryFn: () => getTranscriptFromUrl(data?.episode.transcriptUrl),
-    enabled: !!data?.episode.transcriptUrl,
-  });
+  useEffect(() => {
+    console.log({ currentEpisodeChannelId, currentEpisodeId })
+    console.log(data?.episode.transcriptUrl)
+  }, [currentEpisodeChannelId, currentEpisodeId, data?.episode.transcriptUrl])
 
   const playPauseButton = useMemo(() => {
     if (isLoading) {
