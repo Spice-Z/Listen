@@ -54,6 +54,8 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     await channelRef.update(podcastData);
   }
 
+  // lastBuildDateが一ヶ月以上前の場合、エピソードを更新しない
+
   const episodesData = feed.items.map((item) => {
     return {
       guid: item.guid || item.link, // 一部のフィードでは、GUIDが存在しない場合があるため、その場合はlinkを代替として使用します
@@ -168,7 +170,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
         episode.updated &&
         episode.episodeId !== undefined &&
         episode.pubDate !== undefined &&
-        episode.url !== undefined
+        episode.url !== undefined,
     ),
   };
 }

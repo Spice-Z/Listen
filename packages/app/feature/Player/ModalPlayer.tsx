@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
-import { StyleSheet, View, Text, Dimensions, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, ActivityIndicator, Image } from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
   usePlaybackState,
@@ -8,14 +8,7 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import {
-  PauseIcon,
-  PlayIcon,
-  SkipForwardIcon,
-  SkipBackwardIcon,
-  RightIcon,
-  LeftIcon,
-} from '../icons';
+import { PauseIcon, PlayIcon, RightIcon, LeftIcon } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
@@ -165,7 +158,12 @@ const ModalPlayer = memo(() => {
         </PressableOpacity>
         <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
           <View style={styles.controlButton}>
-            <SkipBackwardIcon width={24} height={24} color={theme.color.textMain} />
+            <Image
+              style={styles.controlImage}
+              width={24}
+              height={24}
+              source={require('../../assets/player/back15Black.png')}
+            />
           </View>
         </PressableOpacity>
         <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
@@ -173,7 +171,12 @@ const ModalPlayer = memo(() => {
         </PressableOpacity>
         <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(15)}>
           <View style={styles.controlButton}>
-            <SkipForwardIcon width={24} height={24} color={theme.color.textMain} />
+            <Image
+              style={styles.controlImage}
+              width={24}
+              height={24}
+              source={require('../../assets/player/forward15Black.png')}
+            />
           </View>
         </PressableOpacity>
         <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
@@ -269,6 +272,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  controlImage: {
+    width: 24,
+    height: 24,
+    aspectRatio: 1,
+    resizeMode: 'contain',
   },
   controlButtonText: {
     color: '#fff',
