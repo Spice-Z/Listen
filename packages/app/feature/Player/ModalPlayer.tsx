@@ -58,10 +58,6 @@ const ModalPlayer = memo(() => {
     },
     skip: !currentEpisodeChannelId || !currentEpisodeId,
   });
-  useEffect(() => {
-    console.log({ currentEpisodeChannelId, currentEpisodeId })
-    console.log(data?.episode.transcriptUrl)
-  }, [currentEpisodeChannelId, currentEpisodeId, data?.episode.transcriptUrl])
 
   const playPauseButton = useMemo(() => {
     if (isLoading) {

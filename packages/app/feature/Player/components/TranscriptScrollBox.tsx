@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Suspense, memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { getTranscriptFromUrl } from '../../dataLoader/getTranscriptFromUrl';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DimensionValue, StyleSheet, Text, View } from 'react-native';
@@ -15,7 +15,7 @@ type Props = {
 function TranscriptScrollBox({ transcriptUrl, height, width, currentTimePosition }: Props) {
   const { data } = useQuery({
     queryKey: ['getTranscriptFromUrl', transcriptUrl],
-    queryFn: () => getTranscriptFromUrl(transcriptUrl),
+    queryFn: () => getTranscriptFromUrl(transcriptUrl || null),
     enabled: !!transcriptUrl,
   });
 
