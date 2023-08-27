@@ -12,7 +12,7 @@ type Props = {
   episodeDescription: string;
   episodeImageUrl: string;
   duration: number;
-  date: Date;
+  dateUnixTime: number;
   isPlaying: boolean;
   isLoading: boolean;
   onPressPlay: () => void;
@@ -25,14 +25,14 @@ const Episode = memo(
     episodeDescription,
     episodeImageUrl,
     duration,
-    date,
+    dateUnixTime,
     isPlaying,
     isLoading,
     onPressPlay,
   }: Props) => {
     const formattedDate = useMemo(() => {
-      return formatDMMMYY(date);
-    }, [date]);
+      return formatDMMMYY(dateUnixTime);
+    }, [dateUnixTime]);
 
     const formattedDuration = useMemo(() => {
       return formatDuration(duration);

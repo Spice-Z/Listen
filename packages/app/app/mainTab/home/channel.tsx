@@ -99,8 +99,7 @@ function Channel() {
                 description={item.content}
                 duration={item.duration}
                 imageUrl={item.imageUrl || channelInfo.imageUrl}
-                // TODO: fix pubDate
-                date={new Date()}
+                dateUnixTime={item.pubDate}
                 onPress={onPressEpisode}
               />
             );

@@ -11,7 +11,7 @@ type Props = {
   description: string;
   duration: number;
   imageUrl: string;
-  date: Date;
+  dateUnixTime: number;
   onPress: (id: string) => void;
 };
 
@@ -22,41 +22,43 @@ function convertNewlinesToSpaces(text) {
   return text.replace(/\r\n|\r|\n/g, '  ');
 }
 
-const EpisodeCard = memo(({ id, title, description, duration, imageUrl, date, onPress }: Props) => {
-  const arrangedDescription = useMemo(() => {
-    return convertNewlinesToSpaces(removeTagsFromString(description));
-  }, [description]);
-  const onPressItem = () => onPress(id);
+const EpisodeCard = memo(
+  ({ id, title, description, duration, imageUrl, dateUnixTime, onPress }: Props) => {
+    const arrangedDescription = useMemo(() => {
+      return convertNewlinesToSpaces(removeTagsFromString(description));
+    }, [description]);
+    const onPressItem = () => onPress(id);
 
-  const formattedDate = useMemo(() => {
-    return formatDMMMYY(date);
-  }, [date]);
+    const formattedDate = useMemo(() => {
+      return formatDMMMYY(dateUnixTime);
+    }, [dateUnixTime]);
 
-  const formattedDuration = useMemo(() => {
-    return formatDuration(duration);
-  }, [duration]);
+    const formattedDuration = useMemo(() => {
+      return formatDuration(duration);
+    }, [duration]);
 
-  return (
-    <PressableScale style={styles.container} onPress={onPressItem}>
-      <View style={styles.cardHead}>
-        {/* @ts-ignore */}
-        <Image style={styles.artwork} src={imageUrl} />
-        <View style={styles.texts}>
-          <Text numberOfLines={2} style={styles.title}>
-            {title}
-          </Text>
-          <View style={styles.info}>
-            <Text style={styles.duration}>{formattedDuration}</Text>
-            <Text style={styles.pubDate}>{formattedDate}</Text>
+    return (
+      <PressableScale style={styles.container} onPress={onPressItem}>
+        <View style={styles.cardHead}>
+          {/* @ts-ignore */}
+          <Image style={styles.artwork} src={imageUrl} />
+          <View style={styles.texts}>
+            <Text numberOfLines={2} style={styles.title}>
+              {title}
+            </Text>
+            <View style={styles.info}>
+              <Text style={styles.duration}>{formattedDuration}</Text>
+              <Text style={styles.pubDate}>{formattedDate}</Text>
+            </View>
           </View>
         </View>
-      </View>
-      <Text numberOfLines={3} style={styles.description}>
-        {arrangedDescription}
-      </Text>
-    </PressableScale>
-  );
-});
+        <Text numberOfLines={3} style={styles.description}>
+          {arrangedDescription}
+        </Text>
+      </PressableScale>
+    );
+  },
+);
 
 EpisodeCard.displayName = 'EpisodeCard';
 

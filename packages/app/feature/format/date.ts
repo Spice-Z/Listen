@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 
-export const formatDMMMYY = (date: Date) => {
-  const formattedDate = format(date, 'd MMM yy');
+export const formatDMMMYY = (unixTime: number) => {
+  const date = new Date(unixTime * 1000);
+  const formattedDate = format(date, 'd MMM yyyy');
   return formattedDate;
 };

@@ -59,7 +59,7 @@ export type Episode = Node & {
   episodeId: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
-  pubDate: Scalars['String']['output'];
+  pubDate: Scalars['Float']['output'];
   title: Scalars['String']['output'];
   transcriptUrl?: Maybe<Scalars['String']['output']>;
   translatedTranscripts: Array<TranslatedTranscript>;
@@ -133,7 +133,7 @@ export type GetChannelQueryVariables = Exact<{
 }>;
 
 
-export type GetChannelQuery = { __typename?: 'Query', channel: { __typename?: 'Channel', id: string, title: string, description: string, imageUrl: string, author: string, episodes: { __typename?: 'EpisodeConnection', edges: Array<{ __typename?: 'EpisodeEdge', node: { __typename?: 'Episode', id: string, episodeId: string, title: string, content: string, url: string, imageUrl: string, duration: number, pubDate: string } }> } } };
+export type GetChannelQuery = { __typename?: 'Query', channel: { __typename?: 'Channel', id: string, title: string, description: string, imageUrl: string, author: string, episodes: { __typename?: 'EpisodeConnection', edges: Array<{ __typename?: 'EpisodeEdge', node: { __typename?: 'Episode', id: string, episodeId: string, title: string, content: string, url: string, imageUrl: string, duration: number, pubDate: number } }> } } };
 
 export type GetEpisodeQueryVariables = Exact<{
   channelId: Scalars['String']['input'];
@@ -141,7 +141,7 @@ export type GetEpisodeQueryVariables = Exact<{
 }>;
 
 
-export type GetEpisodeQuery = { __typename?: 'Query', episode: { __typename?: 'Episode', id: string, episodeId: string, title: string, content: string, url: string, imageUrl: string, duration: number, pubDate: string } };
+export type GetEpisodeQuery = { __typename?: 'Query', episode: { __typename?: 'Episode', id: string, episodeId: string, title: string, content: string, url: string, imageUrl: string, duration: number, pubDate: number } };
 
 export type GetChannelInEpisodeQueryVariables = Exact<{
   channelId: Scalars['String']['input'];
@@ -163,7 +163,7 @@ export type GetEpisodeInModalTranscriptQueryVariables = Exact<{
 }>;
 
 
-export type GetEpisodeInModalTranscriptQuery = { __typename?: 'Query', episode: { __typename?: 'Episode', id: string, title: string, content: string, url: string, imageUrl: string, duration: number, pubDate: string, translatedTranscripts: Array<{ __typename?: 'TranslatedTranscript', language: string, transcriptUrl: string }> } };
+export type GetEpisodeInModalTranscriptQuery = { __typename?: 'Query', episode: { __typename?: 'Episode', id: string, title: string, content: string, url: string, imageUrl: string, duration: number, pubDate: number, translatedTranscripts: Array<{ __typename?: 'TranslatedTranscript', language: string, transcriptUrl: string }> } };
 
 export type GetEpisodeInModalPlayerQueryVariables = Exact<{
   channelId: Scalars['String']['input'];
