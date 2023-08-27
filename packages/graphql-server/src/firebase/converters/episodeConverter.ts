@@ -1,4 +1,5 @@
 import type { FirestoreDataConverter } from 'firebase-admin/firestore';
+import { Timestamp } from 'firebase-admin/firestore';
 import { getTotalSeconds } from '../../utils/duration.js';
 import { removeLeadingAndTrailingNewlines } from '../../utils/string.js';
 import { toGlobalId } from '../../utils/globalId.js';
@@ -14,7 +15,7 @@ class Episode {
     readonly imageUrl: string,
     readonly content: string,
     readonly duration: number,
-    readonly pubDate: string,
+    readonly pubDate: number,
     readonly season: string,
     readonly translatedTranscripts: {
       language: string;
@@ -32,7 +33,7 @@ interface EpisodeDbModel {
   imageUrl: string;
   content: string;
   duration: number;
-  pubDate: string;
+  pubDate: Timestamp;
   season: string;
   translatedTranscripts:
     | {
@@ -58,7 +59,7 @@ export const episodeConverter: FirestoreDataConverter<Episode> = {
       imageUrl: episode.imageUrl,
       content: episode.content,
       duration: episode.duration,
-      pubDate: episode.pubDate,
+      pubDate: Timestamp.fromMillis(episode.pubDate * 1000),
       season: episode.season,
       translatedTranscripts,
     };
@@ -86,7 +87,7 @@ export const episodeConverter: FirestoreDataConverter<Episode> = {
       data.imageUrl,
       data.content,
       duration,
-      data.pubDate,
+      data.pubDate.seconds,
       data.season,
       translatedTranscripts,
     );

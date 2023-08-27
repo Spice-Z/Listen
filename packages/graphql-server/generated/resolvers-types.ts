@@ -60,7 +60,7 @@ export type Episode = Node & {
   episodeId: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
-  pubDate: Scalars['String']['output'];
+  pubDate: Scalars['Float']['output'];
   title: Scalars['String']['output'];
   transcriptUrl?: Maybe<Scalars['String']['output']>;
   translatedTranscripts: Array<TranslatedTranscript>;
@@ -212,6 +212,7 @@ export type ResolversTypes = ResolversObject<{
   Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
   EpisodeConnection: ResolverTypeWrapper<PartialDeep<EpisodeConnection,{recurseIntoArrays: true}>>;
   EpisodeEdge: ResolverTypeWrapper<PartialDeep<EpisodeEdge,{recurseIntoArrays: true}>>;
+  Float: ResolverTypeWrapper<PartialDeep<Scalars['Float']['output'],{recurseIntoArrays: true}>>;
   ID: ResolverTypeWrapper<PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>>;
   Int: ResolverTypeWrapper<PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
@@ -230,6 +231,7 @@ export type ResolversParentTypes = ResolversObject<{
   Episode: PartialDeep<Episode,{recurseIntoArrays: true}>;
   EpisodeConnection: PartialDeep<EpisodeConnection,{recurseIntoArrays: true}>;
   EpisodeEdge: PartialDeep<EpisodeEdge,{recurseIntoArrays: true}>;
+  Float: PartialDeep<Scalars['Float']['output'],{recurseIntoArrays: true}>;
   ID: PartialDeep<Scalars['ID']['output'],{recurseIntoArrays: true}>;
   Int: PartialDeep<Scalars['Int']['output'],{recurseIntoArrays: true}>;
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
@@ -272,7 +274,7 @@ export type EpisodeResolvers<ContextType = any, ParentType extends ResolversPare
   episodeId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  pubDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pubDate?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   transcriptUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   translatedTranscripts?: Resolver<Array<ResolversTypes['TranslatedTranscript']>, ParentType, ContextType>;

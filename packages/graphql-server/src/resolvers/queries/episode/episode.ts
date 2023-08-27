@@ -17,7 +17,8 @@ const typeDefs = gql`
     imageUrl: String!
     content: String!
     duration: Int!
-    pubDate: String!
+    # UnixTimeで返す
+    pubDate: Float!
     # season: String!
     translatedTranscripts: [TranslatedTranscript!]!
   }

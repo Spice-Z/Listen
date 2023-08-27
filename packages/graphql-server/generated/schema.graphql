@@ -40,7 +40,7 @@ type Episode implements Node {
   episodeId: String!
   id: ID!
   imageUrl: String!
-  pubDate: String!
+  pubDate: Float!
   title: String!
   transcriptUrl: String
   translatedTranscripts: [TranslatedTranscript!]!
