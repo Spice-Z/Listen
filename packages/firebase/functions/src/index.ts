@@ -1,8 +1,5 @@
 import * as admin from 'firebase-admin';
 import { registerChannel } from './endPoint/registerChannel';
-import { getChannels } from './endPoint/getChannels';
-import { getChannelById } from './endPoint/getChannelById';
-import { getEpisodesByChannelId } from './endPoint/getEpisodesByChannelId';
 import { autoGenerateTranscript } from './endPoint/autoGenerateTranscript';
 import { autoGenerateTranslatedTranscript } from './endPoint/autoGenerateTranslatedTranscript';
 import { generateTranslatedTranscript } from './endPoint/generateTranslatedTranscript';
@@ -21,9 +18,6 @@ export {
   autoGenerateTranslatedTranscript,
   autoUpdateShows,
   registerChannel,
-  getChannels,
-  getChannelById,
-  getEpisodesByChannelId,
   getAvailableEpisodes,
   generateTranslatedTranscript,
   generateTranscriptFromIds,
