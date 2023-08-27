@@ -8,6 +8,12 @@ export default function Layout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          borderWidth: 0,
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0,
+          elevation: 0,
+        },
       }}
     >
       <Tabs.Screen
