@@ -32,6 +32,9 @@ export default function SettingPage() {
         options={{
           title: 'Settings',
           headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.color.bgMain,
+          },
         }}
       />
       <StatusBar style="inverted" />

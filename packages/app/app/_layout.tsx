@@ -88,6 +88,8 @@ export default function Layout() {
 const styles = StyleSheet.create({
   miniPlayerContainer: {
     position: 'absolute',
-    bottom: 84,
+    bottom: 78,
+    borderBottomColor: theme.color.bgEmphasis,
+    borderBottomWidth: 1,
   },
 });

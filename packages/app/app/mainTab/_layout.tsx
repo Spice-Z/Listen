@@ -13,6 +13,7 @@ export default function Layout() {
           shadowOffset: { width: 0, height: 0 },
           shadowOpacity: 0,
           elevation: 0,
+          backgroundColor: theme.color.bgNone,
         },
       }}
     >

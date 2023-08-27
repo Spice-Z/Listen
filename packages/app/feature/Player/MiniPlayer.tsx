@@ -44,7 +44,7 @@ export default function MiniPlayer({ hide }: Props) {
         router.push('/modalPlayer');
       }}
     >
-      <ArtworkImage width={34} height={34} borderRadius={6} />
+      <ArtworkImage width={56} height={56} borderRadius={0} />
       <View style={styles.texts}>
         <Text numberOfLines={1} style={styles.title}>
           {currentTrack.title}
@@ -62,32 +62,16 @@ export default function MiniPlayer({ hide }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.color.bgEmphasis,
+    backgroundColor: theme.color.bgNone,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: Dimensions.get('window').width - 12,
-    borderRadius: 4,
-    marginHorizontal: 6,
-    padding: 4,
-    shadowColor: theme.color.bgEmphasis,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  artwork: {
-    width: 34,
-    height: 34,
-    borderRadius: 6,
-    backgroundColor: 'gray',
+    width: Dimensions.get('window').width,
+    paddingRight: 8,
   },
   texts: {
     marginLeft: 4,
-    width: Dimensions.get('window').width - 12 - 28 - 4 - 34 - 4 - 4 - 4 - 4,
+    width: Dimensions.get('window').width - 12 - 28 - 4 - 56 - 4 - 4 - 4,
   },
   title: {
     color: theme.color.textMain,
