@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
@@ -8,7 +8,7 @@ import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import PressableScale from '../../../feature/Pressable/PressableScale';
 
-const SeparatorComponent = () => <View style={{ marginTop: 12 }} />;
+const SeparatorComponent = () => <View style={{ marginTop: 18 }} />;
 
 const GET_CHANNELS = gql(/* GraphQL */ `
   query GetChannels($cursor: String) {
@@ -52,6 +52,7 @@ function App() {
       <View style={styles.container}>
         <FlatList
           data={data.channels.edges ?? []}
+          numColumns={2}
           renderItem={({ item }) => {
             return (
               <PressableScale
@@ -68,6 +69,7 @@ function App() {
           }}
           ItemSeparatorComponent={SeparatorComponent}
           contentContainerStyle={styles.contentContainer}
+          columnWrapperStyle={styles.columnWrapperStyle}
         />
       </View>
     </>
@@ -111,25 +113,25 @@ const styles = StyleSheet.create({
     color: theme.color.textMain,
   },
   channelCard: {
-    backgroundColor: theme.color.bgEmphasis,
     borderRadius: 8,
     color: theme.color.textMain,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: (Dimensions.get('window').width - 16 * 2 - 8) / 2,
   },
   artwork: {
-    width: 84,
-    height: 84,
+    width: '100%',
+    height: 'auto',
+    aspectRatio: 1,
+    resizeMode: 'contain',
     borderRadius: 8,
   },
   channelTitle: {
     color: theme.color.textMain,
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 14,
     fontWeight: 'bold',
-    marginLeft: 12,
-    flexShrink: 1,
+    marginTop: 8,
+  },
+  columnWrapperStyle: {
+    width: '100%',
+    justifyContent: 'space-between',
   },
 });
