@@ -94,7 +94,6 @@ function EpisodePage() {
     channel.title,
     episode.duration,
     episode.episodeId,
-    episode.id,
     episode.imageUrl,
     episode.title,
     episode.url,
@@ -117,7 +116,7 @@ function EpisodePage() {
         />
         <Episode
           channelTitle={channel.title}
-          date={new Date()}
+          dateUnixTime={episode.pubDate}
           episodeTitle={episode.title}
           episodeDescription={episode.content}
           episodeImageUrl={episode.imageUrl || channel.imageUrl}

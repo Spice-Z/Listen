@@ -32,7 +32,7 @@ export default function TranscriptPlayer({ targetLang }: Props) {
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
 
-  const { data, loading } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS, {
+  const { data } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS, {
     variables: {
       channelId: currentEpisodeChannelId,
       episodeId: currentEpisodeId,
