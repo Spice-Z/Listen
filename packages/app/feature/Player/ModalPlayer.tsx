@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { StyleSheet, View, Text, Dimensions, ActivityIndicator, Image } from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
@@ -105,9 +105,6 @@ const ModalPlayer = memo(() => {
   const handleOpenTranscriptModal = () => {
     router.push('/modalTranscriptPlayer');
   };
-  const handleOpenNextEpisodes = useCallback(() => {
-    router.push('/modalNextEpisodes');
-  }, [router]);
 
   return currentQueue.length === 0 || currentTrack === null ? (
     <View style={styles.container}>
@@ -188,11 +185,6 @@ const ModalPlayer = memo(() => {
           <View style={styles.controlButton}>
             <Text>✨</Text>
           </View>
-        </PressableOpacity>
-      </View>
-      <View style={styles.subMenuContainer}>
-        <PressableOpacity onPress={handleOpenNextEpisodes}>
-          <Text>aaaaa</Text>
         </PressableOpacity>
       </View>
     </View>
