@@ -71,7 +71,7 @@ export const autoGenerateTranscript = functions
         const chunkFilePaths = await splitAudio(
           convertTargetDir,
           convertTargetFileName,
-          splitSeconds
+          splitSeconds,
         );
         const { segments } = await transcribeAudioFiles({
           apiKey: OPEN_AI_API_KEY,

@@ -23,14 +23,14 @@ export const generateTranscriptFromIds = functions
     if (!channelId) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'The function must be called with a "channelId" argument.'
+        'The function must be called with a "channelId" argument.',
       );
     }
 
     if (!episodeId) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'The function must be called with an "episodeId" argument.'
+        'The function must be called with an "episodeId" argument.',
       );
     }
 

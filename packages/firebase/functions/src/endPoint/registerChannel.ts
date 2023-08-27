@@ -20,7 +20,7 @@ export const registerChannel = functions
     if (!feedUrl) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'The function must be called with a "url" argument.'
+        'The function must be called with a "url" argument.',
       );
     }
 

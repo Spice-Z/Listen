@@ -58,7 +58,7 @@ export const autoGenerateTranslatedTranscript = functions
         if (!transcriptUrl) {
           throw new functions.https.HttpsError(
             'failed-precondition',
-            'The episode must have a transcriptUrl before translating.'
+            'The episode must have a transcriptUrl before translating.',
           );
         }
 

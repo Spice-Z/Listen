@@ -20,7 +20,7 @@ export const uploadSegmentsToGCS = async ({
   const segmentsJson = JSON.stringify({ segments: roundedSegments });
   const bucket = admin.storage().bucket();
   const segmentsFirebaseFile = bucket.file(
-    `${CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH}/${id}.json`
+    `${CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH}/${id}.json`,
   );
   await segmentsFirebaseFile.save(segmentsJson, {
     contentType: 'application/json',
@@ -39,7 +39,7 @@ export const uploadTranslationToGCS = async ({
   const segmentsJson = JSON.stringify({ segments });
   const bucket = admin.storage().bucket();
   const segmentsFirebaseFile = bucket.file(
-    `${CLOUD_STORAGE_TRANSCRIPTION_TRANSLATION_DIR_PATH}/${id}.json`
+    `${CLOUD_STORAGE_TRANSCRIPTION_TRANSLATION_DIR_PATH}/${id}.json`,
   );
   await segmentsFirebaseFile.save(segmentsJson, {
     contentType: 'application/json',

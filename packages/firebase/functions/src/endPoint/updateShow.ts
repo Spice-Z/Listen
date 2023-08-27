@@ -20,7 +20,7 @@ export const updateShow = functions
     if (!channelId) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'The function must be called with a "channelId" argument.'
+        'The function must be called with a "channelId" argument.',
       );
     }
 

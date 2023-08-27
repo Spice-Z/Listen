@@ -20,7 +20,7 @@ export async function convertSpeed(inputFilePath: string, outputFilePath: string
 export async function splitAudio(
   inputFileDir: string,
   inputFileName: string,
-  durationSec: number
+  durationSec: number,
 ): Promise<string[]> {
   functions.logger.info('splitAudio');
   const fileExtension = getFileExtensionFromFileName(inputFileName);
@@ -29,7 +29,7 @@ export async function splitAudio(
   const outputFilePath = path.resolve(inputFileDir, outputFileNamePattern);
   try {
     execSync(
-      `ffmpeg -i ${inputFilePath} -map 0 -c copy -f segment -segment_time ${durationSec} -reset_timestamps 1 ${outputFilePath}`
+      `ffmpeg -i ${inputFilePath} -map 0 -c copy -f segment -segment_time ${durationSec} -reset_timestamps 1 ${outputFilePath}`,
     );
     functions.logger.info('ffmpeg split completed');
     const outputFileGlob = outputFileNamePattern.replace('%03d', '.*');

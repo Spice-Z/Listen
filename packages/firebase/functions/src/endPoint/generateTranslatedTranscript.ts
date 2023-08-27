@@ -24,7 +24,7 @@ export const generateTranslatedTranscript = functions
     if (!channelId || !episodeId || !langCode) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'The function must be called with "channelId", "episodeId" and "language" arguments.'
+        'The function must be called with "channelId", "episodeId" and "language" arguments.',
       );
     }
     const language = getLanguageName(langCode);
@@ -46,7 +46,7 @@ export const generateTranslatedTranscript = functions
     if (!transcriptUrl) {
       throw new functions.https.HttpsError(
         'failed-precondition',
-        'The episode must have a transcriptUrl before translating.'
+        'The episode must have a transcriptUrl before translating.',
       );
     }
 
