@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node ./dist/src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest --config vitest.config.ts",
     "dev": "npm run build && node ./dist/src/index.js",
     "clean": "rimraf dist",
     "build": "tsc && cp ./generated/schema.graphql ./dist/generated/schema.graphql",
@@ -37,6 +37,8 @@
     "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@types/cors": "^2.8.13",
     "eslint-plugin-prettier": "^5.0.0",
-    "type-fest": "^4.2.0"
+    "type-fest": "^4.2.0",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.3"
   }
 }

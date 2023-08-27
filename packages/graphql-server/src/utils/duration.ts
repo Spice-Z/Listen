@@ -8,7 +8,8 @@ export function getTotalSeconds(input: number | string): number {
         totalSeconds = parts[0];
       } else if (parts.length === 2) {
         totalSeconds = parts[0] * 60 + parts[1];
-      } else if (parts.length > 3) {
+      } else if (parts.length >= 3) {
+        console.log(parts);
         totalSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
       }
     } else {

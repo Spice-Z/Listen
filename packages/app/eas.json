@@ -24,5 +24,8 @@
       }
     },
     "cli": {}
+  },
+  "cli": {
+    "promptToConfigurePushNotifications": false
   }
 }
