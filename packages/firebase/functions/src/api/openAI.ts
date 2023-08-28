@@ -120,7 +120,7 @@ export async function translateSegments({
   targetLanguage: string;
 }) {
   const splittedSegments =
-    originalLanguage === 'English' ? splitSegments(segments, 3000) : splitSegments(segments, 3000);
+    originalLanguage === 'English' ? segments : splitSegments(segments, 10000);
 
   console.log('segments length: ', splittedSegments.length);
 
@@ -130,7 +130,7 @@ export async function translateSegments({
         const response = await axios.post(
           'https://api.openai.com/v1/chat/completions',
           {
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-3.5-turbo-0613',
             messages: [
               {
                 role: 'system',
