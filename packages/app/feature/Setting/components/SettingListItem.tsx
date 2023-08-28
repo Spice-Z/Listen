@@ -4,6 +4,7 @@ import { theme } from '../../styles/theme';
 import PressableScale from '../../Pressable/PressableScale';
 
 export type Props = {
+  id: string;
   text: string;
   subText?: string;
   onPress: () => void | Promise<void>;

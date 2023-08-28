@@ -11,6 +11,11 @@ export const AuthProvider = memo<Props>((props) => {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [firebaseToken, setFirebaseToken] = useState<string | null>(null);
   const onAuthStateChanged = (user: FirebaseAuthTypes.User) => {
+    // user情報がない時は匿名ログインをさせておく
+    if (!user) {
+      auth().signInAnonymously();
+      return;
+    }
     setUser(user);
     if (user) {
       user.getIdToken().then((token) => {

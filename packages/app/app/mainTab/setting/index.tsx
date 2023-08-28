@@ -1,30 +1,40 @@
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../../feature/styles/theme';
 import SettingListItemComponent from '../../../feature/Setting/components/SettingListItem';
-import { useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 import type { Props as SettingListItemProps } from '../../../feature/Setting/components/SettingListItem';
-import { useSignOut } from '../../../feature/Auth/hooks/useSignOut';
-import { useAuthContext } from '../../../feature/context/auth/context';
+
+const ListHeaderComponent = memo(() => (
+  <View style={styles.headerContainer}>
+    <Image
+      width={2292}
+      height={2292}
+      style={styles.headerImage}
+      source={require('../../../assets/image/login-artwork.png')}
+    />
+    <Text style={styles.headerText}>{`Version 1.0`}</Text>
+  </View>
+));
 
 export default function SettingPage() {
   const renderListItem = useCallback(({ item }: { item: SettingListItemProps }) => {
     return <SettingListItemComponent {...item} />;
   }, []);
-  const { signOut } = useSignOut();
-  const { user } = useAuthContext();
-  const currentLoginExplanation = useMemo(() => {
-    const provider = user?.providerData[0]?.providerId;
-    switch (provider) {
-      case 'google.com':
-        return 'Googleでログイン中';
-      case 'apple.com':
-        return 'Appleでログイン中';
-      default:
-        return 'メールアドレスでログイン中';
-    }
-  }, [user?.providerData]);
+  // const { signOut } = useSignOut();
+  // const { user } = useAuthContext();
+  // const currentLoginExplanation = useMemo(() => {
+  //   const provider = user?.providerData[0]?.providerId;
+  //   switch (provider) {
+  //     case 'google.com':
+  //       return 'Googleでログイン中';
+  //     case 'apple.com':
+  //       return 'Appleでログイン中';
+  //     default:
+  //       return 'その他の方法でログイン中';
+  //   }
+  // }, [user?.providerData]);
 
   return (
     <>
@@ -41,24 +51,10 @@ export default function SettingPage() {
       <SafeAreaView style={styles.container}>
         <FlatList
           contentContainerStyle={styles.listContainer}
+          ListHeaderComponent={ListHeaderComponent}
           data={[
             {
               id: '1',
-              text: 'Account',
-              subText: currentLoginExplanation,
-              onPress: () => {
-                /* */
-              },
-            },
-            {
-              id: '2',
-              text: 'Notifications',
-              onPress: () => {
-                /* */
-              },
-            },
-            {
-              id: '3',
               text: 'Licenses',
               onPress: () => {
                 /* */
@@ -70,12 +66,6 @@ export default function SettingPage() {
               onPress: () => {
                 /* */
               },
-            },
-            {
-              id: '5',
-              text: 'Sign out',
-              subText: 'Sign out from your account',
-              onPress: signOut,
             },
           ]}
           renderItem={renderListItem}
@@ -93,5 +83,25 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingHorizontal: 16,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    paddingBottom: 32,
+    marginBottom: 32,
+    backgroundColor: theme.color.bgNone,
+    borderRadius: 8,
+  },
+  headerImage: {
+    width: '70%',
+    height: 'auto',
+    aspectRatio: 1,
+    resizeMode: 'contain',
+    marginVertical: 'auto',
+  },
+  headerText: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: theme.color.textMain,
+    textAlign: 'center',
   },
 });
