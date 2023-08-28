@@ -25,8 +25,24 @@ export const AuthProvider = memo<Props>((props) => {
       setFirebaseToken(null);
     }
   };
+  const onIdTokenChanged = (user: FirebaseAuthTypes.User) => {
+    if (user) {
+      user.getIdToken().then((token) => {
+        setFirebaseToken(token);
+      });
+      return;
+    }
+  };
+
+  // ログイン状態の変更を監視
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // tokenの変更を監視
+  useEffect(() => {
+    const subscriber = auth().onIdTokenChanged(onIdTokenChanged);
     return subscriber; // unsubscribe on unmount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
