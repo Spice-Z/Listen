@@ -7,6 +7,7 @@ import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import PressableScale from '../../../feature/Pressable/PressableScale';
+import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 
 const SeparatorComponent = () => <View style={{ marginTop: 18 }} />;
 
@@ -70,6 +71,7 @@ function App() {
           ItemSeparatorComponent={SeparatorComponent}
           contentContainerStyle={styles.contentContainer}
           columnWrapperStyle={styles.columnWrapperStyle}
+          ListFooterComponent={MiniPlayerSpacer}
         />
       </View>
     </>

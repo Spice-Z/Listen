@@ -8,6 +8,7 @@ import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import WithSuspense from '../../../feature/Suspense/WithSuspense';
+import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 
 const GET_CHANNEL = gql(/* GraphQL */ `
   query GetChannel($channelId: String!) {
@@ -89,6 +90,7 @@ function Channel() {
       <View style={styles.container}>
         <FlatList
           ListHeaderComponent={ChanelInfoComponent}
+          ListFooterComponent={MiniPlayerSpacer}
           data={episodeList}
           renderItem={({ item }) => {
             return (

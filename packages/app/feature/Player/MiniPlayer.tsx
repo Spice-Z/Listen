@@ -8,6 +8,7 @@ import ArtworkImage from './components/ArtworkImage';
 import { useMemo } from 'react';
 import PressableScale from '../Pressable/PressableScale';
 import PressableOpacity from '../Pressable/PressableOpacity';
+import { MINI_PLAYER_HEIGHT } from '../../constants';
 
 type Props = {
   hide: boolean;
@@ -68,6 +69,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: Dimensions.get('window').width,
     paddingRight: 8,
+    height: MINI_PLAYER_HEIGHT,
   },
   texts: {
     marginLeft: 4,

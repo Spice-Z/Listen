@@ -74,10 +74,6 @@ export default function Layout() {
                 }}
               />
             </Stack>
-
-            <View style={styles.miniPlayerContainer}>
-              <MiniPlayer hide={hideMiniPlayer} />
-            </View>
           </QueryClientProvider>
         </ApolloProviderHelper>
       </AuthProvider>

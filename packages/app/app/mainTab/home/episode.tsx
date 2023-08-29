@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useGlobalSearchParams, Stack } from 'expo-router';
 import Episode from '../../../feature/Episode/Episode';
@@ -9,6 +9,7 @@ import TrackPlayer from 'react-native-track-player';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import WithSuspense from '../../../feature/Suspense/WithSuspense';
+import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 
 const GET_EPISODE = gql(/* GraphQL */ `
   query GetEpisode($channelId: String!, $episodeId: String!) {
@@ -108,7 +109,7 @@ function EpisodePage() {
           title: '',
         }}
       />
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Stack.Screen
           options={{
             title: episode.title || '',
@@ -125,7 +126,8 @@ function EpisodePage() {
           isLoading={isThisEpisodeLoading}
           onPressPlay={onPressPlay}
         />
-      </View>
+        <MiniPlayerSpacer />
+      </ScrollView>
     </>
   );
 }
