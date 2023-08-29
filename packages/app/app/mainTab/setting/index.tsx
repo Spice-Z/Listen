@@ -1,5 +1,5 @@
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../../feature/styles/theme';
 import SettingListItemComponent from '../../../feature/Setting/components/SettingListItem';
@@ -19,6 +19,10 @@ const ListHeaderComponent = memo(() => (
 ));
 
 export default function SettingPage() {
+  const router = useRouter();
+  const goToLicenses = useCallback(() => {
+    router.push('/mainTab/setting/licenses');
+  }, []);
   const renderListItem = useCallback(({ item }: { item: SettingListItemProps }) => {
     return <SettingListItemComponent {...item} />;
   }, []);
@@ -56,9 +60,7 @@ export default function SettingPage() {
             {
               id: '1',
               text: 'Licenses',
-              onPress: () => {
-                /* */
-              },
+              onPress: goToLicenses,
             },
             {
               id: '4',
