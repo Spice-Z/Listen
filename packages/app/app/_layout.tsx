@@ -1,8 +1,7 @@
 import { Stack, usePathname } from 'expo-router';
 import { useMemo } from 'react';
 import { theme } from '../feature/styles/theme';
-import { StyleSheet, View } from 'react-native';
-import MiniPlayer from '../feature/Player/MiniPlayer';
+import { StyleSheet } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../feature/context/auth/AuthProvider';
 import { useSetupTrackPlayer } from '../feature/Player/hooks/useSetupTrackPlayer';
