@@ -20,21 +20,21 @@ PODS:
     - EXJSONUtils
   - Expo (49.0.7):
     - ExpoModulesCore
-  - expo-dev-client (2.2.1):
+  - expo-dev-client (2.1.6):
     - EXManifests
     - expo-dev-launcher
     - expo-dev-menu
     - expo-dev-menu-interface
     - EXUpdatesInterface
-  - expo-dev-launcher (2.2.1):
+  - expo-dev-launcher (2.1.6):
     - EXManifests
-    - expo-dev-launcher/Main (= 2.2.1)
+    - expo-dev-launcher/Main (= 2.1.6)
     - expo-dev-menu
     - expo-dev-menu-interface
     - ExpoModulesCore
     - EXUpdatesInterface
     - React-Core
-  - expo-dev-launcher/Main (2.2.1):
+  - expo-dev-launcher/Main (2.1.6):
     - EXManifests
     - expo-dev-launcher/Unsafe
     - expo-dev-menu
@@ -42,24 +42,24 @@ PODS:
     - ExpoModulesCore
     - EXUpdatesInterface
     - React-Core
-  - expo-dev-launcher/Unsafe (2.2.1):
+  - expo-dev-launcher/Unsafe (2.1.6):
     - EXManifests
     - expo-dev-menu
     - expo-dev-menu-interface
     - ExpoModulesCore
     - EXUpdatesInterface
     - React-Core
-  - expo-dev-menu (2.2.0):
-    - expo-dev-menu/Main (= 2.2.0)
+  - expo-dev-menu (2.1.4):
+    - expo-dev-menu/Main (= 2.1.4)
   - expo-dev-menu-interface (1.1.1)
-  - expo-dev-menu/GestureHandler (2.2.0)
-  - expo-dev-menu/Main (2.2.0):
+  - expo-dev-menu/GestureHandler (2.1.4)
+  - expo-dev-menu/Main (2.1.4):
     - EXManifests
     - expo-dev-menu-interface
     - expo-dev-menu/Vendored
     - ExpoModulesCore
     - React-Core
-  - expo-dev-menu/Reanimated (2.2.0):
+  - expo-dev-menu/Reanimated (2.1.4):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -87,8 +87,8 @@ PODS:
     - React-RCTVibration
     - ReactCommon/turbomodule/core
     - Yoga
-  - expo-dev-menu/SafeAreaView (2.2.0)
-  - expo-dev-menu/Vendored (2.2.0):
+  - expo-dev-menu/SafeAreaView (2.1.4)
+  - expo-dev-menu/Vendored (2.1.4):
     - expo-dev-menu/GestureHandler
     - expo-dev-menu/Reanimated
     - expo-dev-menu/SafeAreaView
@@ -128,25 +128,36 @@ PODS:
     - FirebaseAuth (~> 10.12.0)
   - Firebase/CoreOnly (10.12.0):
     - FirebaseCore (= 10.12.0)
+  - Firebase/Crashlytics (10.12.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 10.12.0)
   - Firebase/Functions (10.12.0):
     - Firebase/CoreOnly
     - FirebaseFunctions (~> 10.12.0)
-  - FirebaseAppCheckInterop (10.13.0)
+  - FirebaseAppCheckInterop (10.14.0)
   - FirebaseAuth (10.12.0):
     - FirebaseAppCheckInterop (~> 10.0)
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
     - GoogleUtilities/Environment (~> 7.8)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
-  - FirebaseAuthInterop (10.13.0)
+  - FirebaseAuthInterop (10.14.0)
   - FirebaseCore (10.12.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreExtension (10.13.0):
+  - FirebaseCoreExtension (10.12.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.13.0):
+  - FirebaseCoreInternal (10.14.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - FirebaseCrashlytics (10.12.0):
+    - FirebaseCore (~> 10.5)
+    - FirebaseInstallations (~> 10.0)
+    - FirebaseSessions (~> 10.5)
+    - GoogleDataTransport (~> 9.2)
+    - GoogleUtilities/Environment (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesObjC (~> 2.1)
   - FirebaseFunctions (10.12.0):
     - FirebaseAppCheckInterop (~> 10.10)
     - FirebaseAuthInterop (~> 10.0)
@@ -155,10 +166,27 @@ PODS:
     - FirebaseMessagingInterop (~> 10.0)
     - FirebaseSharedSwift (~> 10.0)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
-  - FirebaseMessagingInterop (10.13.0)
-  - FirebaseSharedSwift (10.13.0)
+  - FirebaseInstallations (10.14.0):
+    - FirebaseCore (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - PromisesObjC (~> 2.1)
+  - FirebaseMessagingInterop (10.14.0)
+  - FirebaseSessions (10.14.0):
+    - FirebaseCore (~> 10.5)
+    - FirebaseCoreExtension (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.2)
+    - GoogleUtilities/Environment (~> 7.10)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesSwift (~> 2.1)
+  - FirebaseSharedSwift (10.14.0)
   - fmt (6.2.1)
   - glog (0.3.5)
+  - GoogleDataTransport (9.2.5):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
   - GoogleSignIn (7.0.0):
     - AppAuth (~> 1.5)
     - GTMAppAuth (< 3.0, >= 1.3)
@@ -178,6 +206,8 @@ PODS:
   - "GoogleUtilities/NSData+zlib (7.11.5)"
   - GoogleUtilities/Reachability (7.11.5):
     - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (7.11.5):
+    - GoogleUtilities/Logger
   - GTMAppAuth (2.0.0):
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 4.0, >= 1.5)
@@ -186,7 +216,14 @@ PODS:
     - hermes-engine/Pre-built (= 0.72.2)
   - hermes-engine/Pre-built (0.72.2)
   - libevent (2.1.12)
+  - nanopb (2.30909.0):
+    - nanopb/decode (= 2.30909.0)
+    - nanopb/encode (= 2.30909.0)
+  - nanopb/decode (2.30909.0)
+  - nanopb/encode (2.30909.0)
   - PromisesObjC (2.3.1)
+  - PromisesSwift (2.3.1):
+    - PromisesObjC (= 2.3.1)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -617,6 +654,11 @@ PODS:
     - Firebase/Auth (= 10.12.0)
     - React-Core
     - RNFBApp
+  - RNFBCrashlytics (18.3.0):
+    - Firebase/Crashlytics (= 10.12.0)
+    - FirebaseCoreExtension (= 10.12.0)
+    - React-Core
+    - RNFBApp
   - RNFBFunctions (18.3.0):
     - Firebase/Functions (= 10.12.0)
     - React-Core
@@ -674,16 +716,16 @@ DEPENDENCIES:
   - EXJSONUtils (from `../../../node_modules/expo-json-utils/ios`)
   - EXManifests (from `../../../node_modules/expo-manifests/ios`)
   - Expo (from `../../../node_modules/expo`)
-  - expo-dev-client (from `../node_modules/expo-dev-client/ios`)
-  - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
-  - expo-dev-menu (from `../node_modules/expo-dev-menu`)
+  - expo-dev-client (from `../../../node_modules/expo-dev-client/ios`)
+  - expo-dev-launcher (from `../../../node_modules/expo-dev-launcher`)
+  - expo-dev-menu (from `../../../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../../../node_modules/expo-dev-menu-interface/ios`)
   - "ExpoAdapterGoogleSignIn (from `../../../node_modules/@react-native-google-signin/google-signin/expo/ios`)"
   - ExpoHead (from `../../../node_modules/expo-head/ios`)
   - ExpoKeepAwake (from `../../../node_modules/expo-keep-awake/ios`)
-  - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
+  - ExpoLinearGradient (from `../../../node_modules/expo-linear-gradient/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
-  - EXScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
+  - EXScreenOrientation (from `../../../node_modules/expo-screen-orientation/ios`)
   - EXSplashScreen (from `../../../node_modules/expo-splash-screen/ios`)
   - EXUpdatesInterface (from `../../../node_modules/expo-updates-interface/ios`)
   - FBLazyVector (from `../../../node_modules/react-native/Libraries/FBLazyVector`)
@@ -708,8 +750,8 @@ DEPENDENCIES:
   - React-jsinspector (from `../../../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../../../node_modules/react-native/ReactCommon/logger`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
-  - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
-  - react-native-track-player (from `../node_modules/react-native-track-player`)
+  - "react-native-slider (from `../../../node_modules/@react-native-community/slider`)"
+  - react-native-track-player (from `../../../node_modules/react-native-track-player`)
   - React-NativeModulesApple (from `../../../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../../../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../../../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -730,12 +772,13 @@ DEPENDENCIES:
   - "RNAppleAuthentication (from `../../../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNFBApp (from `../../../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../../../node_modules/@react-native-firebase/auth`)"
+  - "RNFBCrashlytics (from `../../../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBFunctions (from `../../../node_modules/@react-native-firebase/functions`)"
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../../../node_modules/@react-native-google-signin/google-signin`)"
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
-  - RNSVG (from `../node_modules/react-native-svg`)
+  - RNSVG (from `../../../node_modules/react-native-svg`)
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -748,16 +791,22 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
+    - FirebaseCrashlytics
     - FirebaseFunctions
+    - FirebaseInstallations
     - FirebaseMessagingInterop
+    - FirebaseSessions
     - FirebaseSharedSwift
     - fmt
+    - GoogleDataTransport
     - GoogleSignIn
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
     - libevent
+    - nanopb
     - PromisesObjC
+    - PromisesSwift
     - SocketRocket
     - SwiftAudioEx
 
@@ -781,11 +830,11 @@ EXTERNAL SOURCES:
   Expo:
     :path: "../../../node_modules/expo"
   expo-dev-client:
-    :path: "../node_modules/expo-dev-client/ios"
+    :path: "../../../node_modules/expo-dev-client/ios"
   expo-dev-launcher:
-    :path: "../node_modules/expo-dev-launcher"
+    :path: "../../../node_modules/expo-dev-launcher"
   expo-dev-menu:
-    :path: "../node_modules/expo-dev-menu"
+    :path: "../../../node_modules/expo-dev-menu"
   expo-dev-menu-interface:
     :path: "../../../node_modules/expo-dev-menu-interface/ios"
   ExpoAdapterGoogleSignIn:
@@ -795,11 +844,11 @@ EXTERNAL SOURCES:
   ExpoKeepAwake:
     :path: "../../../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
-    :path: "../node_modules/expo-linear-gradient/ios"
+    :path: "../../../node_modules/expo-linear-gradient/ios"
   ExpoModulesCore:
     :path: "../../../node_modules/expo-modules-core"
   EXScreenOrientation:
-    :path: "../node_modules/expo-screen-orientation/ios"
+    :path: "../../../node_modules/expo-screen-orientation/ios"
   EXSplashScreen:
     :path: "../../../node_modules/expo-splash-screen/ios"
   EXUpdatesInterface:
@@ -846,9 +895,9 @@ EXTERNAL SOURCES:
   react-native-safe-area-context:
     :path: "../../../node_modules/react-native-safe-area-context"
   react-native-slider:
-    :path: "../node_modules/@react-native-community/slider"
+    :path: "../../../node_modules/@react-native-community/slider"
   react-native-track-player:
-    :path: "../node_modules/react-native-track-player"
+    :path: "../../../node_modules/react-native-track-player"
   React-NativeModulesApple:
     :path: "../../../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -889,6 +938,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/@react-native-firebase/app"
   RNFBAuth:
     :path: "../../../node_modules/@react-native-firebase/auth"
+  RNFBCrashlytics:
+    :path: "../../../node_modules/@react-native-firebase/crashlytics"
   RNFBFunctions:
     :path: "../../../node_modules/@react-native-firebase/functions"
   RNGestureHandler:
@@ -900,7 +951,7 @@ EXTERNAL SOURCES:
   RNScreens:
     :path: "../../../node_modules/react-native-screens"
   RNSVG:
-    :path: "../node_modules/react-native-svg"
+    :path: "../../../node_modules/react-native-svg"
   Yoga:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
@@ -915,9 +966,9 @@ SPEC CHECKSUMS:
   EXJSONUtils: 48b1e764ac35160e6f54d21ab60d7d9501f3e473
   EXManifests: 500666d48e8dd7ca5a482c9e729e4a7a6c34081b
   Expo: d310f3b84bd30843324d41f23ea7cc5e4273abf1
-  expo-dev-client: 92b9e487ad6a05a3ad1dda70334729ccaf622bfe
-  expo-dev-launcher: 5275974e9f825f70a33bb79301a8ab894179fa94
-  expo-dev-menu: d3bc3aa45760cac1e4f5fa59fb1b75819980b0e3
+  expo-dev-client: 84792ce20d34fa5c882cdc3ca338ea1b2cde5013
+  expo-dev-launcher: c50f1b78ea294f5762902b768952898d17739983
+  expo-dev-menu: 10498deea55439b7e664426adffd602bd6d6a617
   expo-dev-menu-interface: 6c82ae323c4b8724dead4763ce3ff24a2108bdb1
   ExpoAdapterGoogleSignIn: b6e7ca3d25261737d31c274460b503ff1b6cb303
   ExpoHead: 8da645502363b53eeb99d99276a0adbe0ec8cff0
@@ -930,24 +981,30 @@ SPEC CHECKSUMS:
   FBLazyVector: 565cdf5e3d0dd4b12a9c842f6a4bb5082b5aaa5b
   FBReactNativeSpec: ab319e3798ddbe474b9f5610342c2a7936127ac7
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
-  FirebaseAppCheckInterop: 5e12dc623d443dedffcde9c6f3ed41510125d8ef
+  FirebaseAppCheckInterop: c87f1d5421c852413dd936b2b2340b21e62501a0
   FirebaseAuth: a66c1e14ec58f41d154a4b41ce1a23ea00ad4805
-  FirebaseAuthInterop: 74875bde5d15636522a8fe98beb561df7a54db58
+  FirebaseAuthInterop: 23be77be1ca68e4bd15214f403f807a6ca70d7e0
   FirebaseCore: f86a1394906b97ac445ae49c92552a9425831bed
-  FirebaseCoreExtension: ce60f9db46d83944cf444664d6d587474128eeca
-  FirebaseCoreInternal: b342e37cd4f5b4454ec34308f073420e7920858e
+  FirebaseCoreExtension: 0ce5ac36042001cfa233ce7bfa28e5c313cf80f4
+  FirebaseCoreInternal: d558159ee6cc4b823c2296ecc193de9f6d9a5bb3
+  FirebaseCrashlytics: c4d111b7430c49744c74bcc6346ea00868661ac8
   FirebaseFunctions: d49c7920b289d85029882927e4056ad04a906e19
-  FirebaseMessagingInterop: 593e501af43b6d8df45d7323a0803d496b179ba3
-  FirebaseSharedSwift: 5c4906ecf0441ed23efff399454dc791eff8ad54
+  FirebaseInstallations: f672b1eda64e6381c21d424a2f680a943fd83f3b
+  FirebaseMessagingInterop: 5f5ed52481b3956190bf9df2c231d1c72ad14f8d
+  FirebaseSessions: f145e7365d36bec0d724c4574a8750e6f82fa6c8
+  FirebaseSharedSwift: 0eec812f08b6ec9e03196fc27635739781513028
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
   GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
   hermes-engine: 3f42310d66bcbc814b3771b79ad8d5a3f8df3df1
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
+  PromisesSwift: 28dca69a9c40779916ac2d6985a0192a5cb4a265
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 40bf5271b434eae17c4f950abde576fb25d77d3a
   RCTTypeSafety: 14400c4d956ff45c5a188e3b4f5f4daa89e3ae09
@@ -986,6 +1043,7 @@ SPEC CHECKSUMS:
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
   RNFBApp: 147c3274daa84d7410d457510548d5fb3b317e37
   RNFBAuth: 7f10a8eb8b55ec604946d071bdd9a228d80c4486
+  RNFBCrashlytics: 4adc1698782408ecc0b0cf9e9b9060c82726afab
   RNFBFunctions: b47c4124ef4835053b4307361599a4f114febb39
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNGoogleSignin: ccaa4a81582cf713eea562c5dd9dc1961a715fd0
