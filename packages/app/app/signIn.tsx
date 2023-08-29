@@ -1,10 +1,8 @@
 import { memo } from 'react';
 
-import AppleSignInButton from '../feature/Auth/AppleSignInButton';
 import { theme } from '../feature/styles/theme';
 import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
-import GoogleSignInButton from '../feature/Auth/GoogleSignInButton';
 
 const SignIn = memo(() => {
   return (
@@ -24,11 +22,11 @@ const SignIn = memo(() => {
           />
           <Text style={styles.text}>{`Listen English Podcast\nwith your language transcript`}</Text>
         </View>
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}>
           <AppleSignInButton />
           <View style={{ height: 20 }} />
           <GoogleSignInButton />
-        </View>
+        </View> */}
       </SafeAreaView>
     </>
   );
