@@ -1,10 +1,12 @@
 import { memo, useMemo } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
 import { PauseIcon, PlayIcon } from '../icons';
 import { formatDMMMYY } from '../format/date';
 import { formatDuration } from '../format/duration';
 import PressableOpacity from '../Pressable/PressableOpacity';
+import { Image as ExpoImage } from 'expo-image';
+import { IMAGE_DEFAULT_BLUR_HASH } from '../../constants';
 
 type Props = {
   channelTitle: string;
@@ -51,7 +53,11 @@ const Episode = memo(
     return (
       <ScrollView style={styles.container}>
         <View style={styles.head}>
-          <Image style={styles.image} source={{ uri: episodeImageUrl }} />
+          <ExpoImage
+            style={styles.image}
+            source={episodeImageUrl}
+            placeholder={IMAGE_DEFAULT_BLUR_HASH}
+          />
           <View style={styles.texts}>
             <Text numberOfLines={2} style={styles.channelTitle}>
               {channelTitle}

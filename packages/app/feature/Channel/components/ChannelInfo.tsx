@@ -1,6 +1,8 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../styles/theme';
 import { memo } from 'react';
+import { Image as ExpoImage } from 'expo-image';
+import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
 
 const ChannelInfo = memo(
   ({
@@ -11,8 +13,11 @@ const ChannelInfo = memo(
     return (
       <View>
         <View style={styles.header}>
-          {/* @ts-ignore */}
-          <Image style={styles.channelThumbnail} src={channelInfo.imageUrl} />
+          <ExpoImage
+            style={styles.channelThumbnail}
+            source={channelInfo.imageUrl}
+            placeholder={IMAGE_DEFAULT_BLUR_HASH}
+          />
           <View style={styles.headSpacer} />
           <View style={styles.titles}>
             <Text style={styles.channelTitle} selectable>

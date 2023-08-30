@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
@@ -9,6 +9,8 @@ import { useSuspenseQuery } from '@apollo/client';
 import PressableScale from '../../../feature/Pressable/PressableScale';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
+import { Image as ExpoImage } from 'expo-image';
+import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
 
 const SeparatorComponent = () => <View style={{ marginTop: 18 }} />;
 
@@ -55,8 +57,11 @@ function App() {
                 style={styles.channelCard}
                 onPress={() => onPressChannel(item.node.channelId)}
               >
-                {/* @ts-ignore */}
-                <Image style={styles.artwork} src={item.node.imageUrl} />
+                <ExpoImage
+                  style={styles.artwork}
+                  source={item.node.imageUrl}
+                  placeholder={IMAGE_DEFAULT_BLUR_HASH}
+                />
                 <Text numberOfLines={3} style={styles.channelTitle}>
                   {item.node.title}
                 </Text>

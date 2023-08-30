@@ -1,7 +1,9 @@
 import { memo } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../styles/theme';
 import PressableScale from '../../Pressable/PressableScale';
+import { Image as ExpoImage } from 'expo-image';
+import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
 
 type Props = {
   id: string;
@@ -16,8 +18,7 @@ const EpisodeList = memo(({ id, title, imageUrl, onPress }: Props) => {
   return (
     <PressableScale style={styles.container} onPress={onPressItem}>
       <View style={styles.cardHead}>
-        {/* @ts-ignore */}
-        <Image style={styles.artwork} src={imageUrl} />
+        <ExpoImage style={styles.artwork} source={imageUrl} placeholder={IMAGE_DEFAULT_BLUR_HASH} />
         <View style={styles.texts}>
           <Text numberOfLines={2} style={styles.title}>
             {title}
