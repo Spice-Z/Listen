@@ -37,10 +37,9 @@ export const registerChannel = functions
     const { channelId, upDatedEpisodes: episodes } = await fetchAndSavePodcast(feedUrl);
 
     const pendingEpisodesPromises = episodes.map(async (episode) => {
-      // pubDateが一ヶ月以上前の場合、トランスクリプトを更新しない
+      // pubDateが1週間以上前の場合、トランスクリプトを更新しない
       if (
-        episode.pubDate.valueOf() <
-        new Date(new Date().setMonth(new Date().getMonth() - 1)).valueOf()
+        episode.pubDate.valueOf() < new Date(new Date().setDate(new Date().getDate() - 7)).valueOf()
       ) {
         return;
       }
