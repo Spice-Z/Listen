@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as os from 'os';
 import * as path from 'path';
+import * as fs from 'fs';
 import { ulid } from 'ulid';
 import {
   CHANNEL_DOCUMENT_NAME,
@@ -115,6 +116,20 @@ export const autoGenerateTranscript = functions
           .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
           .doc(episode.id)
           .delete();
+
+        // 使い終わった元音源ファイルをunlink
+        await Promise.all(
+          [downloadTargetPath, ...chunkFilePaths].map((filePath) => {
+            return new Promise((resolve, reject) => {
+              fs.unlink(filePath, (err) => {
+                if (err) {
+                  reject(err);
+                }
+                resolve('deleted');
+              });
+            });
+          }),
+        );
       } catch (error) {
         functions.logger.info('error while transcribing', {
           error,

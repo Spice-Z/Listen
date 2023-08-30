@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as os from 'os';
 import * as path from 'path';
+import * as fs from 'fs';
 import { ulid } from 'ulid';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
 import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file';
@@ -85,6 +86,20 @@ export const generateTranscriptFromIds = functions
     });
     const transcriptUrl = await uploadSegmentsToGCS({ segments, id: ulId });
     console.log({ transcriptUrl });
+
+    // 使い終わった元音源ファイルをunlink
+    await Promise.all(
+      [downloadTargetPath, ...chunkFilePaths].map((filePath) => {
+        return new Promise((resolve, reject) => {
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              reject(err);
+            }
+            resolve('deleted');
+          });
+        });
+      }),
+    );
 
     await episodeRef.update({
       transcriptUrl,
