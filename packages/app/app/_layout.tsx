@@ -1,7 +1,5 @@
-import { Stack, usePathname } from 'expo-router';
-import { useMemo } from 'react';
+import { Stack } from 'expo-router';
 import { theme } from '../feature/styles/theme';
-import { StyleSheet } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../feature/context/auth/AuthProvider';
 import { useSetupTrackPlayer } from '../feature/Player/hooks/useSetupTrackPlayer';
@@ -22,12 +20,6 @@ export const unstable_settings = {
 
 export default function Layout() {
   useSetupTrackPlayer();
-  const pathname = usePathname();
-  const hideMiniPlayer = useMemo(() => {
-    return (
-      pathname === '/modalPlayer' || pathname === '/modalTranscriptPlayer' || pathname === '/signIn'
-    );
-  }, [pathname]);
 
   return (
     <>
@@ -79,12 +71,3 @@ export default function Layout() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  miniPlayerContainer: {
-    position: 'absolute',
-    bottom: 78,
-    borderBottomColor: theme.color.bgEmphasis,
-    borderBottomWidth: 1,
-  },
-});

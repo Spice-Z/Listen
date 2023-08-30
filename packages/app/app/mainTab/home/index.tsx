@@ -2,12 +2,13 @@ import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-nativ
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
-import { Suspense, useCallback } from 'react';
+import { useCallback } from 'react';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import PressableScale from '../../../feature/Pressable/PressableScale';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
+import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 
 const SeparatorComponent = () => <View style={{ marginTop: 18 }} />;
 
@@ -44,12 +45,6 @@ function App() {
   );
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: 'Shows',
-        }}
-      />
-      <StatusBar style="inverted" />
       <View style={styles.container}>
         <FlatList
           data={data.channels.edges ?? []}
@@ -97,9 +92,17 @@ function FallBack() {
 
 export default function withSuspense() {
   return (
-    <Suspense fallback={<FallBack />}>
-      <App />
-    </Suspense>
+    <>
+      <Stack.Screen
+        options={{
+          title: 'Shows',
+        }}
+      />
+      <StatusBar style="inverted" />
+      <WithSuspenseAndBoundary fallback={<FallBack />}>
+        <App />
+      </WithSuspenseAndBoundary>
+    </>
   );
 }
 

@@ -7,7 +7,7 @@ import EpisodeCard from '../../../feature/Episode/components/EpisodeCard';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
-import WithSuspense from '../../../feature/Suspense/WithSuspense';
+import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 
 const GET_CHANNEL = gql(/* GraphQL */ `
@@ -142,9 +142,16 @@ function FallBack() {
 
 export default function withSuspense() {
   return (
-    <WithSuspense fallback={<FallBack />}>
-      <Channel />
-    </WithSuspense>
+    <>
+      <Stack.Screen
+        options={{
+          title: '',
+        }}
+      />
+      <WithSuspenseAndBoundary fallback={<FallBack />}>
+        <Channel />
+      </WithSuspenseAndBoundary>
+    </>
   );
 }
 

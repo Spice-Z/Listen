@@ -8,7 +8,7 @@ import { useCallback, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
-import WithSuspense from '../../../feature/Suspense/WithSuspense';
+import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 
 const GET_EPISODE = gql(/* GraphQL */ `
@@ -104,15 +104,10 @@ function EpisodePage() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: '',
-        }}
-      />
       <ScrollView style={styles.container}>
         <Stack.Screen
           options={{
-            title: episode.title || '',
+            title: episode.title,
           }}
         />
         <Episode
@@ -142,9 +137,16 @@ function FallBack() {
 
 export default function withSuspense() {
   return (
-    <WithSuspense fallback={<FallBack />}>
-      <EpisodePage />
-    </WithSuspense>
+    <>
+      <Stack.Screen
+        options={{
+          title: '',
+        }}
+      />
+      <WithSuspenseAndBoundary fallback={<FallBack />}>
+        <EpisodePage />
+      </WithSuspenseAndBoundary>
+    </>
   );
 }
 

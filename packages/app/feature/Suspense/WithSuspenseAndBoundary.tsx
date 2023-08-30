@@ -5,7 +5,7 @@ type Props = {
   children: ReactNode;
   fallback?: ReactNode;
 };
-const WithSuspense = memo<Props>((props) => {
+const WithSuspenseAndBoundary = memo<Props>((props) => {
   return (
     <ErrorBoundary>
       <Suspense fallback={props.fallback}>{props.children}</Suspense>
@@ -13,4 +13,4 @@ const WithSuspense = memo<Props>((props) => {
   );
 });
 
-export default WithSuspense;
+export default WithSuspenseAndBoundary;
