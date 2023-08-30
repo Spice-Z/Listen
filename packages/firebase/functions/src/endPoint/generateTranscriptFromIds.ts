@@ -5,7 +5,7 @@ import * as path from 'path';
 import { ulid } from 'ulid';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
 import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file';
-import { convertSpeed, splitAudio } from '../api/ffmpeg';
+import { splitAudio } from '../api/ffmpeg';
 import { transcribeAudioFiles } from '../api/openAI';
 import { uploadSegmentsToGCS } from '../api/firebase';
 
@@ -33,7 +33,15 @@ export const generateTranscriptFromIds = functions
         'The function must be called with an "episodeId" argument.',
       );
     }
-
+    const channelDoc = await admin
+      .firestore()
+      .collection(CHANNEL_DOCUMENT_NAME)
+      .doc(channelId)
+      .get();
+    const channelData = channelDoc.data();
+    if (!channelData) {
+      throw new functions.https.HttpsError('failed-precondition', 'The channel is not found.');
+    }
     const episodeRef = admin
       .firestore()
       .collection(CHANNEL_DOCUMENT_NAME)
@@ -41,8 +49,8 @@ export const generateTranscriptFromIds = functions
       .collection(EPISODE_DOCUMENT_NAME)
       .doc(episodeId);
 
-    const episodeSnapshot = await episodeRef.get();
-    const episodeData = episodeSnapshot.data();
+    const episodeDoc = await episodeRef.get();
+    const episodeData = episodeDoc.data();
     if (!episodeData) {
       throw new functions.https.HttpsError('failed-precondition', 'The episode is not found.');
     }
@@ -53,24 +61,30 @@ export const generateTranscriptFromIds = functions
     if (fileExtension === null) {
       return;
     }
-    const downloadTargetPath = path.resolve(os.tmpdir(), `${ulId}_download.${fileExtension}`);
+    const downloadTargetDir = path.resolve(os.tmpdir());
+    const donwloadTargetName = `${ulId}_download.${fileExtension}`;
+    const downloadTargetPath = path.resolve(downloadTargetDir, donwloadTargetName);
     await downloadFile(targetFileUrl, downloadTargetPath);
-    const convertTargetDir = path.resolve(os.tmpdir());
-    const convertTargetFileName = `${ulId}_converted.${fileExtension}`;
-    const convertTargetPath = path.resolve(convertTargetDir, convertTargetFileName);
+    // const convertTargetDir = path.resolve(os.tmpdir());
+    // const convertTargetFileName = `${ulId}_converted.${fileExtension}`;
+    // const convertTargetPath = path.resolve(convertTargetDir, convertTargetFileName);
 
-    const speed = 1.2;
-    await convertSpeed(downloadTargetPath, convertTargetPath, speed);
+    // const speed = 1.1;
+    // await convertSpeed(downloadTargetPath, convertTargetPath, speed);
     const splitSeconds = 60 * 20;
-    const chunkFilePaths = await splitAudio(convertTargetDir, convertTargetFileName, splitSeconds);
+    const chunkFilePaths = await splitAudio(downloadTargetDir, donwloadTargetName, splitSeconds);
     const { segments } = await transcribeAudioFiles({
       apiKey: OPEN_AI_API_KEY,
       audioFilePaths: chunkFilePaths,
       model: 'whisper-1',
-      speed,
+      speed: 1,
       splitSeconds,
+      channelName: channelData.title,
+      episodeName: episodeData.title,
+      episodeDescription: episodeData.content,
     });
     const transcriptUrl = await uploadSegmentsToGCS({ segments, id: ulId });
+    console.log({ transcriptUrl });
 
     await episodeRef.update({
       transcriptUrl,

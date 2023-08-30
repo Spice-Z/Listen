@@ -10,7 +10,7 @@ import {
   TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
 } from '../constants';
 import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file';
-import { convertSpeed, splitAudio } from '../api/ffmpeg';
+import { splitAudio } from '../api/ffmpeg';
 import { transcribeAudioFiles } from '../api/openAI';
 import { uploadSegmentsToGCS } from '../api/firebase';
 
@@ -34,6 +34,8 @@ export const autoGenerateTranscript = functions
         id: doc.id,
         channelId: data.channelId,
         url: data.url,
+        title: data.title,
+        description: data.content,
       };
     });
 
@@ -52,6 +54,10 @@ export const autoGenerateTranscript = functions
         if (!channelDoc.exists) {
           throw new functions.https.HttpsError('not-found', 'target channel does not exist.');
         }
+        const channelData = channelDoc.data();
+        if (!channelData) {
+          throw new functions.https.HttpsError('not-found', 'target channel does not exist.');
+        }
 
         const ulId = ulid();
         const targetFileUrl = episode.url;
@@ -59,26 +65,31 @@ export const autoGenerateTranscript = functions
         if (fileExtension === null) {
           return;
         }
-        const downloadTargetPath = path.resolve(os.tmpdir(), `${ulId}_download.${fileExtension}`);
+        const downloadTargetDir = path.resolve(os.tmpdir());
+        const donwloadTargetName = `${ulId}_download.${fileExtension}`;
+        const downloadTargetPath = path.resolve(downloadTargetDir, donwloadTargetName);
         await downloadFile(targetFileUrl, downloadTargetPath);
-        const convertTargetDir = path.resolve(os.tmpdir());
-        const convertTargetFileName = `${ulId}_converted.${fileExtension}`;
-        const convertTargetPath = path.resolve(convertTargetDir, convertTargetFileName);
+        // const convertTargetDir = path.resolve(os.tmpdir());
+        // const convertTargetFileName = `${ulId}_converted.${fileExtension}`;
+        // const convertTargetPath = path.resolve(convertTargetDir, convertTargetFileName);
 
-        const speed = 1.2;
-        await convertSpeed(downloadTargetPath, convertTargetPath, speed);
+        // const speed = 1.2;
+        // await convertSpeed(downloadTargetPath, convertTargetPath, speed);
         const splitSeconds = 60 * 20;
         const chunkFilePaths = await splitAudio(
-          convertTargetDir,
-          convertTargetFileName,
+          downloadTargetDir,
+          donwloadTargetName,
           splitSeconds,
         );
         const { segments } = await transcribeAudioFiles({
           apiKey: OPEN_AI_API_KEY,
           audioFilePaths: chunkFilePaths,
           model: 'whisper-1',
-          speed,
+          speed: 1,
           splitSeconds,
+          channelName: channelData.title,
+          episodeName: episode.title,
+          episodeDescription: episode.description,
         });
         const transcriptUrl = await uploadSegmentsToGCS({ segments, id: ulId });
 

@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse } from 'axios';
+import axios from 'axios';
 import { logger } from 'firebase-functions/v2';
 import * as FormData from 'form-data';
 import { createReadStream } from 'fs';
@@ -9,12 +9,18 @@ export async function transcribeAudioFiles({
   model,
   speed,
   splitSeconds,
+  channelName,
+  episodeName,
+  episodeDescription,
 }: {
   apiKey: string;
   audioFilePaths: string[];
   model: string;
   speed: number;
   splitSeconds: number;
+  channelName: string;
+  episodeName: string;
+  episodeDescription: string;
 }): Promise<{
   segments: {
     start: number;
@@ -22,45 +28,39 @@ export async function transcribeAudioFiles({
     text: string;
   }[];
 }> {
-  const audioFileNum = audioFilePaths.length;
+  const defaultPrompt = `${channelName}: ${episodeName}. ${episodeDescription}`;
 
-  const responses = await Promise.all(
-    audioFilePaths.map((audioFilePath, index): Promise<AxiosResponse<any, any>> => {
-      const formData = new FormData();
-      formData.append('file', createReadStream(audioFilePath));
-      formData.append('model', model);
-      formData.append('response_format', 'verbose_json');
-      formData.append(
-        'prompt',
-        `This is chunked podcast audio. This is file ${
-          index + 1
-        } out of ${audioFileNum}. Transcribe it not including filler words, includes punctuation.`,
-      );
-
-      return axios
-        .post('https://api.openai.com/v1/audio/transcriptions', formData, {
-          headers: {
-            ...formData.getHeaders(),
-            Authorization: `Bearer ${apiKey}`,
-          },
-          maxContentLength: 100000000,
-          maxBodyLength: 1000000000,
-        })
-        .catch((e) => {
-          // eslint-disable-next-line no-console -- fixme: functions.loggerにする
-          console.log('transcribe', e);
-          throw e;
-        });
-    }),
-  );
   const segments: {
     start: number;
     end: number;
     text: string;
   }[] = [];
-
   let elapsedTime = 0;
-  responses.forEach((response) => {
+
+  for (let index = 0; index < audioFilePaths.length; index++) {
+    const audioFilePath = audioFilePaths[index];
+    const previousText = segments.map((segment) => segment.text).join(' ');
+    const prompt = index === 0 ? defaultPrompt : previousText.slice(-1000);
+    const formData = new FormData();
+    formData.append('file', createReadStream(audioFilePath));
+    formData.append('model', model);
+    formData.append('response_format', 'verbose_json');
+    formData.append('prompt', prompt);
+
+    const response = await axios
+      .post('https://api.openai.com/v1/audio/transcriptions', formData, {
+        headers: {
+          ...formData.getHeaders(),
+          Authorization: `Bearer ${apiKey}`,
+        },
+        maxContentLength: 100000000,
+        maxBodyLength: 1000000000,
+      })
+      .catch((e) => {
+        // eslint-disable-next-line no-console -- fixme: functions.loggerにする
+        console.log('transcribe', e);
+        throw e;
+      });
     response.data.segments.forEach((segment: any, index: number) => {
       segments.push({
         start: elapsedTime + segment.start * speed,
@@ -71,7 +71,7 @@ export async function transcribeAudioFiles({
         elapsedTime += splitSeconds * speed;
       }
     });
-  });
+  }
 
   return {
     segments,
