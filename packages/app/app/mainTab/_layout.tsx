@@ -1,10 +1,11 @@
 import { Tabs } from 'expo-router';
-import { PlayIcon } from '../../feature/icons';
 import { theme } from '../../feature/styles/theme';
 import { StyleSheet, Text, View } from 'react-native';
 import MiniPlayer from '../../feature/Player/MiniPlayer';
 import { BOTTOM_TAB_HEIGHT } from '../../constants';
 import { useHideMiniPlayer } from '../../feature/hooks/useHideMiniPlayer';
+import SearchIcon from '../../feature/icons/SearchIcon';
+import DashboardIcon from '../../feature/icons/DashboardIcon';
 
 export default function Layout() {
   const hideMiniPlayer = useHideMiniPlayer();
@@ -32,10 +33,11 @@ export default function Layout() {
               </Text>
             ),
             tabBarIcon: (props) => (
-              <PlayIcon
+              <SearchIcon
                 width={props.size}
                 height={props.size}
-                fill={props.focused ? theme.color.accent : theme.color.textWeak}
+                color={props.focused ? theme.color.accent : theme.color.textWeak}
+                fill={props.focused}
               />
             ),
           }}
@@ -49,10 +51,11 @@ export default function Layout() {
               </Text>
             ),
             tabBarIcon: (props) => (
-              <PlayIcon
+              <DashboardIcon
                 width={props.size}
                 height={props.size}
-                fill={props.focused ? theme.color.accent : theme.color.textWeak}
+                color={props.focused ? theme.color.accent : theme.color.textWeak}
+                fill={props.focused}
               />
             ),
           }}
