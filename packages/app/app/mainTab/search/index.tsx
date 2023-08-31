@@ -41,7 +41,7 @@ function App() {
   const router = useRouter();
   const onPressChannel = useCallback(
     (channelId: string) => {
-      router.push({ pathname: '/mainTab/home/channel', params: { channelId } });
+      router.push({ pathname: 'mainTab/search/channel', params: { channelId } });
     },
     [router],
   );
@@ -113,7 +113,10 @@ export default function withSuspense() {
     <>
       <Stack.Screen
         options={{
-          title: 'Shows',
+          title: 'Search',
+          headerStyle: {
+            backgroundColor: theme.color.bgMain,
+          },
         }}
       />
       <StatusBar style="inverted" />

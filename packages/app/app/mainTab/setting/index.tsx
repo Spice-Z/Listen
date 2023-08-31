@@ -21,8 +21,8 @@ const ListHeaderComponent = memo(() => (
 export default function SettingPage() {
   const router = useRouter();
   const goToLicenses = useCallback(() => {
-    router.push('/mainTab/setting/licenses');
-  }, []);
+    router.push('mainTab/setting/licenses');
+  }, [router]);
   const renderListItem = useCallback(({ item }: { item: SettingListItemProps }) => {
     return <SettingListItemComponent {...item} />;
   }, []);
@@ -45,7 +45,6 @@ export default function SettingPage() {
       <Stack.Screen
         options={{
           title: 'Settings',
-          headerShown: true,
           headerStyle: {
             backgroundColor: theme.color.bgMain,
           },

@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
   },
 });
 export const unstable_settings = {
-  initialRouteName: 'home',
+  initialRouteName: 'search',
 };
 
 export default function Layout() {

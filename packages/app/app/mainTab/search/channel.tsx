@@ -75,7 +75,7 @@ function Channel() {
 
   const onPressEpisode = useCallback(
     (episodeId: string) => {
-      router.push({ pathname: '/mainTab/home/episode', params: { channelId, episodeId } });
+      router.push({ pathname: 'mainTab/search/episode', params: { channelId, episodeId } });
     },
     [channelId, router],
   );

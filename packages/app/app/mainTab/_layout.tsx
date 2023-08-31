@@ -24,7 +24,7 @@ export default function Layout() {
         }}
       >
         <Tabs.Screen
-          name="home"
+          name="search"
           options={{
             tabBarLabel: (props) => (
               <Text style={props.focused ? styles.labelFocused : styles.label}>

@@ -21,7 +21,7 @@ export function useProtectedRoute(user) {
     if (!user && currentPath !== '/signIn') {
       router.replace('/signIn');
     } else if (user && (currentPath === '/signIn' || currentPath === '/')) {
-      router.replace('/mainTab/home');
+      router.replace('mainTab/search');
     }
   }, [user, currentPath]);
 }
