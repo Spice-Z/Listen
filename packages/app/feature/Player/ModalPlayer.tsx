@@ -117,7 +117,7 @@ const ModalPlayer = memo(() => {
     </View>
   ) : (
     <View style={styles.container}>
-      <View style={{ height: '70%', width: '100%' }}>
+      <View style={styles.transcriptContainer}>
         <TranscriptScrollBox
           transcriptUrl={data?.episode.transcriptUrl}
           currentTimePosition={progress.position}
@@ -202,6 +202,10 @@ const styles = StyleSheet.create({
     color: theme.color.textMain,
     width: '100%',
     height: '100%',
+  },
+  transcriptContainer: {
+    height: '70%',
+    width: '100%',
   },
   episodeContainer: {
     marginTop: 20,
