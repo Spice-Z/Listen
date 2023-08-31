@@ -99,7 +99,7 @@ export default function TranscriptPlayer({ targetLang }: Props) {
 
   return currentQueue.length === 0 || currentTrack === null || loading || isLoading ? (
     <View style={styles.container}>
-      <LoadingView />;
+      <LoadingView />
     </View>
   ) : (
     <View style={[styles.container, { flexDirection: shouldTwoColumn ? 'row' : 'column' }]}>

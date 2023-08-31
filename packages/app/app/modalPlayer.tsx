@@ -10,7 +10,7 @@ function BackButton() {
   const navigation = useNavigation();
   return (
     <PressableOpacity hitSlop={4} onPress={navigation.goBack}>
-      <BackDownIcon width={24} height={24} color={theme.color.textMain} />
+      <BackDownIcon width={24} height={24} color={theme.color.accent} />
     </PressableOpacity>
   );
 }

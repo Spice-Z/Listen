@@ -6,6 +6,9 @@ export default function Layout() {
     <Stack
       screenOptions={{
         animation: 'slide_from_right',
+        headerShadowVisible: false,
+        headerTitleAlign: 'center',
+        headerTintColor: theme.color.accent,
         headerStyle: {
           backgroundColor: theme.color.bgMain,
         },
