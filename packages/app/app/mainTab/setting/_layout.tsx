@@ -10,8 +10,6 @@ export default function Layout() {
         },
         headerShadowVisible: false,
         headerTitleAlign: 'center',
-        statusBarColor: theme.color.accent,
-        navigationBarColor: theme.color.accent,
         headerTitleStyle: {
           color: theme.color.textMain,
           fontWeight: theme.fontWeight.bold,
