@@ -17,6 +17,7 @@ import TranscriptScrollBox from './components/TranscriptScrollBox';
 import { gql } from '../graphql/__generated__';
 import { useQuery } from '@apollo/client';
 import PressableOpacity from '../Pressable/PressableOpacity';
+import SquareShimmer from '../Shimmer/SquareShimmer';
 
 const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
   query GetEpisodeInModalPlayer($channelId: String!, $episodeId: String!) {
@@ -25,6 +26,10 @@ const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
     }
   }
 `);
+
+const LoadingView = memo(() => {
+  return <SquareShimmer width="100%" height={500} />;
+});
 
 const ModalPlayer = memo(() => {
   const [playbackPosition, setPlaybackPosition] = useState(0);
@@ -44,7 +49,7 @@ const ModalPlayer = memo(() => {
   } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { data } = useQuery(GET_EPISODE_IN_MODAL_PLAYER, {
+  const { data, loading } = useQuery(GET_EPISODE_IN_MODAL_PLAYER, {
     variables: {
       channelId: currentEpisodeChannelId,
       episodeId: currentEpisodeId,
@@ -106,18 +111,18 @@ const ModalPlayer = memo(() => {
     router.push('/modalTranscriptPlayer');
   };
 
-  return currentQueue.length === 0 || currentTrack === null ? (
+  return currentQueue.length === 0 || currentTrack === null || loading || isLoading ? (
     <View style={styles.container}>
-      <Text style={{ color: theme.color.textMain }}>No Playing </Text>
+      <LoadingView />
     </View>
   ) : (
     <View style={styles.container}>
-      <TranscriptScrollBox
-        transcriptUrl={data?.episode.transcriptUrl}
-        height={'70%'}
-        width={'100%'}
-        currentTimePosition={progress.position}
-      />
+      <View style={{ height: '70%', width: '100%' }}>
+        <TranscriptScrollBox
+          transcriptUrl={data?.episode.transcriptUrl}
+          currentTimePosition={progress.position}
+        />
+      </View>
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
         <View style={styles.episodeInfo}>

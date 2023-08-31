@@ -2,8 +2,7 @@ import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback } from 'react';
-import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
+import { memo, useCallback, useMemo } from 'react';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import PressableScale from '../../../feature/Pressable/PressableScale';
@@ -11,8 +10,9 @@ import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import { Image as ExpoImage } from 'expo-image';
 import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
+import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 
-const SeparatorComponent = () => <View style={{ marginTop: 18 }} />;
+const SeparatorComponent = memo(() => <View style={{ marginTop: 18 }} />);
 
 const GET_CHANNELS = gql(/* GraphQL */ `
   query GetChannels($cursor: String) {
@@ -79,18 +79,31 @@ function App() {
 }
 
 function FallBack() {
+  const squareSize = useMemo(() => {
+    return (Dimensions.get('window').width - 16 * 2 - 8) / 2;
+  }, []);
+  const data = useMemo(() => {
+    return [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }];
+  }, []);
   return (
     <View style={styles.container}>
-      <View style={{ height: 16 }} />
-      <SquareShimmer width="100%" height={80} />
-      <View style={{ height: 16 }} />
-      <SquareShimmer width="100%" height={80} />
-      <View style={{ height: 16 }} />
-      <SquareShimmer width="100%" height={80} />
-      <View style={{ height: 16 }} />
-      <SquareShimmer width="100%" height={80} />
-      <View style={{ height: 16 }} />
-      <SquareShimmer width="100%" height={80} />
+      <FlatList
+        data={data}
+        numColumns={2}
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.channelCard}>
+              <SquareShimmer width="100%" height={squareSize} />
+              <View style={{ width: '100%', height: 10 }} />
+              <SquareShimmer width="100%" height={30} />
+            </View>
+          );
+        }}
+        ItemSeparatorComponent={SeparatorComponent}
+        contentContainerStyle={styles.contentContainer}
+        columnWrapperStyle={styles.columnWrapperStyle}
+        ListFooterComponent={MiniPlayerSpacer}
+      />
     </View>
   );
 }
@@ -118,6 +131,16 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 16,
+  },
+  fallbackContentContainer: {
+    backgroundColor: 'red',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    flex: 1,
+    flexDirection: 'row',
+    width: '100%',
+    flexShrink: 0,
+    justifyContent: 'space-between',
   },
   loading: {
     color: theme.color.textMain,

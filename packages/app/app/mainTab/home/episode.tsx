@@ -1,15 +1,16 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { useGlobalSearchParams, Stack } from 'expo-router';
 import Episode from '../../../feature/Episode/Episode';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
-import { useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import TrackPlayer from 'react-native-track-player';
 import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
+import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 
 const GET_EPISODE = gql(/* GraphQL */ `
   query GetEpisode($channelId: String!, $episodeId: String!) {
@@ -127,13 +128,23 @@ function EpisodePage() {
   );
 }
 
-function FallBack() {
+const FallBack = memo(() => {
   return (
     <View style={styles.container}>
-      <Text style={{ color: 'white' }}>loading...</Text>
+      <View style={{ flexDirection: 'row' }}>
+        <SquareShimmer width={60} height={60} />
+        <View style={{ width: 8 }} />
+        <SquareShimmer width={200} height={40} />
+      </View>
+      <View style={{ marginTop: 16 }}>
+        <SquareShimmer width="100%" height={122} />
+      </View>
+      <View style={{ marginTop: 16 }}>
+        <SquareShimmer width="100%" height={200} />
+      </View>
     </View>
   );
-}
+});
 
 export default function withSuspense() {
   return (
@@ -154,5 +165,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.bgMain,
+    padding: 16,
   },
 });

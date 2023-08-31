@@ -1,7 +1,7 @@
 import { Stack, useRouter, useGlobalSearchParams } from 'expo-router';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../../feature/styles/theme';
-import { useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import ChannelInfo from '../../../feature/Channel/components/ChannelInfo';
 import EpisodeCard from '../../../feature/Episode/components/EpisodeCard';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
@@ -113,13 +113,16 @@ function Channel() {
   );
 }
 
-function FallBack() {
+const FallBack = memo(() => {
+  const windoWidth = useMemo(() => {
+    return Dimensions.get('window').width;
+  }, []);
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row' }}>
         <SquareShimmer width={122} height={122} />
         <View style={{ width: 16 }} />
-        <SquareShimmer width="100%" height={60} />
+        <SquareShimmer width={windoWidth - 122 - 32 - 16} height={60} />
       </View>
       <View style={{ marginTop: 16 }}>
         <SquareShimmer width="100%" height={122} />
@@ -138,7 +141,7 @@ function FallBack() {
       </View>
     </View>
   );
-}
+});
 
 export default function withSuspense() {
   return (

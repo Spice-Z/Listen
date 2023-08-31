@@ -1,12 +1,13 @@
-import { StyleSheet, View, Text, Dimensions, ViewProps } from 'react-native';
+import { StyleSheet, View, Dimensions, ViewProps } from 'react-native';
 import { useProgress } from 'react-native-track-player';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import TranscriptScrollBox from './components/TranscriptScrollBox';
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useDidMount } from '../hooks/useDidMount';
 import { gql } from '../graphql/__generated__';
 import { useQuery } from '@apollo/client';
+import SquareShimmer from '../Shimmer/SquareShimmer';
 
 const windowDimensions = Dimensions.get('window');
 
@@ -27,12 +28,16 @@ const GET_EPISODE_TRANSLATED_SCRIPTS = gql(/* GraphQL */ `
   }
 `);
 
+const LoadingView = memo(() => {
+  return <SquareShimmer width="100%" height={500} />;
+});
+
 export default function TranscriptPlayer({ targetLang }: Props) {
-  const { currentQueue, currentTrack } = useTrackPlayer();
+  const { currentQueue, currentTrack, isLoading } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
 
-  const { data } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS, {
+  const { data, loading } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS, {
     variables: {
       channelId: currentEpisodeChannelId,
       episodeId: currentEpisodeId,
@@ -92,45 +97,37 @@ export default function TranscriptPlayer({ targetLang }: Props) {
 
   const progress = useProgress(500);
 
-  return currentQueue.length === 0 || currentTrack === null ? (
+  return currentQueue.length === 0 || currentTrack === null || loading || isLoading ? (
     <View style={styles.container}>
-      <Text style={{ color: theme.color.textMain }}>No Playing </Text>
+      <LoadingView />;
     </View>
   ) : (
     <View style={[styles.container, { flexDirection: shouldTwoColumn ? 'row' : 'column' }]}>
       {/* 再レンダリングしないとコンポーネントのonLayoutが発火しないので同じ要素を出し分けている */}
       {shouldTwoColumn ? (
-        <>
+        <View style={{ width: scrollBoxWidth, height: scrollBoxHeight }}>
           <TranscriptScrollBox
             transcriptUrl={data?.episode.transcriptUrl}
             currentTimePosition={progress.position}
-            width={scrollBoxWidth}
-            height={scrollBoxHeight}
           />
           <View style={separatorStyle}></View>
           <TranscriptScrollBox
             transcriptUrl={translatedTranscriptUrl}
             currentTimePosition={progress.position}
-            width={scrollBoxWidth}
-            height={scrollBoxHeight}
           />
-        </>
+        </View>
       ) : (
-        <>
+        <View style={{ width: scrollBoxWidth, height: scrollBoxHeight }}>
           <TranscriptScrollBox
             transcriptUrl={data?.episode.transcriptUrl}
             currentTimePosition={progress.position}
-            width={scrollBoxWidth}
-            height={scrollBoxHeight}
           />
           <View style={separatorStyle}></View>
           <TranscriptScrollBox
             transcriptUrl={translatedTranscriptUrl}
             currentTimePosition={progress.position}
-            width={scrollBoxWidth}
-            height={scrollBoxHeight}
           />
-        </>
+        </View>
       )}
     </View>
   );

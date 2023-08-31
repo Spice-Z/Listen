@@ -2,17 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { getTranscriptFromUrl } from '../../dataLoader/getTranscriptFromUrl';
 import { ScrollView } from 'react-native-gesture-handler';
-import { DimensionValue, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../styles/theme';
 
 type Props = {
   transcriptUrl?: string;
-  height: number | DimensionValue;
-  width: number | DimensionValue;
   currentTimePosition: number;
 };
 
-function TranscriptScrollBox({ transcriptUrl, height, width, currentTimePosition }: Props) {
+function TranscriptScrollBox({ transcriptUrl, currentTimePosition }: Props) {
   const { data } = useQuery({
     queryKey: ['getTranscriptFromUrl', transcriptUrl],
     queryFn: () => getTranscriptFromUrl(transcriptUrl || null),
@@ -51,7 +49,7 @@ function TranscriptScrollBox({ transcriptUrl, height, width, currentTimePosition
   }, [currentTimePosition, data, scrollToCurrentTranscript]);
 
   return (
-    <ScrollView style={{ height, width }} ref={transcriptsContainerRef}>
+    <ScrollView style={styles.container} ref={transcriptsContainerRef}>
       {!!data ? (
         data.map((transcript, index) => (
           <View
@@ -82,6 +80,10 @@ function TranscriptScrollBox({ transcriptUrl, height, width, currentTimePosition
 export default memo(TranscriptScrollBox);
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+  },
   transcriptsContainer: {
     paddingVertical: 20,
     paddingHorizontal: 16,

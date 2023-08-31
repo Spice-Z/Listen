@@ -87,9 +87,7 @@ Episode.displayName = 'Episode';
 export default Episode;
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
+  container: {},
   head: {
     flexDirection: 'row',
   },
