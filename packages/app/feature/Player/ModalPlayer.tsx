@@ -117,12 +117,12 @@ const ModalPlayer = memo(() => {
     </View>
   ) : (
     <View style={styles.container}>
-      <View style={styles.transcriptContainer}>
-        <TranscriptScrollBox
-          transcriptUrl={data?.episode.transcriptUrl}
-          currentTimePosition={progress.position}
-        />
-      </View>
+      <TranscriptScrollBox
+        transcriptUrl={data?.episode.transcriptUrl}
+        currentTimePosition={progress.position}
+        width={Dimensions.get('window').width}
+        height={Dimensions.get('window').height * 0.7}
+      />
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
         <View style={styles.episodeInfo}>

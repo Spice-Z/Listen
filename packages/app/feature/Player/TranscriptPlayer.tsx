@@ -61,15 +61,15 @@ export default function TranscriptPlayer({ targetLang }: Props) {
   const [shouldTwoColumn, setShouldTwoColumn] = useState(false);
   const scrollBoxHeight = useMemo(() => {
     if (shouldTwoColumn) {
-      return '100%';
+      return Dimensions.get('window').height;
     }
-    return '49%';
+    return Dimensions.get('window').height * 0.49;
   }, [shouldTwoColumn]);
   const scrollBoxWidth = useMemo(() => {
     if (shouldTwoColumn) {
-      return '49%';
+      return Dimensions.get('window').width * 0.49;
     }
-    return '100%';
+    return Dimensions.get('window').width;
   }, [shouldTwoColumn]);
   const separatorStyle: ViewProps['style'] = useMemo(() => {
     if (shouldTwoColumn) {
@@ -105,29 +105,37 @@ export default function TranscriptPlayer({ targetLang }: Props) {
     <View style={[styles.container, { flexDirection: shouldTwoColumn ? 'row' : 'column' }]}>
       {/* 再レンダリングしないとコンポーネントのonLayoutが発火しないので同じ要素を出し分けている */}
       {shouldTwoColumn ? (
-        <View style={{ width: scrollBoxWidth, height: scrollBoxHeight }}>
+        <>
           <TranscriptScrollBox
             transcriptUrl={data?.episode.transcriptUrl}
             currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
           />
           <View style={separatorStyle}></View>
           <TranscriptScrollBox
             transcriptUrl={translatedTranscriptUrl}
             currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
           />
-        </View>
+        </>
       ) : (
-        <View style={{ width: scrollBoxWidth, height: scrollBoxHeight }}>
+        <>
           <TranscriptScrollBox
             transcriptUrl={data?.episode.transcriptUrl}
             currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
           />
           <View style={separatorStyle}></View>
           <TranscriptScrollBox
             transcriptUrl={translatedTranscriptUrl}
             currentTimePosition={progress.position}
+            width={scrollBoxWidth}
+            height={scrollBoxHeight}
           />
-        </View>
+        </>
       )}
     </View>
   );

@@ -8,9 +8,11 @@ import { theme } from '../../styles/theme';
 type Props = {
   transcriptUrl?: string;
   currentTimePosition: number;
+  width: number;
+  height: number;
 };
 
-function TranscriptScrollBox({ transcriptUrl, currentTimePosition }: Props) {
+function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height }: Props) {
   const { data } = useQuery({
     queryKey: ['getTranscriptFromUrl', transcriptUrl],
     queryFn: () => getTranscriptFromUrl(transcriptUrl || null),
@@ -49,7 +51,7 @@ function TranscriptScrollBox({ transcriptUrl, currentTimePosition }: Props) {
   }, [currentTimePosition, data, scrollToCurrentTranscript]);
 
   return (
-    <ScrollView style={styles.container} ref={transcriptsContainerRef}>
+    <ScrollView style={{ width, height }} ref={transcriptsContainerRef}>
       {!!data ? (
         data.map((transcript, index) => (
           <View
