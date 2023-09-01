@@ -12,7 +12,8 @@
     "packages/firebase/functions",
     "packages/eslint-config",
     "packages/prettier-config",
-    "packages/graphql-server"
+    "packages/graphql-server",
+    "packages/firebase/hosting"
   ],
   "devDependencies": {
     "typescript": "^5.1.3"

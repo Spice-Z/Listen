@@ -1,0 +1,12 @@
+{
+  "name": "firebase-hosting",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {},
+  "scripts": {
+    "generate:license": "node ./scripts/generateLicensePage.js",
+    "deploy": "firebase deploy --only hosting"
+  },
+  "author": "",
+  "license": "ISC"
+}
