@@ -12,7 +12,7 @@ const PressableScale = memo<PressableScaleProps>(({ children, style, onPress }) 
 
   const handlePressIn = () => {
     Animated.timing(scaleAnim, {
-      toValue: 0.995,
+      toValue: 0.975,
       duration: 100,
       useNativeDriver: true,
     }).start();
