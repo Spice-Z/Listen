@@ -23,6 +23,12 @@ export default function SettingPage() {
   const goToLicenses = useCallback(() => {
     router.push('mainTab/setting/licenses');
   }, [router]);
+  const goToTermsOfServices = useCallback(() => {
+    router.push('mainTab/setting/termsOfServices');
+  }, [router]);
+  const goToPrivacyPolicy = useCallback(() => {
+    router.push('mainTab/setting/privacyPolicy');
+  }, [router]);
   const renderListItem = useCallback(({ item }: { item: SettingListItemProps }) => {
     return <SettingListItemComponent {...item} />;
   }, []);
@@ -60,6 +66,16 @@ export default function SettingPage() {
               id: '1',
               text: 'Licenses',
               onPress: goToLicenses,
+            },
+            {
+              id: '2',
+              text: 'Terms of Services',
+              onPress: goToTermsOfServices,
+            },
+            {
+              id: '3',
+              text: 'Privacy Policy',
+              onPress: goToPrivacyPolicy,
             },
             {
               id: '4',

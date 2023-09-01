@@ -3,26 +3,26 @@ import { memo } from 'react';
 import { Stack } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { WebView } from 'react-native-webview';
-import { URL_LICENSES } from '../../../constants';
+import { URL_TERMS_OF_SERVICES } from '../../../constants';
 
-const licensesPage = memo(() => {
+const TermsPage = memo(() => {
   return (
     <>
       <Stack.Screen
         options={{
-          title: 'Licenses',
+          title: 'Terms of Services',
           headerShown: true,
           headerStyle: {
             backgroundColor: theme.color.bgMain,
           },
         }}
       />
-      <WebView style={styles.container} source={{ uri: URL_LICENSES }}></WebView>
+      <WebView style={styles.container} source={{ uri: URL_TERMS_OF_SERVICES }}></WebView>
     </>
   );
 });
 
-export default licensesPage;
+export default TermsPage;
 
 const styles = StyleSheet.create({
   container: {
