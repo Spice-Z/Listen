@@ -4,6 +4,7 @@ import { getTranscriptFromUrl } from '../../dataLoader/getTranscriptFromUrl';
 import { ScrollView } from 'react-native-gesture-handler';
 import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../../styles/theme';
+import SquareShimmer from '../../Shimmer/SquareShimmer';
 
 type Props = {
   transcriptUrl?: string;
@@ -13,7 +14,7 @@ type Props = {
 };
 
 function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height }: Props) {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['getTranscriptFromUrl', transcriptUrl],
     queryFn: () => getTranscriptFromUrl(transcriptUrl || null),
     enabled: !!transcriptUrl,
@@ -72,8 +73,10 @@ function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height
             </Text>
           </View>
         ))
+      ) : isLoading ? (
+        <SquareShimmer width={width} height={height} />
       ) : (
-        <Text style={styles.noTranscriptText}>No Transcript, sorry...</Text>
+        <Text style={styles.noTranscriptText}>No Transcript</Text>
       )}
     </ScrollView>
   );

@@ -33,11 +33,11 @@ const LoadingView = memo(() => {
 });
 
 export default function TranscriptPlayer({ targetLang }: Props) {
-  const { currentQueue, currentTrack, isLoading } = useTrackPlayer();
+  const { currentQueue, currentTrack } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
 
-  const { data, loading } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS, {
+  const { data } = useQuery(GET_EPISODE_TRANSLATED_SCRIPTS, {
     variables: {
       channelId: currentEpisodeChannelId,
       episodeId: currentEpisodeId,
@@ -97,7 +97,7 @@ export default function TranscriptPlayer({ targetLang }: Props) {
 
   const progress = useProgress(500);
 
-  return currentQueue.length === 0 || currentTrack === null || loading || isLoading ? (
+  return currentQueue.length === 0 || currentTrack === null ? (
     <View style={styles.container}>
       <LoadingView />
     </View>

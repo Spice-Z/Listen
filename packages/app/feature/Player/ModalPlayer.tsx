@@ -49,7 +49,7 @@ const ModalPlayer = memo(() => {
   } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { data, loading } = useQuery(GET_EPISODE_IN_MODAL_PLAYER, {
+  const { data } = useQuery(GET_EPISODE_IN_MODAL_PLAYER, {
     variables: {
       channelId: currentEpisodeChannelId,
       episodeId: currentEpisodeId,
@@ -111,7 +111,7 @@ const ModalPlayer = memo(() => {
     router.push('/modalTranscriptPlayer');
   };
 
-  return currentQueue.length === 0 || currentTrack === null || loading || isLoading ? (
+  return currentQueue.length === 0 || currentTrack === null ? (
     <View style={styles.container}>
       <LoadingView />
     </View>
