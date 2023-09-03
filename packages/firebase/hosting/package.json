@@ -5,6 +5,7 @@
   "devDependencies": {},
   "scripts": {
     "generate:license": "node ./scripts/generateLicensePage.js",
+    "generate:privacy": "node ./scripts/generatePrivacyPolicyPage.js",
     "deploy": "firebase deploy --only hosting"
   },
   "author": "",
