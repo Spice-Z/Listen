@@ -11,24 +11,13 @@ function generateHTML() {
 
   let html = `
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="ja">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="destyle.css">
+        <link rel="stylesheet" href="p.css">
         <title>${data.title}</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                word-wrap: break-word;
-                padding: 30px;
-            }
-            div, p, pre {
-              word-wrap: break-word;
-            }
-            .content {
-                margin-top: 20px;
-            }
-        </style>
     </head>
     <body>
   `;

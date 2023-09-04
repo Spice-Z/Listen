@@ -1,0 +1,31 @@
+body {
+  font-family: Arial, sans-serif;
+  word-wrap: break-word;
+  padding: 30px;
+  color: #2b2c2b;
+}
+
+div,
+p,
+pre {
+  word-wrap: break-word;
+  white-space: pre-line;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.67em 0;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.content {
+  margin-top: 20px;
+}
