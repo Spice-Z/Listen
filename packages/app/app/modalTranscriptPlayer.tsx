@@ -1,12 +1,9 @@
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Stack, useNavigation } from 'expo-router';
 import { theme } from '../feature/styles/theme';
-import { BackDownIcon, TranslateIcon } from '../feature/icons';
+import { BackDownIcon } from '../feature/icons';
 import TranscriptPlayer from '../feature/Player/TranscriptPlayer';
-import { memo, useCallback, useMemo, useState } from 'react';
-import { useTrackPlayer } from '../feature/Player/hooks/useTrackPlayer';
-import { gql } from '../feature/graphql/__generated__';
-import { useQuery } from '@apollo/client';
+import { memo, useState } from 'react';
 import PressableOpacity from '../feature/Pressable/PressableOpacity';
 
 function BackButton() {
@@ -18,56 +15,55 @@ function BackButton() {
   );
 }
 
-function TranslateIconButton({ onPress }: { onPress: () => void }) {
-  return (
-    <PressableOpacity hitSlop={4} onPress={onPress}>
-      <TranslateIcon width={28} height={28} color={theme.color.textMain} />
-    </PressableOpacity>
-  );
-}
+// function TranslateIconButton({ onPress }: { onPress: () => void }) {
+//   return (
+//     <PressableOpacity hitSlop={4} onPress={onPress}>
+//       <TranslateIcon width={28} height={28} color={theme.color.textMain} />
+//     </PressableOpacity>
+//   );
+// }
 
-const GET_EPISODE_IN_MODAL = gql(/* GraphQL */ `
-  query GetEpisodeInModalTranscript($channelId: String!, $episodeId: String!) {
-    episode(channelId: $channelId, episodeId: $episodeId) {
-      id
-      title
-      content
-      url
-      imageUrl
-      duration
-      pubDate
-      translatedTranscripts {
-        language
-        transcriptUrl
-      }
-    }
-  }
-`);
+// const GET_EPISODE_IN_MODAL = gql(/* GraphQL */ `
+//   query GetEpisodeInModalTranscript($channelId: String!, $episodeId: String!) {
+//     episode(channelId: $channelId, episodeId: $episodeId) {
+//       id
+//       title
+//       content
+//       url
+//       imageUrl
+//       duration
+//       pubDate
+//       translatedTranscripts {
+//         language
+//         transcriptUrl
+//       }
+//     }
+//   }
+// `);
 
 const ModalTranscriptPlayer = memo(() => {
-  const [targetLang, setTargetLang] = useState('ja');
-  const { currentTrack } = useTrackPlayer();
-  const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
-  const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
+  const [targetLang] = useState('ja');
+  // const { currentTrack } = useTrackPlayer();
+  // const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
+  // const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
 
-  const { data, loading } = useQuery(GET_EPISODE_IN_MODAL, {
-    variables: {
-      channelId: currentEpisodeChannelId,
-      episodeId: currentEpisodeId,
-    },
-    skip: currentEpisodeId === null || currentEpisodeChannelId === null,
-  });
-  const episode = data?.episode;
+  // // const { data, loading } = useQuery(GET_EPISODE_IN_MODAL, {
+  // //   variables: {
+  // //     channelId: currentEpisodeChannelId,
+  // //     episodeId: currentEpisodeId,
+  // //   },
+  // //   skip: currentEpisodeId === null || currentEpisodeChannelId === null,
+  // // });
 
-  const targetLangList = useMemo(() => {
-    return episode ? episode.translatedTranscripts.map((t) => t.language) : [];
-  }, [episode]);
+  // const targetLangList = useMemo(() => {
+  //   return episode ? episode.translatedTranscripts.map((t) => t.language) : [];
+  // }, [episode]);
 
-  const switchTargetLang = useCallback(() => {
-    const currentIndex = targetLangList.indexOf(targetLang);
-    const nextIndex = (currentIndex + 1) % targetLangList.length;
-    setTargetLang(targetLangList[nextIndex]);
-  }, [targetLang, targetLangList]);
+  // const switchTargetLang = useCallback(() => {
+  //   const currentIndex = targetLangList.indexOf(targetLang);
+  //   const nextIndex = (currentIndex + 1) % targetLangList.length;
+  //   setTargetLang(targetLangList[nextIndex]);
+  // }, [targetLang, targetLangList]);
 
   return (
     <>
@@ -76,11 +72,11 @@ const ModalTranscriptPlayer = memo(() => {
           headerTitle: 'Transcript',
           // eslint-disable-next-line react/no-unstable-nested-components
           headerLeft: () => <BackButton />,
-          headerRight: () => <TranslateIconButton onPress={switchTargetLang} />,
+          // headerRight: () => <TranslateIconButton onPress={switchTargetLang} />,
         }}
       />
       <View style={styles.container}>
-        {loading ? <ActivityIndicator /> : <TranscriptPlayer targetLang={targetLang} />}
+        <TranscriptPlayer targetLang={targetLang} />
       </View>
     </>
   );

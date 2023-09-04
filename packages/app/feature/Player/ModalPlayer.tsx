@@ -8,7 +8,7 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import { PauseIcon, PlayIcon, RightIcon, LeftIcon } from '../icons';
+import { PauseIcon, PlayIcon, RightIcon, LeftIcon, TranslateIcon } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
@@ -22,7 +22,12 @@ import SquareShimmer from '../Shimmer/SquareShimmer';
 const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
   query GetEpisodeInModalPlayer($channelId: String!, $episodeId: String!) {
     episode(channelId: $channelId, episodeId: $episodeId) {
+      id
       transcriptUrl
+      translatedTranscripts {
+        language
+        transcriptUrl
+      }
     }
   }
 `);
@@ -56,6 +61,12 @@ const ModalPlayer = memo(() => {
     },
     skip: !currentEpisodeChannelId || !currentEpisodeId,
   });
+  const hasTranslatedTranscript = useMemo(() => {
+    if (!data?.episode?.translatedTranscripts) {
+      return false;
+    }
+    return data.episode.translatedTranscripts.length > 0;
+  }, [data]);
 
   const playPauseButton = useMemo(() => {
     if (isLoading) {
@@ -186,11 +197,15 @@ const ModalPlayer = memo(() => {
             <RightIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
         </PressableOpacity>
-        <PressableOpacity style={styles.playerContainerItem} onPress={handleOpenTranscriptModal}>
-          <View style={styles.controlButton}>
-            <Text>✨</Text>
-          </View>
-        </PressableOpacity>
+        {hasTranslatedTranscript ? (
+          <PressableOpacity style={styles.playerContainerItem} onPress={handleOpenTranscriptModal}>
+            <View style={styles.controlButton}>
+              <TranslateIcon width={28} height={28} color={theme.color.textMain} />
+            </View>
+          </PressableOpacity>
+        ) : (
+          <View style={styles.playerContainerItem} />
+        )}
       </View>
     </View>
   );
