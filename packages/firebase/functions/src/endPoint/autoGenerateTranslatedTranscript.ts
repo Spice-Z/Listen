@@ -10,8 +10,8 @@ import {
   TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
 } from '../constants';
 import { downloadFile } from '../utils/file';
-import { translateSegments } from '../api/openAI';
 import { uploadTranslationToGCS } from '../api/firebase';
+import { translateSegmentsByEach } from '../api/openAI';
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 
@@ -40,6 +40,10 @@ export const autoGenerateTranslatedTranscript = functions
     functions.logger.info(`translate pending Episodes length: ${episodes.length}`);
 
     for (const episode of episodes) {
+      // 実装完了までは特定のチャンネルのみを対象とする
+      if (episode.channelId !== 'Kw9cwysgXxJKCR4Uwpgj') {
+        return;
+      }
       try {
         const episodeRef = admin
           .firestore()
@@ -80,7 +84,7 @@ export const autoGenerateTranslatedTranscript = functions
           throw error;
         }
 
-        const translatedTranscriptContent = await translateSegments({
+        const translatedTranscriptContent = await translateSegmentsByEach({
           apiKey: OPEN_AI_API_KEY,
           segments: segmentsData.segments,
           originalLanguage: 'English',

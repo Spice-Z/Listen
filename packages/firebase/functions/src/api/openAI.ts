@@ -104,6 +104,100 @@ function splitSegments(
   return splittedSegments;
 }
 
+export async function translateSegmentsByEach({
+  apiKey,
+  segments,
+  originalLanguage,
+  targetLanguage,
+}: {
+  apiKey: string;
+  segments: {
+    start: string;
+    end: string;
+    text: string;
+  }[];
+  originalLanguage: string;
+  targetLanguage: string;
+}) {
+  const resultSegments: {
+    start: string;
+    end: string;
+    text: string;
+  }[] = [];
+
+  // 3つ分のセグメントをまとめたもの
+  const targetSegmentsList: {
+    start: string;
+    end: string;
+    text: string;
+  }[][] = [];
+  for (let index = 0; index < segments.length; index++) {
+    const segment = segments[index];
+    if (targetSegmentsList.length === 0) {
+      targetSegmentsList.push([segment]);
+      continue;
+    }
+    const lastTargetSegment = targetSegmentsList[targetSegmentsList.length - 1];
+    if (lastTargetSegment.length === 3) {
+      targetSegmentsList.push([segment]);
+      continue;
+    }
+    targetSegmentsList[targetSegmentsList.length - 1].push(segment);
+  }
+
+  for (let index = 0; index < targetSegmentsList.length; index++) {
+    const targetSegments = targetSegmentsList[index];
+    const text = targetSegments.map((segment) => segment.text).join(' ');
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content: `You will be provided with a part of podcast transcription in ${originalLanguage}, and your task is to translate it into ${targetLanguage}.`,
+        },
+        {
+          role: 'user',
+          content: text,
+        },
+      ];
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-3.5-turbo',
+          messages,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          maxContentLength: 100000000,
+          maxBodyLength: 1000000000,
+        },
+      );
+      if (response.status !== 200) {
+        throw new Error("response status isn't 200");
+      }
+      const returnContent: string = response.data.choices[0].message.content;
+      resultSegments.push({
+        start: targetSegments[0].start,
+        text: returnContent,
+        end: targetSegments[targetSegments.length - 1].end,
+      });
+    } catch (error) {
+      console.log('error in request translate');
+      console.log({ error });
+      resultSegments.push({
+        start: targetSegments[0].start,
+        text,
+        end: targetSegments[targetSegments.length - 1].end,
+      });
+    }
+    console.log('new segment', resultSegments[resultSegments.length - 1]);
+  }
+
+  return resultSegments;
+}
+
 export async function translateSegments({
   apiKey,
   segments,
@@ -120,8 +214,7 @@ export async function translateSegments({
   targetLanguage: string;
 }) {
   const splittedSegments =
-    originalLanguage === 'English' ? segments : splitSegments(segments, 10000);
-
+    originalLanguage === 'English' ? splitSegments(segments, 8000) : splitSegments(segments, 5000);
   console.log('segments length: ', splittedSegments.length);
 
   const responses = await Promise.all(
@@ -130,7 +223,7 @@ export async function translateSegments({
         const response = await axios.post(
           'https://api.openai.com/v1/chat/completions',
           {
-            model: 'gpt-3.5-turbo-0613',
+            model: 'gpt-3.5-turbo',
             messages: [
               {
                 role: 'system',

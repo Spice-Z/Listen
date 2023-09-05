@@ -6,7 +6,7 @@ import { ulid } from 'ulid';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
 import { downloadFile } from '../utils/file';
 import { uploadTranslationToGCS } from '../api/firebase';
-import { translateSegments } from '../api/openAI';
+import { translateSegmentsByEach } from '../api/openAI';
 import * as fs from 'fs';
 import { getLanguageName } from '../utils/language';
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
@@ -68,7 +68,7 @@ export const generateTranslatedTranscript = functions
       throw error;
     }
 
-    const translatedTranscriptContent = await translateSegments({
+    const translatedTranscriptContent = await translateSegmentsByEach({
       apiKey: OPEN_AI_API_KEY,
       segments: segmentsData.segments,
       originalLanguage: 'English',
