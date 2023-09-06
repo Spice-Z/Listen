@@ -115,7 +115,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.spicex.Listen"
+    namespace 'com.spicex.Listen'
     defaultConfig {
         applicationId 'com.spicex.Listen'
         minSdkVersion rootProject.ext.minSdkVersion
