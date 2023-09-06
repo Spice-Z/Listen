@@ -9,6 +9,8 @@ import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
+import { BannerAdSize } from 'react-native-google-mobile-ads';
+import BannerAdMob from '../../../feature/Ad/BannerAdMob';
 
 const GET_CHANNEL = gql(/* GraphQL */ `
   query GetChannel($channelId: String!) {
@@ -68,6 +70,14 @@ function Channel() {
     return (
       <>
         <ChannelInfo channelInfo={channelInfo} />
+        <View style={styles.adContainer}>
+          <BannerAdMob
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
         <Text style={styles.episodeHead}>All Episodes</Text>
       </>
     );
@@ -170,5 +180,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingHorizontal: 16,
     color: theme.color.textMain,
+  },
+  adContainer: {
+    alignItems: 'center',
+    marginTop: 16,
   },
 });

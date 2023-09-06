@@ -11,6 +11,8 @@ import { useSuspenseQuery } from '@apollo/client';
 import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
+import { BannerAdSize } from 'react-native-google-mobile-ads';
+import BannerAdMob from '../../../feature/Ad/BannerAdMob';
 
 const GET_EPISODE = gql(/* GraphQL */ `
   query GetEpisode($channelId: String!, $episodeId: String!) {
@@ -122,6 +124,14 @@ function EpisodePage() {
           isLoading={isThisEpisodeLoading}
           onPressPlay={onPressPlay}
         />
+        <View style={styles.adContainer}>
+          <BannerAdMob
+            size={BannerAdSize.MEDIUM_RECTANGLE}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
         <MiniPlayerSpacer />
       </ScrollView>
     </>
@@ -166,5 +176,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.color.bgMain,
     padding: 16,
+  },
+  adContainer: {
+    alignItems: 'center',
+    marginTop: 40,
   },
 });

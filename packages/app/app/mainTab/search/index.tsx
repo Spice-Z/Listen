@@ -11,6 +11,8 @@ import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBo
 import { Image as ExpoImage } from 'expo-image';
 import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
+import { BannerAdSize } from 'react-native-google-mobile-ads';
+import BannerAdMob from '../../../feature/Ad/BannerAdMob';
 
 const SeparatorComponent = memo(() => <View style={{ marginTop: 18 }} />);
 
@@ -34,6 +36,22 @@ const GET_CHANNELS = gql(/* GraphQL */ `
     }
   }
 `);
+
+const ListFooterComponent = () => {
+  return (
+    <>
+      <View style={styles.adContainer}>
+        <BannerAdMob
+          size={BannerAdSize.BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
+      <MiniPlayerSpacer />
+    </>
+  );
+};
 
 function App() {
   const { data } = useSuspenseQuery(GET_CHANNELS);
@@ -71,7 +89,7 @@ function App() {
           ItemSeparatorComponent={SeparatorComponent}
           contentContainerStyle={styles.contentContainer}
           columnWrapperStyle={styles.columnWrapperStyle}
-          ListFooterComponent={MiniPlayerSpacer}
+          ListFooterComponent={ListFooterComponent}
         />
       </View>
     </>
@@ -169,5 +187,9 @@ const styles = StyleSheet.create({
   columnWrapperStyle: {
     width: '100%',
     justifyContent: 'space-between',
+  },
+  adContainer: {
+    marginTop: 24,
+    width: '100%',
   },
 });
