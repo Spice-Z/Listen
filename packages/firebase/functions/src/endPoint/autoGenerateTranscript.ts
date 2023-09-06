@@ -20,6 +20,7 @@ const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 export const autoGenerateTranscript = functions
   .runWith({
     timeoutSeconds: 300,
+    memory: '512MB',
   })
   .region('asia-northeast1')
   .pubsub.schedule('every 1 hours')
