@@ -1,14 +1,14 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
 import { ulid } from 'ulid';
-import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
-import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file';
-import { splitAudio } from '../api/ffmpeg';
-import { transcribeAudioFiles } from '../api/openAI';
-import { uploadSegmentsToGCS } from '../api/firebase';
+import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants.js';
+import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file.js';
+import { splitAudio } from '../api/ffmpeg.js';
+import { transcribeAudioFiles } from '../api/openAI.js';
+import { uploadSegmentsToGCS } from '../api/firebase.js';
+import { getFirestore } from 'firebase-admin/firestore';
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 
@@ -34,17 +34,13 @@ export const generateTranscriptFromIds = functions
         'The function must be called with an "episodeId" argument.',
       );
     }
-    const channelDoc = await admin
-      .firestore()
-      .collection(CHANNEL_DOCUMENT_NAME)
-      .doc(channelId)
-      .get();
+    const firestore = getFirestore();
+    const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId).get();
     const channelData = channelDoc.data();
     if (!channelData) {
       throw new functions.https.HttpsError('failed-precondition', 'The channel is not found.');
     }
-    const episodeRef = admin
-      .firestore()
+    const episodeRef = firestore
       .collection(CHANNEL_DOCUMENT_NAME)
       .doc(channelId)
       .collection(EPISODE_DOCUMENT_NAME)

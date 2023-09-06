@@ -18,3 +18,11 @@ npm run shell
 ```bash
 registerChannel({url:"${rssのURL}"})
 ```
+
+### 翻訳
+
+`generateTranslatedTranscript({channelId:"NuQRZjF0tcDYyON74ie1", episodeId:"4BYY01O8Xi17wod1Cv87", langCode:"ja"})`
+
+
+bZuaK9TVO0HcWlBQADHX
+0qd2K1NGBioIOSxw6qjt

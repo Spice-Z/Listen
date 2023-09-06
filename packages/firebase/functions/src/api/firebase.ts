@@ -1,9 +1,8 @@
-import * as admin from 'firebase-admin';
-
+import { getStorage } from 'firebase-admin/storage';
 import {
   CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH,
   CLOUD_STORAGE_TRANSCRIPTION_TRANSLATION_DIR_PATH,
-} from '../constants';
+} from '../constants.js';
 
 export const uploadSegmentsToGCS = async ({
   segments,
@@ -18,7 +17,7 @@ export const uploadSegmentsToGCS = async ({
     text,
   }));
   const segmentsJson = JSON.stringify({ segments: roundedSegments });
-  const bucket = admin.storage().bucket();
+  const bucket = getStorage().bucket();
   const segmentsFirebaseFile = bucket.file(
     `${CLOUD_STORAGE_TRANSCRIPTION_SEGMENTS_DIR_PATH}/${id}.json`,
   );
@@ -37,7 +36,7 @@ export const uploadTranslationToGCS = async ({
   id: string;
 }): Promise<string> => {
   const segmentsJson = JSON.stringify({ segments });
-  const bucket = admin.storage().bucket();
+  const bucket = getStorage().bucket();
   const segmentsFirebaseFile = bucket.file(
     `${CLOUD_STORAGE_TRANSCRIPTION_TRANSLATION_DIR_PATH}/${id}.json`,
   );

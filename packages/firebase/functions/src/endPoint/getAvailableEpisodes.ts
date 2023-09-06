@@ -5,7 +5,7 @@ import {
   AVAILABLE_EPISODES_DOCUMENT_NAME,
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
-} from '../constants';
+} from '../constants.js';
 
 export const getAvailableEpisodes = functions
   .region('asia-northeast1')

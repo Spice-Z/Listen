@@ -1,12 +1,11 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
 import {
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
   TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME,
-} from '../constants';
-import { fetchChannelDataByFeedUrl } from '../services/fetchChannelDataByFeedUrl';
-import { Timestamp } from 'firebase-admin/firestore';
+} from '../constants.js';
+import { fetchChannelDataByFeedUrl } from '../services/fetchChannelDataByFeedUrl.js';
+import { Timestamp, getFirestore } from 'firebase-admin/firestore';
 
 export const autoUpdateChannelAndEpisodes = functions
   .runWith({
@@ -15,10 +14,8 @@ export const autoUpdateChannelAndEpisodes = functions
   .region('asia-northeast1')
   .pubsub.schedule('every 2 hours')
   .onRun(async (context) => {
-    const channelCollectionShapshot = await admin
-      .firestore()
-      .collection(CHANNEL_DOCUMENT_NAME)
-      .get();
+    const firestore = getFirestore();
+    const channelCollectionShapshot = await firestore.collection(CHANNEL_DOCUMENT_NAME).get();
     await Promise.all(
       channelCollectionShapshot.docs.map(async (channelDoc) => {
         const channelFromDB = channelDoc.data();
@@ -34,11 +31,7 @@ export const autoUpdateChannelAndEpisodes = functions
 
         // チャンネルデータを更新する
         // ※firestoreの書き込みカウントはupdateの実行数なので、差分データだけ抽出する必要はない
-        await admin
-          .firestore()
-          .collection(CHANNEL_DOCUMENT_NAME)
-          .doc(channelDoc.id)
-          .update(channel);
+        await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelDoc.id).update(channel);
 
         const updatedEpisodes: {
           episodeId: string;
@@ -46,8 +39,7 @@ export const autoUpdateChannelAndEpisodes = functions
           url: string;
         }[] = [];
 
-        const episodesFromDB = await admin
-          .firestore()
+        const episodesFromDB = await firestore
           .collection(CHANNEL_DOCUMENT_NAME)
           .doc(channelDoc.id)
           .collection(EPISODE_DOCUMENT_NAME)
@@ -83,7 +75,7 @@ export const autoUpdateChannelAndEpisodes = functions
           (episode) =>
             !episodeFromDBDocs.some((episodeFromDB) => episodeFromDB.data().guid === episode.guid),
         );
-        const channelRef = admin.firestore().collection(CHANNEL_DOCUMENT_NAME).doc(channelDoc.id);
+        const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelDoc.id);
         const newEpisodesPromises = newEpisodes.map(async (episode) => {
           const addedEpisode = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episode);
           updatedEpisodes.push({
@@ -107,8 +99,7 @@ export const autoUpdateChannelAndEpisodes = functions
             console.log('追加しない');
             return;
           }
-          await admin
-            .firestore()
+          await firestore
             .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
             .doc(episode.episodeId)
             .set({

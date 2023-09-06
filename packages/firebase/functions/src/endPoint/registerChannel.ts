@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { CHANNEL_DOCUMENT_NAME, TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME } from '../constants';
-import { fetchAndSavePodcast } from '../services/fetchAndSavePodcast';
+import { CHANNEL_DOCUMENT_NAME, TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME } from '../constants.js';
+import { fetchAndSavePodcast } from '../services/fetchAndSavePodcast.js';
 
 export const registerChannel = functions
   .runWith({
@@ -37,6 +37,9 @@ export const registerChannel = functions
     const { channelId, upDatedEpisodes: episodes } = await fetchAndSavePodcast(feedUrl);
 
     const pendingEpisodesPromises = episodes.map(async (episode) => {
+      if (!episode.pubDate || !episode.episodeId) {
+        return;
+      }
       // pubDateが3日以上前の場合、トランスクリプトを更新しない
       if (episode.pubDate.valueOf() < new Date().valueOf() - 1000 * 60 * 60 * 24 * 3) {
         return;

@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "types": ["node"],
+    "esModuleInterop": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017",
     "skipLibCheck": true
   },
   "compileOnSave": true,
-  "include": ["src", ".eslintrc.js"]
+  "include": ["src", ".eslintrc.cjs"]
 }

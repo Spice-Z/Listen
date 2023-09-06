@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import * as functions from 'firebase-functions';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getFileExtensionFromFileName } from '../utils/file';
+import { getFileExtensionFromFileName } from '../utils/file.js';
 
 export async function convertSpeed(inputFilePath: string, outputFilePath: string, speed: number) {
   functions.logger.info('convertSpeed');

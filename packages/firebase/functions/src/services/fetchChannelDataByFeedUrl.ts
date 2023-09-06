@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase-admin/firestore';
-import * as Parser from 'rss-parser';
+import Parser from 'rss-parser';
 
 const parser = new Parser();
 export async function fetchChannelDataByFeedUrl(feedUrl: string) {

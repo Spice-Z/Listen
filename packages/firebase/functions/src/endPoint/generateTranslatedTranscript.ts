@@ -1,14 +1,14 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
 import * as os from 'os';
 import * as path from 'path';
 import { ulid } from 'ulid';
-import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants';
-import { downloadFile } from '../utils/file';
-import { uploadTranslationToGCS } from '../api/firebase';
-import { translateSegmentsByEach } from '../api/openAI';
+import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants.js';
+import { downloadFile } from '../utils/file.js';
+import { uploadTranslationToGCS } from '../api/firebase.js';
+import { translateSegmentsByEach } from '../api/openAI.js';
 import * as fs from 'fs';
-import { getLanguageName } from '../utils/language';
+import { getLanguageName } from '../utils/language.js';
+import { getFirestore } from 'firebase-admin/firestore';
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 
 export const generateTranslatedTranscript = functions
@@ -28,9 +28,8 @@ export const generateTranslatedTranscript = functions
       );
     }
     const language = getLanguageName(langCode);
-
-    const episodeRef = admin
-      .firestore()
+    const firestore = getFirestore();
+    const episodeRef = firestore
       .collection(CHANNEL_DOCUMENT_NAME)
       .doc(channelId)
       .collection(EPISODE_DOCUMENT_NAME)

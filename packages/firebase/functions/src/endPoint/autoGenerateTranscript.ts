@@ -9,11 +9,11 @@ import {
   EPISODE_DOCUMENT_NAME,
   TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME,
   TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
-} from '../constants';
-import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file';
-import { splitAudio } from '../api/ffmpeg';
-import { transcribeAudioFiles } from '../api/openAI';
-import { uploadSegmentsToGCS } from '../api/firebase';
+} from '../constants.js';
+import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file.js';
+import { splitAudio } from '../api/ffmpeg.js';
+import { transcribeAudioFiles } from '../api/openAI.js';
+import { uploadSegmentsToGCS } from '../api/firebase.js';
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 

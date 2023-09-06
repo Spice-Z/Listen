@@ -8,10 +8,10 @@ import {
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
   TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
-} from '../constants';
-import { downloadFile } from '../utils/file';
-import { uploadTranslationToGCS } from '../api/firebase';
-import { translateSegmentsByEach } from '../api/openAI';
+} from '../constants.js';
+import { downloadFile } from '../utils/file.js';
+import { uploadTranslationToGCS } from '../api/firebase.js';
+import { translateSegmentsByEach } from '../api/openAI.js';
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 

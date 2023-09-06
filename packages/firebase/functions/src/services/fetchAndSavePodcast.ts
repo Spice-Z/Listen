@@ -1,10 +1,10 @@
 import * as admin from 'firebase-admin';
-import * as Parser from 'rss-parser';
+import Parser from 'rss-parser';
 import {
   AVAILABLE_EPISODES_DOCUMENT_NAME,
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
-} from '../constants';
+} from '../constants.js';
 
 const parser = new Parser();
 export async function fetchAndSavePodcast(feedUrl: string) {
@@ -54,13 +54,28 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     await channelRef.update(podcastData);
   }
 
-  // lastBuildDateが一ヶ月以上前の場合、エピソードを更新しない
+  type EpisodeData = {
+    guid: string;
+    title: string;
+    description: string;
+    url: string | undefined;
+    content: string;
+    duration: string | undefined;
+    imageUrl: string;
+    pubDate: Date;
+    season: string | undefined;
+    episode: string | undefined;
+  };
 
-  const episodesData = feed.items.map((item) => {
+  // lastBuildDateが一ヶ月以上前の場合、エピソードを更新しない
+  const episodesData: EpisodeData[] = feed.items.map((item) => {
+    if (!item.guid || !item.link) {
+      throw new Error('invalid data');
+    }
     return {
       guid: item.guid || item.link, // 一部のフィードでは、GUIDが存在しない場合があるため、その場合はlinkを代替として使用します
-      title: item.title,
-      description: item.content,
+      title: item.title || '',
+      description: item.content || '',
       url: item.enclosure ? item.enclosure.url : undefined,
       content: item.contentSnippet || item.content || '',
       duration: item.itunes ? item.itunes.duration : undefined,
@@ -160,17 +175,6 @@ export async function fetchAndSavePodcast(feedUrl: string) {
   return {
     channelId: channelRef.id,
     hasChangeableAd: channel.data()!.hasChangeableAd,
-    upDatedEpisodes: newEpisodes.filter<{
-      episodeId: string;
-      pubDate: Date;
-      url: string;
-      updated: boolean;
-    }>(
-      (episode): episode is { episodeId: string; pubDate: Date; url: string; updated: boolean } =>
-        episode.updated &&
-        episode.episodeId !== undefined &&
-        episode.pubDate !== undefined &&
-        episode.url !== undefined,
-    ),
+    upDatedEpisodes: newEpisodes.filter((episode) => episode.updated),
   };
 }
