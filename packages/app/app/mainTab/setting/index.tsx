@@ -3,20 +3,29 @@ import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../../feature/styles/theme';
 import SettingListItemComponent from '../../../feature/Setting/components/SettingListItem';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import type { Props as SettingListItemProps } from '../../../feature/Setting/components/SettingListItem';
+import * as Application from 'expo-application';
 
-const ListHeaderComponent = memo(() => (
-  <View style={styles.headerContainer}>
-    <Image
-      width={2292}
-      height={2292}
-      style={styles.headerImage}
-      source={require('../../../assets/image/login-artwork.png')}
-    />
-    <Text style={styles.headerText}>{`Version 1.0`}</Text>
-  </View>
-));
+const ListHeaderComponent = memo(() => {
+  const appVersion = Application.nativeApplicationVersion;
+  const nativeBuildVersion = Application.nativeBuildVersion;
+  const versionText = useMemo(() => {
+    return `Version ${appVersion}${nativeBuildVersion ? `-${nativeBuildVersion}` : ''}`;
+  }, [appVersion, nativeBuildVersion]);
+
+  return (
+    <View style={styles.headerContainer}>
+      <Image
+        width={2292}
+        height={2292}
+        style={styles.headerImage}
+        source={require('../../../assets/image/login-artwork.png')}
+      />
+      <Text style={styles.headerText}>{versionText}</Text>
+    </View>
+  );
+});
 
 export default function SettingPage() {
   const router = useRouter();
@@ -76,13 +85,6 @@ export default function SettingPage() {
               id: '3',
               text: 'Privacy Policy',
               onPress: goToPrivacyPolicy,
-            },
-            {
-              id: '4',
-              text: "App's future",
-              onPress: () => {
-                /* */
-              },
             },
           ]}
           renderItem={renderListItem}
