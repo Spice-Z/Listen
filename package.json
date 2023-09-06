@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
-    "license": "npx license-checker --direct --customPath licenseFormat.json --json --out packages/app/assets/licenses.json"
+    "license": "npx license-checker --direct --customPath licenseFormat.json --json --out packages/firebase/hosting/data/licenses.json"
   },
   "workspaces": [
     "packages/app",
