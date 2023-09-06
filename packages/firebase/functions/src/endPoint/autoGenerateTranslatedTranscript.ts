@@ -40,10 +40,6 @@ export const autoGenerateTranslatedTranscript = functions
     functions.logger.info(`translate pending Episodes length: ${episodes.length}`);
 
     for (const episode of episodes) {
-      // 実装完了までは特定のチャンネルのみを対象とする
-      if (episode.channelId !== 'Kw9cwysgXxJKCR4Uwpgj') {
-        return;
-      }
       try {
         const episodeRef = admin
           .firestore()
