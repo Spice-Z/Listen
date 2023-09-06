@@ -17,7 +17,6 @@ export default function Layout() {
           fontWeight: theme.fontWeight.bold,
           fontSize: 18,
         },
-        freezeOnBlur: true,
       }}
     />
   );

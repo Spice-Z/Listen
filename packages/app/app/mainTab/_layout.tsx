@@ -22,7 +22,6 @@ export default function Layout() {
             elevation: 0,
             backgroundColor: theme.color.bgNone,
           },
-          freezeOnBlur: true,
         }}
       >
         <Tabs.Screen

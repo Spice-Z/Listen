@@ -14,7 +14,7 @@ type Props = {
 };
 
 function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height }: Props) {
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ['getTranscriptFromUrl', transcriptUrl],
     queryFn: () => getTranscriptFromUrl(transcriptUrl || null),
     enabled: !!transcriptUrl,
@@ -73,7 +73,7 @@ function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height
             </Text>
           </View>
         ))
-      ) : isLoading ? (
+      ) : isFetching ? (
         <SquareShimmer width={width} height={height} />
       ) : (
         <Text style={styles.noTranscriptText}>No Transcript</Text>
