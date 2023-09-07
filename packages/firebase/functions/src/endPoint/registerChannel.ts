@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
 import { CHANNEL_DOCUMENT_NAME, TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME } from '../constants.js';
 import { fetchAndSavePodcast } from '../services/fetchAndSavePodcast.js';
 
@@ -15,6 +15,7 @@ export const registerChannel = functions
     //     'The function must be called while authenticated.'
     //   );
     // }
+    const store = getFirestore();
 
     const feedUrl = data.url;
     if (!feedUrl) {
@@ -24,8 +25,7 @@ export const registerChannel = functions
       );
     }
 
-    const existingChannelSnapshot = await admin
-      .firestore()
+    const existingChannelSnapshot = await store
       .collection(CHANNEL_DOCUMENT_NAME)
       .where('feedUrl', '==', feedUrl)
       .get();
@@ -44,15 +44,11 @@ export const registerChannel = functions
       if (episode.pubDate.valueOf() < new Date().valueOf() - 1000 * 60 * 60 * 24 * 3) {
         return;
       }
-      await admin
-        .firestore()
-        .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
-        .doc(episode.episodeId)
-        .set({
-          channelId: channelId,
-          pubDate: episode.pubDate,
-          url: episode.url,
-        });
+      await store.collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME).doc(episode.episodeId).set({
+        channelId: channelId,
+        pubDate: episode.pubDate,
+        url: episode.url,
+      });
     });
     await Promise.all(pendingEpisodesPromises);
 

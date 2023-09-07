@@ -1,5 +1,4 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -14,6 +13,7 @@ import { downloadFile, getAudioFileExtensionFromUrl } from '../utils/file.js';
 import { splitAudio } from '../api/ffmpeg.js';
 import { transcribeAudioFiles } from '../api/openAI.js';
 import { uploadSegmentsToGCS } from '../api/firebase.js';
+import { getFirestore } from 'firebase-admin/firestore';
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 
@@ -25,8 +25,8 @@ export const autoGenerateTranscript = functions
   .region('asia-northeast1')
   .pubsub.schedule('every 1 hours')
   .onRun(async (context) => {
-    const pendingEpisodesSnapshot = await admin
-      .firestore()
+    const store = getFirestore();
+    const pendingEpisodesSnapshot = await store
       .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
       .get();
 
@@ -47,10 +47,7 @@ export const autoGenerateTranscript = functions
 
     for (const episode of episodes) {
       try {
-        const channelRef = admin
-          .firestore()
-          .collection(CHANNEL_DOCUMENT_NAME)
-          .doc(episode.channelId);
+        const channelRef = store.collection(CHANNEL_DOCUMENT_NAME).doc(episode.channelId);
         const channelDoc = await channelRef.get();
 
         if (!channelDoc.exists) {
@@ -101,22 +98,14 @@ export const autoGenerateTranscript = functions
 
         // 翻訳待ちのドキュメントを作成
         // ひとまず日本語だけ
-        await admin
-          .firestore()
-          .collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME)
-          .doc(episode.id)
-          .set({
-            channelId: episode.channelId,
-            transcriptUrl: transcriptUrl,
-            langCode: 'ja',
-          });
+        await store.collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME).doc(episode.id).set({
+          channelId: episode.channelId,
+          transcriptUrl: transcriptUrl,
+          langCode: 'ja',
+        });
 
         // トランスクリプトが正常に保存された後、対象のepisodeIdを持つtranscriptPendingEpisodesドキュメントを削除
-        await admin
-          .firestore()
-          .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
-          .doc(episode.id)
-          .delete();
+        await store.collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME).doc(episode.id).delete();
 
         // 使い終わった元音源ファイルをunlink
         await Promise.all(

@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -22,8 +22,8 @@ export const autoGenerateTranslatedTranscript = functions
   .region('asia-northeast1')
   .pubsub.schedule('every 2 hours')
   .onRun(async (context) => {
-    const pendingEpisodesSnapshot = await admin
-      .firestore()
+    const store = getFirestore();
+    const pendingEpisodesSnapshot = await store
       .collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME)
       .get();
 
@@ -41,8 +41,7 @@ export const autoGenerateTranslatedTranscript = functions
 
     for (const episode of episodes) {
       try {
-        const episodeRef = admin
-          .firestore()
+        const episodeRef = store
           .collection(CHANNEL_DOCUMENT_NAME)
           .doc(episode.channelId)
           .collection(EPISODE_DOCUMENT_NAME)
@@ -112,11 +111,7 @@ export const autoGenerateTranslatedTranscript = functions
         });
 
         // トランスクリプトが正常に保存された後、対象のepisodeIdを持つtranscriptPendingEpisodesドキュメントを削除
-        await admin
-          .firestore()
-          .collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME)
-          .doc(episode.id)
-          .delete();
+        await store.collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME).doc(episode.id).delete();
       } catch (error) {
         functions.logger.info('error while transcribing', {
           error,

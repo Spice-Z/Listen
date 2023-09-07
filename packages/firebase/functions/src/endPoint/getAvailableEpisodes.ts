@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
 
 import {
   AVAILABLE_EPISODES_DOCUMENT_NAME,
@@ -15,9 +15,9 @@ export const getAvailableEpisodes = functions
     //     'unauthenticated',
     //     'The function must be called while authenticated.'
     //   );
+    const store = getFirestore();
 
-    const availableEpisodesSnapshot = await admin
-      .firestore()
+    const availableEpisodesSnapshot = await store
       .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
       .orderBy('pubDate', 'desc')
       .limit(20)
@@ -30,8 +30,7 @@ export const getAvailableEpisodes = functions
       const episodeId = availableEpisodeDoc.id;
       const channelId = availableEpisodeDoc.data().channelId;
 
-      const episodeRef = admin
-        .firestore()
+      const episodeRef = store
         .collection(CHANNEL_DOCUMENT_NAME)
         .doc(channelId)
         .collection(EPISODE_DOCUMENT_NAME)

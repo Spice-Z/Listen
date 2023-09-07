@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
 import { CHANNEL_DOCUMENT_NAME } from '../constants.js';
 import { fetchAndSavePodcast } from '../services/fetchAndSavePodcast.js';
 
@@ -15,6 +15,7 @@ export const updateShow = functions
     //     'The function must be called while authenticated.'
     //   );
     // }
+    const store = getFirestore();
 
     const channelId = data.channelId;
     if (!channelId) {
@@ -24,7 +25,7 @@ export const updateShow = functions
       );
     }
 
-    const channelRef = admin.firestore().collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
+    const channelRef = store.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
     const channelSnapshot = await channelRef.get();
 
     if (!channelSnapshot.exists) {

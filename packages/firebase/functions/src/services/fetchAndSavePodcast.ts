@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
 import Parser from 'rss-parser';
 import {
   AVAILABLE_EPISODES_DOCUMENT_NAME,
@@ -27,9 +27,9 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     copyright: feed.copyright,
     updatedAt: feed.lastBuildDate ? new Date(feed.lastBuildDate) : now,
   };
+  const store = getFirestore();
 
-  const channelSnapshot = await admin
-    .firestore()
+  const channelSnapshot = await store
     .collection(CHANNEL_DOCUMENT_NAME)
     .where('feedUrl', '==', feedUrl)
     .get();
@@ -38,13 +38,10 @@ export async function fetchAndSavePodcast(feedUrl: string) {
   let hasChangeableAd = false;
   if (channelSnapshot.empty) {
     // 新規ポッドキャストの場合
-    channelRef = await admin
-      .firestore()
-      .collection(CHANNEL_DOCUMENT_NAME)
-      .add({
-        ...podcastData,
-        hasChangeableAd: false,
-      });
+    channelRef = await store.collection(CHANNEL_DOCUMENT_NAME).add({
+      ...podcastData,
+      hasChangeableAd: false,
+    });
     isNewPodcastShow = true;
     console.log('new');
   } else {
@@ -101,8 +98,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
         channelId: channelRef.id,
         pubDate: episodeData.pubDate,
       };
-      await admin
-        .firestore()
+      await store
         .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
         .doc(addedEpisode.id)
         .set(availableEpisodeData);
@@ -126,8 +122,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
             channelId: channelRef.id,
             pubDate: episodeData.pubDate,
           };
-          await admin
-            .firestore()
+          await store
             .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
             .doc(addedEpisode.id)
             .set(availableEpisodeData);
@@ -153,8 +148,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
               channelId: channelRef.id,
               pubDate: episodeData.pubDate,
             };
-            await admin
-              .firestore()
+            await store
               .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
               .doc(addedEpisode.id)
               .set(availableEpisodeData);
