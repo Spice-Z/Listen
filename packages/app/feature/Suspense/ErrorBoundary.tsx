@@ -1,6 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Text } from 'react-native';
-
+import analytics from '@react-native-firebase/analytics';
 interface Props {
   children?: ReactNode;
 }
@@ -20,6 +20,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
+    analytics().logEvent('error', { error, errorInfo });
   }
 
   public render() {

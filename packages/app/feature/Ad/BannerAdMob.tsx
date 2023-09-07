@@ -21,14 +21,7 @@ const BannerAdMob = memo<Props>(({ size, requestOptions }) => {
   }, []);
   return (
     <View style={styles.adContainer}>
-      <BannerAd
-        unitId={adUnitId}
-        size={size}
-        requestOptions={requestOptions}
-        // onAdFailedToLoad={(error) => {
-        //   console.log('error', error);
-        // }}
-      />
+      <BannerAd unitId={adUnitId} size={size} requestOptions={requestOptions} />
     </View>
   );
 });

@@ -129,34 +129,58 @@ PODS:
     - React-Core (= 0.72.2)
     - React-jsi (= 0.72.2)
     - ReactCommon/turbomodule/core (= 0.72.2)
-  - Firebase/Auth (10.12.0):
+  - Firebase/Analytics (10.14.0):
+    - Firebase/Core
+  - Firebase/Auth (10.14.0):
     - Firebase/CoreOnly
-    - FirebaseAuth (~> 10.12.0)
-  - Firebase/CoreOnly (10.12.0):
-    - FirebaseCore (= 10.12.0)
-  - Firebase/Crashlytics (10.12.0):
+    - FirebaseAuth (~> 10.14.0)
+  - Firebase/Core (10.14.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 10.12.0)
-  - Firebase/Functions (10.12.0):
+    - FirebaseAnalytics (~> 10.14.0)
+  - Firebase/CoreOnly (10.14.0):
+    - FirebaseCore (= 10.14.0)
+  - Firebase/Crashlytics (10.14.0):
     - Firebase/CoreOnly
-    - FirebaseFunctions (~> 10.12.0)
+    - FirebaseCrashlytics (~> 10.14.0)
+  - Firebase/Functions (10.14.0):
+    - Firebase/CoreOnly
+    - FirebaseFunctions (~> 10.14.0)
+  - FirebaseAnalytics (10.14.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.14.0)
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (10.14.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleAppMeasurement (= 10.14.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebaseAppCheckInterop (10.14.0)
-  - FirebaseAuth (10.12.0):
+  - FirebaseAuth (10.14.0):
     - FirebaseAppCheckInterop (~> 10.0)
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
     - GoogleUtilities/Environment (~> 7.8)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
+    - RecaptchaInterop (~> 100.0)
   - FirebaseAuthInterop (10.14.0)
-  - FirebaseCore (10.12.0):
+  - FirebaseCore (10.14.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreExtension (10.12.0):
+  - FirebaseCoreExtension (10.14.0):
     - FirebaseCore (~> 10.0)
   - FirebaseCoreInternal (10.14.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseCrashlytics (10.12.0):
+  - FirebaseCrashlytics (10.14.0):
     - FirebaseCore (~> 10.5)
     - FirebaseInstallations (~> 10.0)
     - FirebaseSessions (~> 10.5)
@@ -164,7 +188,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (~> 2.1)
-  - FirebaseFunctions (10.12.0):
+  - FirebaseFunctions (10.14.0):
     - FirebaseAppCheckInterop (~> 10.10)
     - FirebaseAuthInterop (~> 10.0)
     - FirebaseCore (~> 10.0)
@@ -700,22 +724,27 @@ PODS:
     - React-jsi (= 0.72.2)
     - React-logger (= 0.72.2)
     - React-perflogger (= 0.72.2)
+  - RecaptchaInterop (100.0.0)
   - RNAppleAuthentication (2.2.2):
     - React-Core
-  - RNFBApp (18.3.0):
-    - Firebase/CoreOnly (= 10.12.0)
-    - React-Core
-  - RNFBAuth (18.3.0):
-    - Firebase/Auth (= 10.12.0)
+  - RNFBAnalytics (18.3.2):
+    - Firebase/Analytics (= 10.14.0)
     - React-Core
     - RNFBApp
-  - RNFBCrashlytics (18.3.0):
-    - Firebase/Crashlytics (= 10.12.0)
-    - FirebaseCoreExtension (= 10.12.0)
+  - RNFBApp (18.3.2):
+    - Firebase/CoreOnly (= 10.14.0)
+    - React-Core
+  - RNFBAuth (18.3.2):
+    - Firebase/Auth (= 10.14.0)
     - React-Core
     - RNFBApp
-  - RNFBFunctions (18.3.0):
-    - Firebase/Functions (= 10.12.0)
+  - RNFBCrashlytics (18.3.2):
+    - Firebase/Crashlytics (= 10.14.0)
+    - FirebaseCoreExtension (= 10.14.0)
+    - React-Core
+    - RNFBApp
+  - RNFBFunctions (18.3.2):
+    - Firebase/Functions (= 10.14.0)
     - React-Core
     - RNFBApp
   - RNGestureHandler (2.9.0):
@@ -843,10 +872,11 @@ DEPENDENCIES:
   - React-utils (from `../../../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../../../node_modules/react-native/ReactCommon`)
   - "RNAppleAuthentication (from `../../../node_modules/@invertase/react-native-apple-authentication`)"
-  - "RNFBApp (from `../../../node_modules/@react-native-firebase/app`)"
-  - "RNFBAuth (from `../../../node_modules/@react-native-firebase/auth`)"
-  - "RNFBCrashlytics (from `../../../node_modules/@react-native-firebase/crashlytics`)"
-  - "RNFBFunctions (from `../../../node_modules/@react-native-firebase/functions`)"
+  - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
+  - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
+  - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
+  - "RNFBFunctions (from `../node_modules/@react-native-firebase/functions`)"
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - RNGoogleMobileAds (from `../../../node_modules/react-native-google-mobile-ads`)
   - "RNGoogleSignin (from `../../../node_modules/@react-native-google-signin/google-signin`)"
@@ -859,6 +889,7 @@ SPEC REPOS:
   trunk:
     - AppAuth
     - Firebase
+    - FirebaseAnalytics
     - FirebaseAppCheckInterop
     - FirebaseAuth
     - FirebaseAuthInterop
@@ -888,6 +919,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - PromisesSwift
+    - RecaptchaInterop
     - SDWebImage
     - SDWebImageAVIFCoder
     - SDWebImageSVGCoder
@@ -1023,14 +1055,16 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon"
   RNAppleAuthentication:
     :path: "../../../node_modules/@invertase/react-native-apple-authentication"
+  RNFBAnalytics:
+    :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
-    :path: "../../../node_modules/@react-native-firebase/app"
+    :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
-    :path: "../../../node_modules/@react-native-firebase/auth"
+    :path: "../node_modules/@react-native-firebase/auth"
   RNFBCrashlytics:
-    :path: "../../../node_modules/@react-native-firebase/crashlytics"
+    :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBFunctions:
-    :path: "../../../node_modules/@react-native-firebase/functions"
+    :path: "../node_modules/@react-native-firebase/functions"
   RNGestureHandler:
     :path: "../../../node_modules/react-native-gesture-handler"
   RNGoogleMobileAds:
@@ -1072,15 +1106,16 @@ SPEC CHECKSUMS:
   EXUpdatesInterface: e86394c0770f14eb96386cbb32be83fa6a97e8f9
   FBLazyVector: 565cdf5e3d0dd4b12a9c842f6a4bb5082b5aaa5b
   FBReactNativeSpec: ab319e3798ddbe474b9f5610342c2a7936127ac7
-  Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
+  Firebase: 6c1bf3f534bc422d52af2e41fe0d50bf08b6b773
+  FirebaseAnalytics: 5c6d58814afa4db82cf7fdbc02b0b0e2fa3d43ff
   FirebaseAppCheckInterop: c87f1d5421c852413dd936b2b2340b21e62501a0
-  FirebaseAuth: a66c1e14ec58f41d154a4b41ce1a23ea00ad4805
+  FirebaseAuth: bd1ae3d28beb83bfe9247e50eb82688b683dd770
   FirebaseAuthInterop: 23be77be1ca68e4bd15214f403f807a6ca70d7e0
-  FirebaseCore: f86a1394906b97ac445ae49c92552a9425831bed
-  FirebaseCoreExtension: 0ce5ac36042001cfa233ce7bfa28e5c313cf80f4
+  FirebaseCore: 6fc17ac9f03509d51c131298aacb3ee5698b4f02
+  FirebaseCoreExtension: 976638051b1a46b503afce7ec80277f9161f2040
   FirebaseCoreInternal: d558159ee6cc4b823c2296ecc193de9f6d9a5bb3
-  FirebaseCrashlytics: c4d111b7430c49744c74bcc6346ea00868661ac8
-  FirebaseFunctions: d49c7920b289d85029882927e4056ad04a906e19
+  FirebaseCrashlytics: 0fbfa4efa57e8a09d8bf195393b50c237e3322b5
+  FirebaseFunctions: 27438b6b4592e9327a343e85ee093ad0f5398bcf
   FirebaseInstallations: f672b1eda64e6381c21d424a2f680a943fd83f3b
   FirebaseMessagingInterop: 5f5ed52481b3956190bf9df2c231d1c72ad14f8d
   FirebaseSessions: f145e7365d36bec0d724c4574a8750e6f82fa6c8
@@ -1140,11 +1175,13 @@ SPEC CHECKSUMS:
   React-runtimescheduler: ae804a402dc6feb00f156713bfc36277eb3e86a1
   React-utils: e508905260333febb25984f6a138b0da3ad05c30
   ReactCommon: 4efebd855580dc9e092692c36a156aba5fd15287
+  RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
-  RNFBApp: 147c3274daa84d7410d457510548d5fb3b317e37
-  RNFBAuth: 7f10a8eb8b55ec604946d071bdd9a228d80c4486
-  RNFBCrashlytics: 4adc1698782408ecc0b0cf9e9b9060c82726afab
-  RNFBFunctions: b47c4124ef4835053b4307361599a4f114febb39
+  RNFBAnalytics: 66696f4ff7bf8d88d1a23bce8a2a3553d5a093a0
+  RNFBApp: 0b534885354024f4d171ede8da04521d81bc1767
+  RNFBAuth: a709fc4e4c3c692e89d55dc3ab066fee17a3ca2b
+  RNFBCrashlytics: 2db3e602e90731ff010e2d5eefb92cd85a8a7c31
+  RNFBFunctions: d3dc509c1678b140413b75292deb1ff64a898127
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNGoogleMobileAds: e87db4771693cc7774805cba5faeac9fbab0b723
   RNGoogleSignin: ccaa4a81582cf713eea562c5dd9dc1961a715fd0
