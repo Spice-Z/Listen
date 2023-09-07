@@ -7,25 +7,32 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  errorText: string;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
+    errorText: '',
   };
 
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true };
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, errorText: error.message };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
-    analytics().logEvent('error', { error, errorInfo });
+    analytics().logEvent('error_boundary_catch', { error, errorInfo });
   }
 
   public render() {
     if (this.state.hasError) {
-      return <Text>Sorry.. there was an error</Text>;
+      return (
+        <>
+          <Text>Sorry.. there was an error</Text>
+          <Text>{this.state.errorText}</Text>
+        </>
+      );
     }
 
     return this.props.children;

@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { BannerAd, BannerAdSize, RequestOptions, TestIds } from 'react-native-google-mobile-ads';
+import ErrorBoundary from '../Suspense/ErrorBoundary';
 
 const isIOS = Platform.OS === 'ios';
 
@@ -26,7 +27,15 @@ const BannerAdMob = memo<Props>(({ size, requestOptions }) => {
   );
 });
 
-export default BannerAdMob;
+const withErrorBoundary = (props: Props) => {
+  return (
+    <ErrorBoundary>
+      <BannerAdMob {...props} />
+    </ErrorBoundary>
+  );
+};
+
+export default withErrorBoundary;
 
 const styles = StyleSheet.create({
   adContainer: {
