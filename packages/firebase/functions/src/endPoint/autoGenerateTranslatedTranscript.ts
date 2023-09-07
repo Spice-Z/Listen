@@ -20,7 +20,7 @@ export const autoGenerateTranslatedTranscript = functions
     timeoutSeconds: 540,
   })
   .region('asia-northeast1')
-  .pubsub.schedule('every 2 hours')
+  .pubsub.schedule('every 1 hours')
   .onRun(async (context) => {
     const store = getFirestore();
     const pendingEpisodesSnapshot = await store

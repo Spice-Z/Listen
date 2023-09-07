@@ -23,7 +23,7 @@ export const autoGenerateTranscript = functions
     memory: '512MB',
   })
   .region('asia-northeast1')
-  .pubsub.schedule('every 1 hours')
+  .pubsub.schedule('every 15 minutes')
   .onRun(async (context) => {
     const store = getFirestore();
     const pendingEpisodesSnapshot = await store
