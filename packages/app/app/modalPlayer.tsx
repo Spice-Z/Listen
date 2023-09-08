@@ -5,6 +5,7 @@ import ModalPlayer from '../feature/Player/ModalPlayer';
 import { BackDownIcon } from '../feature/icons';
 import { memo } from 'react';
 import PressableOpacity from '../feature/Pressable/PressableOpacity';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function BackButton() {
   const navigation = useNavigation();
@@ -16,6 +17,7 @@ function BackButton() {
 }
 
 const modalPlayer = memo(() => {
+  const insets = useSafeAreaInsets();
   return (
     <>
       <Stack.Screen
@@ -25,7 +27,16 @@ const modalPlayer = memo(() => {
           headerLeft: () => <BackButton />,
         }}
       />
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingBottom: insets.bottom,
+            paddingLeft: insets.left,
+            paddingRight: insets.right,
+          },
+        ]}
+      >
         <ModalPlayer />
       </View>
     </>
@@ -40,7 +51,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.bgMain,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

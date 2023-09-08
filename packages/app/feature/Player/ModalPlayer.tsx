@@ -218,10 +218,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  transcriptContainer: {
-    height: '70%',
-    width: '100%',
-  },
   episodeContainer: {
     marginTop: 20,
     paddingHorizontal: 16,
