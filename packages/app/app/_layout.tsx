@@ -1,4 +1,4 @@
-import { Stack, useRouter } from 'expo-router';
+import { SplashScreen, Stack, useRouter } from 'expo-router';
 import { theme } from '../feature/styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../feature/context/auth/AuthProvider';
@@ -14,6 +14,9 @@ import {
 } from '../constants';
 import * as Application from 'expo-application';
 import { compareSemVer } from '../feature/utils/semVer';
+import { useState } from 'react';
+
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +28,7 @@ const queryClient = new QueryClient({
 });
 
 export default function Layout() {
+  const [isInitialized, setIsInitialized] = useState(false);
   const router = useRouter();
   useSetupTrackPlayer();
 
@@ -46,13 +50,14 @@ export default function Layout() {
           // 強制アップデート
           router.replace('askAppUpdate');
         }
-        console.log({ appVersion, minimumVersion, semVerCompare });
+        setIsInitialized(true);
+        SplashScreen.hideAsync();
       });
   });
   return (
     <>
       <SafeAreaProvider>
-        <AuthProvider>
+        <AuthProvider isInitialized={isInitialized}>
           <ApolloProviderHelper>
             <QueryClientProvider client={queryClient}>
               <StatusBar style="inverted" />

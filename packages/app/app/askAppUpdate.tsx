@@ -1,9 +1,11 @@
 import { memo, useCallback } from 'react';
 
 import { theme } from '../feature/styles/theme';
-import { Linking, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
 import PressableScale from '../feature/Pressable/PressableScale';
+
+const isIOS = Platform.OS === 'ios';
 
 const AskUpdate = memo(() => {
   const openAppStore = useCallback(() => {
@@ -21,6 +23,7 @@ const AskUpdate = memo(() => {
       <Stack.Screen
         options={{
           headerShown: false,
+          animation: 'fade',
         }}
       />
       <SafeAreaView style={styles.container}>
@@ -28,12 +31,15 @@ const AskUpdate = memo(() => {
           <Text style={styles.sorry}>🙇‍♀️🙏🙇‍♂️</Text>
           <Text style={styles.text}>{`新しいバージョンのアプリ\nが公開されています。`}</Text>
           <Text style={styles.text}>{`ストアからアプリ\nアップデートしてください。`}</Text>
-          <PressableScale onPress={openAppStore}>
-            <Text style={styles.text}>App Storeを開く</Text>
-          </PressableScale>
-          <PressableScale onPress={openGooglePlay}>
-            <Text style={styles.text}>Google Playを開く</Text>
-          </PressableScale>
+          {isIOS ? (
+            <PressableScale onPress={openAppStore}>
+              <Text style={styles.text}>App Storeを開く</Text>
+            </PressableScale>
+          ) : (
+            <PressableScale onPress={openGooglePlay}>
+              <Text style={styles.text}>Google Playを開く</Text>
+            </PressableScale>
+          )}
         </View>
       </SafeAreaView>
     </>

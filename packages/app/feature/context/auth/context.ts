@@ -14,14 +14,17 @@ export function useAuthContext() {
   return useContext(AuthContext);
 }
 
-export function useProtectedRoute(user) {
+export function useProtectedRoute(user, appInitialized) {
   const currentPath = usePathname();
 
   useEffect(() => {
+    if (!appInitialized) {
+      return;
+    }
     if (!user && currentPath !== '/signIn') {
       router.replace('/signIn');
     } else if (user && (currentPath === '/signIn' || currentPath === '/')) {
       router.replace('mainTab/search');
     }
-  }, [user, currentPath]);
+  }, [user, currentPath, appInitialized]);
 }

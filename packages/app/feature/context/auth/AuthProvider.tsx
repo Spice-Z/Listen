@@ -5,6 +5,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 type Props = {
   children: ReactNode;
+  isInitialized: boolean;
 };
 
 export const AuthProvider = memo<Props>((props) => {
@@ -47,7 +48,7 @@ export const AuthProvider = memo<Props>((props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useProtectedRoute(user);
+  useProtectedRoute(user, props.isInitialized);
 
   return (
     <AuthContext.Provider
