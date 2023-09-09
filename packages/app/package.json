@@ -9,6 +9,7 @@
     "run:android": "react-native run-android",
     "run:ios": "react-native run-ios",
     "prebuild": "expo prebuild",
+    "bundle:ios": "react-native bundle --entry-file index.ts --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
     "build:local:android-preview": "eas build --platform android --profile preview --local",
     "build:local:ios": "eas build --profile development-simulator --platform ios --local",
     "build:local:ios-preview": "eas build --profile preview --platform ios --local",
@@ -48,7 +49,7 @@
     "graphql": "^16.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.72.2",
+    "react-native": "0.72.4",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-google-mobile-ads": "^12.1.1",
     "react-native-reanimated": "~3.4.2",
@@ -70,14 +71,6 @@
     "eslint-plugin-react-native": "^4.0.0",
     "vite": "^4.4.9",
     "vitest": "^0.34.4"
-  },
-  "resolutions": {
-    "metro": "^0.76.0",
-    "metro-resolver": "^0.76.0"
-  },
-  "overrides": {
-    "metro": "^0.76.0",
-    "metro-resolver": "^0.76.0"
   },
   "version": "1.0.0"
 }
