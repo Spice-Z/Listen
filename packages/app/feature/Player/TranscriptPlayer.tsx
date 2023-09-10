@@ -24,6 +24,7 @@ const GET_EPISODE_TRANSLATED_SCRIPTS = gql(/* GraphQL */ `
         language
         transcriptUrl
       }
+      hasChangeableAd
     }
   }
 `);
@@ -111,6 +112,7 @@ export default function TranscriptPlayer({ targetLang }: Props) {
             currentTimePosition={progress.position}
             width={scrollBoxWidth}
             height={scrollBoxHeight}
+            disableAutoScroll={data?.episode.hasChangeableAd}
           />
           <View style={separatorStyle}></View>
           <TranscriptScrollBox
@@ -118,6 +120,7 @@ export default function TranscriptPlayer({ targetLang }: Props) {
             currentTimePosition={progress.position}
             width={scrollBoxWidth}
             height={scrollBoxHeight}
+            disableAutoScroll={data?.episode.hasChangeableAd}
           />
         </>
       ) : (
@@ -127,6 +130,7 @@ export default function TranscriptPlayer({ targetLang }: Props) {
             currentTimePosition={progress.position}
             width={scrollBoxWidth}
             height={scrollBoxHeight}
+            disableAutoScroll={data?.episode.hasChangeableAd}
           />
           <View style={separatorStyle}></View>
           <TranscriptScrollBox
@@ -134,6 +138,7 @@ export default function TranscriptPlayer({ targetLang }: Props) {
             currentTimePosition={progress.position}
             width={scrollBoxWidth}
             height={scrollBoxHeight}
+            disableAutoScroll={data?.episode.hasChangeableAd}
           />
         </>
       )}

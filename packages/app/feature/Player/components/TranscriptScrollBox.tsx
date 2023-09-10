@@ -11,9 +11,16 @@ type Props = {
   currentTimePosition: number;
   width: number;
   height: number;
+  disableAutoScroll?: boolean;
 };
 
-function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height }: Props) {
+function TranscriptScrollBox({
+  transcriptUrl,
+  currentTimePosition,
+  width,
+  height,
+  disableAutoScroll = false,
+}: Props) {
   const { data, isFetching } = useQuery({
     queryKey: ['getTranscriptFromUrl', transcriptUrl],
     queryFn: () => getTranscriptFromUrl(transcriptUrl || null),
@@ -37,6 +44,9 @@ function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height
   }, [activeTranscriptIndex]);
 
   useEffect(() => {
+    if (disableAutoScroll) {
+      return;
+    }
     if (data) {
       const transcription = data;
       const currentTranscript = transcription.findIndex(
@@ -49,7 +59,7 @@ function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height
       setActiveTranscriptIndex(currentTranscript);
       scrollToCurrentTranscript();
     }
-  }, [currentTimePosition, data, scrollToCurrentTranscript]);
+  }, [currentTimePosition, data, disableAutoScroll, scrollToCurrentTranscript]);
 
   return (
     <ScrollView style={{ width, height }} ref={transcriptsContainerRef}>
@@ -61,6 +71,7 @@ function TranscriptScrollBox({ transcriptUrl, currentTimePosition, width, height
               styles.transcriptContainer,
               activeTranscriptIndex >= index ? styles.highlighted : null,
               activeTranscriptIndex === index ? styles.superHighlighted : null,
+              disableAutoScroll ? styles.noAutoScroll : null,
             ]}
             onLayout={(event) => {
               const Ys = transcriptYPositions.current;
@@ -106,6 +117,9 @@ const styles = StyleSheet.create({
   },
   superHighlighted: {
     backgroundColor: theme.color.accent90,
+  },
+  noAutoScroll: {
+    backgroundColor: theme.color.bgMain,
   },
   transcript: {
     fontSize: 16,

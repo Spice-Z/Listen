@@ -28,6 +28,7 @@ const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
         language
         transcriptUrl
       }
+      hasChangeableAd
     }
   }
 `);
@@ -133,6 +134,7 @@ const ModalPlayer = memo(() => {
         currentTimePosition={progress.position}
         width={Dimensions.get('window').width}
         height={Dimensions.get('window').height * 0.7}
+        disableAutoScroll={data?.episode.hasChangeableAd}
       />
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
