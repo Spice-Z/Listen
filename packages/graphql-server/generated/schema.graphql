@@ -39,6 +39,7 @@ type Episode implements Node {
   description: String!
   duration: Int!
   episodeId: String!
+  hasChangeableAd: Boolean!
   id: ID!
   imageUrl: String!
   pubDate: Float!

@@ -59,6 +59,7 @@ export type Episode = Node & {
   description: Scalars['String']['output'];
   duration: Scalars['Int']['output'];
   episodeId: Scalars['String']['output'];
+  hasChangeableAd: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   pubDate: Scalars['Float']['output'];
@@ -274,6 +275,7 @@ export type EpisodeResolvers<ContextType = any, ParentType extends ResolversPare
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   episodeId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hasChangeableAd?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pubDate?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;

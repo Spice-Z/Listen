@@ -4,6 +4,7 @@ import { firestore } from '../../../firebase/index.js';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../../../constants.js';
 import { GraphQLError } from 'graphql';
 import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
+import { channelConverter } from '../../../firebase/converters/channelConverter';
 
 const typeDefs = gql`
   type EpisodeEdge {
@@ -25,8 +26,16 @@ const resolver: ChannelResolvers['episodes'] = async (parent, args, context, inf
     throw new GraphQLError('channelId is required');
   }
   const { first } = args;
-  // TODO: channel存在チェック
+
   const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
+  const channelData = (await channelRef.withConverter(channelConverter).get()).data();
+  if (channelData === undefined) {
+    throw new GraphQLError('The requested channel does not exist.', {
+      extensions: {
+        code: 'NOT_FOUND',
+      },
+    });
+  }
   // TODO: ページング
   const snapshot = await channelRef
     .collection(EPISODE_DOCUMENT_NAME)
@@ -41,6 +50,7 @@ const resolver: ChannelResolvers['episodes'] = async (parent, args, context, inf
       cursor: doc.id,
       node: {
         ...data,
+        hasChangeableAd: channelData.hasChangeableAd,
       },
     };
   });

@@ -5,6 +5,7 @@ import { firestore } from '../../../firebase/index.js';
 
 import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
 import { GraphQLError } from 'graphql';
+import { channelConverter } from '../../../firebase/converters/channelConverter';
 
 const typeDefs = gql`
   type Episode implements Node {
@@ -21,6 +22,7 @@ const typeDefs = gql`
     pubDate: Float!
     # season: String!
     translatedTranscripts: [TranslatedTranscript!]!
+    hasChangeableAd: Boolean!
   }
   type TranslatedTranscript {
     language: String!
@@ -34,8 +36,16 @@ const typeDefs = gql`
 
 const resolver: QueryResolvers['episode'] = async (parent, args, context, info) => {
   const { channelId, episodeId } = args;
-  // TODO: channel存在チェック
   const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
+  const channelData = (await channelRef.withConverter(channelConverter).get()).data();
+  if (channelData === undefined) {
+    throw new GraphQLError('The requested channel does not exist.', {
+      extensions: {
+        code: 'NOT_FOUND',
+      },
+    });
+  }
+
   console.log({ episodeId });
   const episodeDoc = await channelRef
     .collection(EPISODE_DOCUMENT_NAME)
@@ -61,6 +71,7 @@ const resolver: QueryResolvers['episode'] = async (parent, args, context, info) 
 
   const episode = {
     ...episodeData,
+    hasChangeableAd: channelData.hasChangeableAd,
   };
   return episode;
 };
