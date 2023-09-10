@@ -69,7 +69,7 @@ const ModalTranscriptPlayer = memo(() => {
     <>
       <Stack.Screen
         options={{
-          headerTitle: 'Transcript',
+          headerTitle: 'Translated Transcription',
           // eslint-disable-next-line react/no-unstable-nested-components
           headerLeft: () => <BackButton />,
           // headerRight: () => <TranslateIconButton onPress={switchTargetLang} />,

@@ -22,7 +22,7 @@ const modalPlayer = memo(() => {
     <>
       <Stack.Screen
         options={{
-          headerTitle: 'Now Listening',
+          headerTitle: 'Transcription',
           // eslint-disable-next-line react/no-unstable-nested-components
           headerLeft: () => <BackButton />,
         }}
