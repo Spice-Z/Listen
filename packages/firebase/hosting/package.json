@@ -4,9 +4,10 @@
   "description": "",
   "devDependencies": {},
   "scripts": {
-    "generate:all": "npm run generate:license && npm run generate:privacy",
+    "generate:all": "npm run generate:license && npm run generate:privacy && npm run generate:terms",
     "generate:license": "node ./scripts/generateLicensePage.js",
     "generate:privacy": "node ./scripts/generatePrivacyPolicyPage.js",
+    "generate:terms": "node ./scripts/generateTermsOfServicesPage.js",
     "deploy": "firebase deploy --only hosting"
   },
   "author": "",
