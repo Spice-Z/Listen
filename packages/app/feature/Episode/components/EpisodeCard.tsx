@@ -6,6 +6,8 @@ import { formatDuration } from '../../format/duration';
 import PressableScale from '../../Pressable/PressableScale';
 import { Image as ExpoImage } from 'expo-image';
 import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
+import { TranslateIcon } from '../../icons';
+import TextIcon from '../../icons/TextIcon';
 
 type Props = {
   id: string;
@@ -15,6 +17,9 @@ type Props = {
   imageUrl: string;
   dateUnixTime: number;
   onPress: (id: string) => void;
+  hasTranslatedTranscript: boolean;
+  hasTranscript: boolean;
+  canAutoScroll: boolean;
 };
 
 function removeTagsFromString(htmlString) {
@@ -25,7 +30,18 @@ function convertNewlinesToSpaces(text) {
 }
 
 const EpisodeCard = memo(
-  ({ id, title, description, duration, imageUrl, dateUnixTime, onPress }: Props) => {
+  ({
+    id,
+    title,
+    description,
+    duration,
+    imageUrl,
+    dateUnixTime,
+    onPress,
+    hasTranslatedTranscript,
+    hasTranscript,
+    canAutoScroll,
+  }: Props) => {
     const arrangedDescription = useMemo(() => {
       return convertNewlinesToSpaces(removeTagsFromString(description));
     }, [description]);
@@ -54,6 +70,16 @@ const EpisodeCard = memo(
             <View style={styles.info}>
               <Text style={styles.duration}>{formattedDuration}</Text>
               <Text style={styles.pubDate}>{formattedDate}</Text>
+              {hasTranslatedTranscript ? (
+                <View style={styles.goodTranscript}>
+                  <TranslateIcon width={18} height={18} color={theme.color.accent} />
+                </View>
+              ) : hasTranscript ? (
+                <View style={styles.goodTranscript}>
+                  <TextIcon width={14} height={14} color={theme.color.accent} />
+                </View>
+              ) : null}
+              {canAutoScroll && <Text>🏃‍♀️</Text>}
             </View>
           </View>
         </View>
@@ -104,6 +130,9 @@ const styles = StyleSheet.create({
   },
   pubDate: {
     color: theme.color.textWeak,
+    marginLeft: 8,
+  },
+  goodTranscript: {
     marginLeft: 8,
   },
   description: {

@@ -31,6 +31,12 @@ const GET_CHANNEL = gql(/* GraphQL */ `
             imageUrl
             duration
             pubDate
+            hasChangeableAd
+            transcriptUrl
+            translatedTranscripts {
+              language
+              transcriptUrl
+            }
           }
         }
       }
@@ -113,6 +119,9 @@ function Channel() {
                 imageUrl={item.imageUrl || channelInfo.imageUrl}
                 dateUnixTime={item.pubDate}
                 onPress={onPressEpisode}
+                hasTranslatedTranscript={item.translatedTranscripts.length > 0}
+                hasTranscript={item.transcriptUrl !== null}
+                canAutoScroll={!item.hasChangeableAd && item.transcriptUrl !== null}
               />
             );
           }}
