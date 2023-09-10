@@ -5,7 +5,6 @@
     "scheme": "listen-podcast",
     "version": "1.0.0",
     "jsEngine": "hermes",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
@@ -43,7 +42,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#0D0C0E"
+        "backgroundColor": "#ffffff"
       },
       "package": "com.spicex.Listen",
       "googleServicesFile": "./google-services.json"
