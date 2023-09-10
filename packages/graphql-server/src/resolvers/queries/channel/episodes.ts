@@ -4,7 +4,7 @@ import { firestore } from '../../../firebase/index.js';
 import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../../../constants.js';
 import { GraphQLError } from 'graphql';
 import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
-import { channelConverter } from '../../../firebase/converters/channelConverter';
+import { channelConverter } from '../../../firebase/converters/channelConverter.js';
 
 const typeDefs = gql`
   type EpisodeEdge {

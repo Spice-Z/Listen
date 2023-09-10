@@ -5,7 +5,7 @@ import { firestore } from '../../../firebase/index.js';
 
 import { episodeConverter } from '../../../firebase/converters/episodeConverter.js';
 import { GraphQLError } from 'graphql';
-import { channelConverter } from '../../../firebase/converters/channelConverter';
+import { channelConverter } from '../../../firebase/converters/channelConverter.js';
 
 const typeDefs = gql`
   type Episode implements Node {
