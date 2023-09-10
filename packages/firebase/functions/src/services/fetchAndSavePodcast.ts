@@ -41,6 +41,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     channelRef = await store.collection(CHANNEL_DOCUMENT_NAME).add({
       ...podcastData,
       hasChangeableAd: false,
+      includeInfoInPrompt: true,
     });
     isNewPodcastShow = true;
     console.log('new');

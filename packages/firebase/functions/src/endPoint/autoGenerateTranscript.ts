@@ -89,6 +89,7 @@ export const autoGenerateTranscript = functions
           channelName: channelData.title,
           episodeName: episode.title,
           episodeDescription: episode.description,
+          includeInfoInPrompt: channelData.includeInfoInPrompt,
         });
         const transcriptUrl = await uploadSegmentsToGCS({ segments, id: ulId });
 

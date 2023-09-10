@@ -17,6 +17,7 @@ type Channel {
   copyRight: String!
   description: String!
   episodes(after: String, before: String, first: Int = 30, last: Int): EpisodeConnection!
+  hasChangeableAd: Boolean!
   id: ID!
   imageUrl: String!
   language: String!

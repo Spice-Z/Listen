@@ -79,6 +79,7 @@ export const generateTranscriptFromIds = functions
       channelName: channelData.title,
       episodeName: episodeData.title,
       episodeDescription: episodeData.content,
+      includeInfoInPrompt: channelData.includeInfoInPrompt,
     });
     const transcriptUrl = await uploadSegmentsToGCS({ segments, id: ulId });
     console.log({ transcriptUrl });

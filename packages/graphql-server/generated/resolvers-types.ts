@@ -26,6 +26,7 @@ export type Channel = {
   copyRight: Scalars['String']['output'];
   description: Scalars['String']['output'];
   episodes: EpisodeConnection;
+  hasChangeableAd: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   language: Scalars['String']['output'];
@@ -248,6 +249,7 @@ export type ChannelResolvers<ContextType = any, ParentType extends ResolversPare
   copyRight?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   episodes?: Resolver<ResolversTypes['EpisodeConnection'], ParentType, ContextType, RequireFields<ChannelEpisodesArgs, 'first'>>;
+  hasChangeableAd?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

@@ -88,11 +88,6 @@ export const autoUpdateChannelAndEpisodes = functions
 
         console.log('updatedEpisodesLength', updatedEpisodes.length);
 
-        // トランスクリプト生成対象のエピソードをpendingEpisodesに追加する
-        // TODO: 広告が変更可能なShowは音声の中身が頻繁に変わるのでトランスクリプト生成対象外とする
-        if (channelFromDB.hasChangeableAd) {
-          return;
-        }
         const pendingEpisodesPromises = updatedEpisodes.map(async (episode) => {
           // pubDateが一ヶ月以上前の場合、追加しない
           if (episode.pubDate.toDate() < new Date(new Date().setMonth(new Date().getMonth() - 1))) {

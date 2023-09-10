@@ -16,6 +16,7 @@ const typeDefs = gql`
     categories: [String!]!
     language: String!
     copyRight: String!
+    hasChangeableAd: Boolean!
   }
   extend type Query {
     channel(channelId: String!): Channel!

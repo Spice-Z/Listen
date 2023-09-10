@@ -13,6 +13,7 @@ export async function transcribeAudioFiles({
   channelName,
   episodeName,
   episodeDescription,
+  includeInfoInPrompt,
 }: {
   apiKey: string;
   audioFilePaths: string[];
@@ -22,6 +23,7 @@ export async function transcribeAudioFiles({
   channelName: string;
   episodeName: string;
   episodeDescription: string;
+  includeInfoInPrompt: boolean;
 }): Promise<{
   segments: {
     start: number;
@@ -29,7 +31,9 @@ export async function transcribeAudioFiles({
     text: string;
   }[];
 }> {
-  const defaultPrompt = `${channelName}: ${episodeName}. ${episodeDescription}`;
+  const defaultPrompt = includeInfoInPrompt
+    ? `${channelName}: ${episodeName}. ${episodeDescription}`
+    : channelName;
 
   const segments: {
     start: number;
