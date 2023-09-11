@@ -25,6 +25,12 @@ const GET_EPISODE = gql(/* GraphQL */ `
       imageUrl
       duration
       pubDate
+      hasChangeableAd
+      transcriptUrl
+      translatedTranscripts {
+        language
+        transcriptUrl
+      }
     }
   }
 `);
@@ -50,6 +56,15 @@ function EpisodePage() {
     },
   });
   const episode = data.episode;
+  const hasTranscript = useMemo(() => {
+    return episode.transcriptUrl !== null;
+  }, [episode]);
+  const hasTranslatedTranscript = useMemo(() => {
+    return episode.translatedTranscripts.length > 0;
+  }, [episode]);
+  const canAutoScroll = useMemo(() => {
+    return !episode.hasChangeableAd && hasTranscript;
+  }, [episode.hasChangeableAd, hasTranscript]);
 
   const { data: channelData } = useSuspenseQuery(GET_CHANNEL, {
     variables: {
@@ -123,6 +138,9 @@ function EpisodePage() {
           isPlaying={isThisEpisodePlaying}
           isLoading={isThisEpisodeLoading}
           onPressPlay={onPressPlay}
+          hasTranslatedTranscript={hasTranslatedTranscript}
+          hasTranscript={hasTranscript}
+          canAutoScroll={canAutoScroll}
         />
         <View style={styles.adContainer}>
           <BannerAdMob

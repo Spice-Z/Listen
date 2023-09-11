@@ -1,12 +1,13 @@
 import { memo, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
-import { PauseIcon, PlayIcon } from '../icons';
+import { PauseIcon, PlayIcon, TranslateIcon } from '../icons';
 import { formatDMMMYY } from '../format/date';
 import { formatDuration } from '../format/duration';
 import PressableOpacity from '../Pressable/PressableOpacity';
 import { Image as ExpoImage } from 'expo-image';
 import { IMAGE_DEFAULT_BLUR_HASH } from '../../constants';
+import TextIcon from '../icons/TextIcon';
 
 type Props = {
   channelTitle: string;
@@ -18,6 +19,9 @@ type Props = {
   isPlaying: boolean;
   isLoading: boolean;
   onPressPlay: () => void;
+  hasTranslatedTranscript: boolean;
+  hasTranscript: boolean;
+  canAutoScroll: boolean;
 };
 
 const Episode = memo(
@@ -31,6 +35,9 @@ const Episode = memo(
     isPlaying,
     isLoading,
     onPressPlay,
+    hasTranslatedTranscript,
+    hasTranscript,
+    canAutoScroll,
   }: Props) => {
     const formattedDate = useMemo(() => {
       return formatDMMMYY(dateUnixTime);
@@ -68,11 +75,21 @@ const Episode = memo(
         <Text selectable style={styles.episodeTitle}>
           {episodeTitle}
         </Text>
-        <View style={styles.buttonContainer}>
-          <Text style={styles.duration}>{formattedDuration}</Text>
-          <PressableOpacity style={styles.playButton} onPress={onPressPlay}>
-            {playPauseButton}
-          </PressableOpacity>
+        <View style={styles.subContainer}>
+          <View style={styles.infoContainer}>
+            {hasTranslatedTranscript ? (
+              <TranslateIcon width={24} height={24} color={theme.color.accent} />
+            ) : hasTranscript ? (
+              <TextIcon width={18} height={18} color={theme.color.accent} />
+            ) : null}
+            {canAutoScroll && <Text style={styles.runEmoji}>🏃‍♀️</Text>}
+          </View>
+          <View style={styles.buttonContainer}>
+            <Text style={styles.duration}>{formattedDuration}</Text>
+            <PressableOpacity style={styles.playButton} onPress={onPressPlay}>
+              {playPauseButton}
+            </PressableOpacity>
+          </View>
         </View>
         <Text selectable style={styles.description}>
           {episodeDescription}
@@ -132,8 +149,21 @@ const styles = StyleSheet.create({
   duration: {
     color: theme.color.textWeak,
   },
-  buttonContainer: {
+  subContainer: {
     marginTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  runEmoji: {
+    fontSize: 24,
+  },
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
