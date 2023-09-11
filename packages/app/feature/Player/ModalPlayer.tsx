@@ -8,7 +8,7 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import { PauseIcon, PlayIcon, RightIcon, LeftIcon, TranslateIcon } from '../icons';
+import { PauseIcon, PlayIcon, TranslateIcon } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
@@ -166,11 +166,11 @@ const ModalPlayer = memo(() => {
             <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
           </View>
         </PressableOpacity>
-        <PressableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
+        {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
           <View style={styles.controlButton}>
             <LeftIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
-        </PressableOpacity>
+        </PressableOpacity> */}
         <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
           <View style={styles.controlButton}>
             <Image
@@ -194,11 +194,11 @@ const ModalPlayer = memo(() => {
             />
           </View>
         </PressableOpacity>
-        <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
+        {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
           <View style={styles.controlButton}>
             <RightIcon width={24} height={24} fill={theme.color.textMain} />
           </View>
-        </PressableOpacity>
+        </PressableOpacity> */}
         {hasTranslatedTranscript ? (
           <PressableOpacity style={styles.playerContainerItem} onPress={handleOpenTranscriptModal}>
             <View style={styles.controlButton}>
