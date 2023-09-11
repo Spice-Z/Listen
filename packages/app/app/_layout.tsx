@@ -15,6 +15,7 @@ import {
 import * as Application from 'expo-application';
 import { compareSemVer } from '../feature/utils/semVer';
 import { useState } from 'react';
+import mobileAds from 'react-native-google-mobile-ads';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,25 +35,29 @@ export default function Layout() {
 
   // initialize処理
   useDidMount(() => {
-    remoteConfig()
-      .setDefaults({
-        REMOTE_CONFIG_APP_MINIMUM_VERSION_KEY: REMOTE_CONFIG_APP_MINIMUM_VERSION_DEFAULT_VALUE,
-      })
-      .then(() => remoteConfig().fetch(300))
-      .then(() => remoteConfig().fetchAndActivate())
-      .then(() => {
-        const minimumVersion = remoteConfig()
-          .getValue(REMOTE_CONFIG_APP_MINIMUM_VERSION_KEY)
-          .asString();
-        const appVersion = Application.nativeApplicationVersion;
-        const semVerCompare = compareSemVer(appVersion, minimumVersion);
-        if (semVerCompare === -1) {
-          // 強制アップデート
-          router.replace('askAppUpdate');
-        }
-        setIsInitialized(true);
-        SplashScreen.hideAsync();
-      });
+    (async () => {
+      const remoteConfigPromise = remoteConfig()
+        .setDefaults({
+          REMOTE_CONFIG_APP_MINIMUM_VERSION_KEY: REMOTE_CONFIG_APP_MINIMUM_VERSION_DEFAULT_VALUE,
+        })
+        .then(() => remoteConfig().fetch(300))
+        .then(() => remoteConfig().fetchAndActivate())
+        .then(() => {
+          const minimumVersion = remoteConfig()
+            .getValue(REMOTE_CONFIG_APP_MINIMUM_VERSION_KEY)
+            .asString();
+          const appVersion = Application.nativeApplicationVersion;
+          const semVerCompare = compareSemVer(appVersion, minimumVersion);
+          if (semVerCompare === -1) {
+            // 強制アップデート
+            router.replace('askAppUpdate');
+          }
+        });
+      const admobPromise = mobileAds().initialize();
+      await Promise.all([remoteConfigPromise, admobPromise]);
+      setIsInitialized(true);
+      SplashScreen.hideAsync();
+    })();
   });
   return (
     <>
