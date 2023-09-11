@@ -105,6 +105,7 @@ function Channel() {
       />
       <View style={styles.container}>
         <FlatList
+          style={styles.listContainer}
           ListHeaderComponent={ChanelInfoComponent}
           ListFooterComponent={MiniPlayerSpacer}
           data={episodeList}
@@ -137,7 +138,7 @@ const FallBack = memo(() => {
     return Dimensions.get('window').width;
   }, []);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styles.listContainer]}>
       <View style={{ flexDirection: 'row' }}>
         <SquareShimmer width={122} height={122} />
         <View style={{ width: 16 }} />
@@ -181,6 +182,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.bgMain,
+  },
+  listContainer: {
     paddingHorizontal: 16,
   },
   episodeHead: {
