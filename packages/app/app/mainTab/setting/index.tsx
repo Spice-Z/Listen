@@ -6,6 +6,9 @@ import SettingListItemComponent from '../../../feature/Setting/components/Settin
 import { memo, useCallback, useMemo } from 'react';
 import type { Props as SettingListItemProps } from '../../../feature/Setting/components/SettingListItem';
 import * as Application from 'expo-application';
+import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
+import { BannerAdSize } from 'react-native-google-mobile-ads';
+import BannerAdMob from '../../../feature/Ad/BannerAdMob';
 
 const ListHeaderComponent = memo(() => {
   const appVersion = Application.nativeApplicationVersion;
@@ -24,6 +27,22 @@ const ListHeaderComponent = memo(() => {
       />
       <Text style={styles.headerText}>{versionText}</Text>
     </View>
+  );
+});
+
+const ListFooterComponent = memo(() => {
+  return (
+    <>
+      <View style={styles.adContainer}>
+        <BannerAdMob
+          size={BannerAdSize.MEDIUM_RECTANGLE}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
+      <MiniPlayerSpacer />
+    </>
   );
 });
 
@@ -89,6 +108,7 @@ export default function SettingPage() {
           ]}
           renderItem={renderListItem}
           ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
+          ListFooterComponent={ListFooterComponent}
         />
       </SafeAreaView>
     </>
@@ -122,5 +142,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: theme.color.textMain,
     textAlign: 'center',
+  },
+  adContainer: {
+    marginTop: 24,
+    width: '100%',
   },
 });
