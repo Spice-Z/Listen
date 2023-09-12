@@ -5,6 +5,7 @@ import {
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
 } from '../constants.js';
+import { ulid } from 'ulid';
 
 const parser = new Parser();
 export async function fetchAndSavePodcast(feedUrl: string) {
@@ -67,11 +68,10 @@ export async function fetchAndSavePodcast(feedUrl: string) {
 
   // lastBuildDateが一ヶ月以上前の場合、エピソードを更新しない
   const episodesData: EpisodeData[] = feed.items.map((item) => {
-    if (!item.guid || !item.link) {
-      throw new Error('invalid data');
-    }
+    // フィールドがないポッドキャストがあるため、何もない場合はulidを仕方なく入れている
+    const guid = item.guid || item.link || ulid();
     return {
-      guid: item.guid || item.link, // 一部のフィードでは、GUIDが存在しない場合があるため、その場合はlinkを代替として使用します
+      guid,
       title: item.title || '',
       description: item.content || '',
       url: item.enclosure ? item.enclosure.url : undefined,
