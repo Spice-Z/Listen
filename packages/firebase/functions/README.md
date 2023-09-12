@@ -16,13 +16,13 @@ npm run shell
 ```
 で実行可能にして
 ```bash
-registerChannel({url:"${rssのURL}"})
+registerChannel({url:"http://www3.nhk.or.jp/rj/podcast/rss/english.xml"})
 ```
+
+### 文字起こし
+
+`generateTranscriptFromIds({channelId:"bZuaK9TVO0HcWlBQADHX", episodeId:"WWFYwFhNTSVbU0amudhz"})`
 
 ### 翻訳
 
-`generateTranslatedTranscript({channelId:"NuQRZjF0tcDYyON74ie1", episodeId:"4BYY01O8Xi17wod1Cv87", langCode:"ja"})`
-
-
-bZuaK9TVO0HcWlBQADHX
-0qd2K1NGBioIOSxw6qjt
+`generateTranslatedTranscript({channelId:"bZuaK9TVO0HcWlBQADHX", episodeId:"WWFYwFhNTSVbU0amudhz", langCode:"ja"})`
