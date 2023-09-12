@@ -31,9 +31,7 @@ export async function transcribeAudioFiles({
     text: string;
   }[];
 }> {
-  const defaultPrompt = includeInfoInPrompt
-    ? `${channelName}: ${episodeName}. ${episodeDescription}`
-    : channelName;
+  const defaultPrompt = `${channelName}: ${episodeName}. ${episodeDescription}`;
 
   const segments: {
     start: number;
@@ -50,7 +48,9 @@ export async function transcribeAudioFiles({
     formData.append('file', createReadStream(audioFilePath));
     formData.append('model', model);
     formData.append('response_format', 'verbose_json');
-    formData.append('prompt', prompt);
+    if (!includeInfoInPrompt && index === 0) {
+      formData.append('prompt', prompt);
+    }
 
     const response = await axios
       .post('https://api.openai.com/v1/audio/transcriptions', formData, {
