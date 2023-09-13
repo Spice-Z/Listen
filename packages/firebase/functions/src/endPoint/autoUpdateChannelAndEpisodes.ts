@@ -12,7 +12,7 @@ export const autoUpdateChannelAndEpisodes = functions
     timeoutSeconds: 300,
   })
   .region('asia-northeast1')
-  .pubsub.schedule('every 2 hours')
+  .pubsub.schedule('every 1 hours')
   .onRun(async (context) => {
     const firestore = getFirestore();
     const channelCollectionShapshot = await firestore.collection(CHANNEL_DOCUMENT_NAME).get();

@@ -8,10 +8,10 @@ export async function fetchChannelDataByFeedUrl(feedUrl: string) {
   let latestPubDateTimestamp: null | Timestamp = null;
   // feedの情報から必要な情報を抽出する
   const episodesData = feed.items.map((item) => {
-    const guid = item.guid || item.link;
+    const url = item.enclosure ? item.enclosure.url : undefined;
+    const guid = item.guid || item.link || url;
     const title = item.title;
     const description = item.content;
-    const url = item.enclosure ? item.enclosure.url : undefined;
     const content = item.contentSnippet || item.content || '';
     const duration = item.itunes ? item.itunes.duration : undefined;
     const imageUrl = item.itunes && item.itunes.image ? item.itunes.image : '';
