@@ -13,6 +13,8 @@
     "build:local:android-preview": "eas build --platform android --profile preview --local",
     "build:local:ios": "eas build --profile development-simulator --platform ios --local",
     "build:local:ios-preview": "eas build --profile preview --platform ios --local",
+    "eas:device": "eas device:list",
+    "eas:devive:create": "eas device:create",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "gql:generate": "graphql-codegen",
