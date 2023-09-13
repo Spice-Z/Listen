@@ -41,14 +41,15 @@ export async function transcribeAudioFiles({
   let elapsedTime = 0;
 
   for (let index = 0; index < audioFilePaths.length; index++) {
+    const isFirstAudio = index === 0;
     const audioFilePath = audioFilePaths[index];
     const previousText = segments.map((segment) => segment.text).join(' ');
-    const prompt = index === 0 ? defaultPrompt : previousText.slice(-1000);
+    const prompt = isFirstAudio ? defaultPrompt : previousText.slice(-1000);
     const formData = new FormData();
     formData.append('file', createReadStream(audioFilePath));
     formData.append('model', model);
     formData.append('response_format', 'verbose_json');
-    if (!includeInfoInPrompt && index === 0) {
+    if (includeInfoInPrompt || !isFirstAudio) {
       formData.append('prompt', prompt);
     }
 
