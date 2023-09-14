@@ -3,7 +3,7 @@
 ### deploy方法
 
 firebase CLIを設定した上で、以下のコマンドを実行する。
-predployでtsのビルドを行うので、事前のビルドはしなくてもよい。
+predeployでtsのビルドを行うので、事前のビルドはしなくてもよい。
 
 ```bash
 npm run deploy
@@ -21,7 +21,7 @@ registerChannel({url:"http://www3.nhk.or.jp/rj/podcast/rss/english.xml"})
 
 ### 文字起こし
 
-`generateTranscriptFromIds({channelId:"bZuaK9TVO0HcWlBQADHX", episodeId:"WWFYwFhNTSVbU0amudhz"})`
+`generateTranscriptFromIds({channelId:"H4zhv7Acjr6dCfVsKELx", episodeId:"diInSvq7AVdmwuqNMTig"})`
 
 ### 翻訳
 
