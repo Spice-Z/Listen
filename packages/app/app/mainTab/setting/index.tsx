@@ -9,6 +9,8 @@ import * as Application from 'expo-application';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 import { BannerAdSize } from 'react-native-google-mobile-ads';
 import BannerAdMob from '../../../feature/Ad/BannerAdMob';
+import { Linking } from 'react-native';
+import { URL_INQUIRY } from '../../../constants';
 
 const ListHeaderComponent = memo(() => {
   const appVersion = Application.nativeApplicationVersion;
@@ -57,6 +59,9 @@ export default function SettingPage() {
   const goToPrivacyPolicy = useCallback(() => {
     router.push('mainTab/setting/privacyPolicy');
   }, [router]);
+  const openInquiryForm = useCallback(async () => {
+    await Linking.openURL(URL_INQUIRY);
+  }, []);
   const renderListItem = useCallback(({ item }: { item: SettingListItemProps }) => {
     return <SettingListItemComponent {...item} />;
   }, []);
@@ -104,6 +109,11 @@ export default function SettingPage() {
               id: '3',
               text: 'Privacy Policy',
               onPress: goToPrivacyPolicy,
+            },
+            {
+              id: '4',
+              text: 'Contact / Feature Request',
+              onPress: openInquiryForm,
             },
           ]}
           renderItem={renderListItem}
