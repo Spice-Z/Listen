@@ -50,8 +50,6 @@ const ModalPlayer = memo(() => {
     switchPlaybackRate,
     isPlaying,
     isLoading,
-    skipToNext,
-    skipToPrevious,
   } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
@@ -168,15 +166,15 @@ const ModalPlayer = memo(() => {
         </PressableOpacity>
         {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
           <View style={styles.controlButton}>
-            <LeftIcon width={24} height={24} fill={theme.color.textMain} />
+            <LeftIcon width={28} height={28} fill={theme.color.textMain} />
           </View>
         </PressableOpacity> */}
         <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
           <View style={styles.controlButton}>
             <Image
               style={styles.controlImage}
-              width={24}
-              height={24}
+              width={28}
+              height={28}
               source={require('../../assets/player/back15Black.png')}
             />
           </View>
@@ -188,15 +186,15 @@ const ModalPlayer = memo(() => {
           <View style={styles.controlButton}>
             <Image
               style={styles.controlImage}
-              width={24}
-              height={24}
+              width={28}
+              height={28}
               source={require('../../assets/player/forward15Black.png')}
             />
           </View>
         </PressableOpacity>
         {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
           <View style={styles.controlButton}>
-            <RightIcon width={24} height={24} fill={theme.color.textMain} />
+            <RightIcon width={28} height={28} fill={theme.color.textMain} />
           </View>
         </PressableOpacity> */}
         {hasTranslatedTranscript ? (
@@ -288,8 +286,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   controlImage: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
     aspectRatio: 1,
     resizeMode: 'contain',
   },
