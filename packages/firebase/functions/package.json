@@ -11,7 +11,7 @@
     "start": "npm run shell",
     "use:dev": "firebase use dev",
     "use:prod": "firebase use prod",
-    "deploy:dev": "npm run use:dev && firebase deploy --debug --only functions",
+    "deploy:dev": "npm run use:dev && firebase deploy --only functions",
     "deploy:prod": "npm run use:prod && firebase deploy --only functions",
     "logs": "firebase functions:log"
   },

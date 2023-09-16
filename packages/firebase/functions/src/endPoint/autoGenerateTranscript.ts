@@ -16,14 +16,14 @@ import { uploadSegmentsToGCS } from '../api/firebase.js';
 import { getFirestore } from 'firebase-admin/firestore';
 
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
-
 export const autoGenerateTranscript = functions
   .runWith({
     timeoutSeconds: 300,
     memory: '512MB',
   })
   .region('asia-northeast1')
-  .pubsub.schedule('every 15 minutes')
+  .pubsub.schedule('every 30 minutes')
+  // .pubsub.schedule('every 12 hours') // dev用
   .onRun(async (context) => {
     const store = getFirestore();
     const pendingEpisodesSnapshot = await store
