@@ -1,12 +1,24 @@
 name: "Deploy Graphl Server to Google Cloud Run"
 
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "environment"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - prod
+
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_ID: ${{ (github.event.inputs.env == 'prod') && (secrets.GCP_PROJECT_ID) || (secrets.DEV_GCP_PROJECT_ID) }}
+  WIF_PROVIDER: ${{ (github.event.inputs.env == 'prod') && (secrets.WIF_PROVIDER) || (secrets.DEV_WIF_PROVIDER) }}
+  SA_ACCOUNT: ${{ (github.event.inputs.env == 'prod') && (secrets.SA_ACCOUNT) || (secrets.DEV_SA_ACCOUNT) }}
   SERVICE_NAME: listen
   GCP_REGION: asia-northeast1
   APP: listen-graphql
-
-on: [workflow_dispatch]
 
 jobs:
   deploy:
@@ -21,8 +33,8 @@ jobs:
       - name: Authenticate with Google Cloud
         uses: "google-github-actions/auth@v1"
         with:
-          workload_identity_provider: "${{ secrets.WIF_PROVIDER }}"
-          service_account: "${{ secrets.SA_ACCOUNT }}"
+          workload_identity_provider: "${{ env.WIF_PROVIDER }}"
+          service_account: "${{ env.SA_ACCOUNT }}"
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
