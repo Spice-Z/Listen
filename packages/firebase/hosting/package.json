@@ -8,7 +8,10 @@
     "generate:license": "node ./scripts/generateLicensePage.js",
     "generate:privacy": "node ./scripts/generatePrivacyPolicyPage.js",
     "generate:terms": "node ./scripts/generateTermsOfServicesPage.js",
-    "deploy": "firebase deploy --only hosting"
+    "use:dev": "firebase use dev",
+    "use:prod": "firebase use prod",
+    "deploy:dev": "npm run use:dev && firebase deploy --only hosting",
+    "deploy:prod": "npm run use:prod && firebase deploy --only hosting"
   },
   "author": "",
   "license": "ISC"
