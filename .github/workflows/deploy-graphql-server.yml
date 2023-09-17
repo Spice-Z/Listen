@@ -15,7 +15,7 @@ on:
 env:
   PROJECT_ID: ${{ (github.event.inputs.env == 'prod') && (secrets.GCP_PROJECT_ID) || (secrets.DEV_GCP_PROJECT_ID) }}
   WIF_PROVIDER: ${{ (github.event.inputs.env == 'prod') && (secrets.WIF_PROVIDER) || (secrets.DEV_WIF_PROVIDER) }}
-  SA_ACCOUNT: ${{ (github.event.inputs.env == 'prod') && (secrets.SA_ACCOUNT) || (secrets.DEV_SA_ACCOUNT) }}
+  SA_ACCOUNT: ${{ (github.event.inputs.env == 'prod') && (vars.SA_ACCOUNT) || (vars.DEV_SA_ACCOUNT) }}
   SERVICE_NAME: listen
   GCP_REGION: asia-northeast1
   APP: listen-graphql
@@ -29,9 +29,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: echo service account
-        run: echo ${{env.SA_ACCOUNT}}
 
       - name: Authenticate with Google Cloud
         uses: "google-github-actions/auth@v1"
