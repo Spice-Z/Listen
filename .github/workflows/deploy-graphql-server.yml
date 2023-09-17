@@ -30,6 +30,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: echo service account
+        run: echo ${{env.SA_ACCOUNT}}
+
       - name: Authenticate with Google Cloud
         uses: "google-github-actions/auth@v1"
         with:
