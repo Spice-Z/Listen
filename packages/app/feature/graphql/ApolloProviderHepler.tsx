@@ -4,10 +4,12 @@ import { useAuthContext } from '../context/auth/context';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { relayStylePagination } from '@apollo/client/utilities';
 
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 const createApolloClient = (authToken) => {
   return new ApolloClient({
     link: new HttpLink({
-      uri: 'https://api.listen-world.com',
+      uri: API_URL,
       headers: {
         authorization: `Bearer ${authToken}`,
       },

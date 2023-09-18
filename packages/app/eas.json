@@ -19,7 +19,8 @@
       "distribution": "internal",
       "env": {
         "EXPO_PUBLIC_AD_ID_ANDROID": "ca-app-pub-5532826448688500/6389636844",
-        "EXPO_PUBLIC_AD_ID_IOS": "ca-app-pub-5532826448688500/6330723255"
+        "EXPO_PUBLIC_AD_ID_IOS": "ca-app-pub-5532826448688500/6330723255",
+        "EXPO_PUBLIC_API_URL": "https://dev.api.listen-world.com"
       }
     },
     "production": {

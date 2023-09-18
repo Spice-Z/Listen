@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1023150639633",
+    "project_id": "dev-listen-316a4",
+    "storage_bucket": "dev-listen-316a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023150639633:android:939c1367a9cdb8ba62bfb0",
+        "android_client_info": {
+          "package_name": "com.spicex.Listen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkRFF4GUWw8ShaBzwEd0VGh1eSp1V2bgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

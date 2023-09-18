@@ -36,7 +36,6 @@
         "UIBackgroundModes": ["audio"]
       },
       "bundleIdentifier": "com.spicex.Listen",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "requireFullScreen": true
     },
     "android": {
@@ -44,8 +43,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.spicex.Listen",
-      "googleServicesFile": "./google-services.json"
+      "package": "com.spicex.Listen"
     },
     "extra": {
       "eas": {
