@@ -75,3 +75,7 @@ dist/
 # @end expo-cli
 
 **.apk
+
+ios/Listen/GoogleService-Info.plist
+ios/Listen/info.plist
+android/app/google-services.json
