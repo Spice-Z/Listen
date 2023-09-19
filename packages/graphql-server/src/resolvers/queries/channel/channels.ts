@@ -36,6 +36,18 @@ const resolver: QueryResolvers['channels'] = async (parent, args, context, info)
     };
   });
 
+  if (edges.length === 0) {
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: null,
+        endCursor: null,
+      },
+    };
+  }
+
   return {
     edges,
     pageInfo: {
