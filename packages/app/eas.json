@@ -1,12 +1,5 @@
 {
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "ios": {
-        "resourceClass": "m-medium"
-      }
-    },
     "development-simulator": {
       "developmentClient": true,
       "distribution": "internal",
@@ -24,13 +17,16 @@
       }
     },
     "production": {
-      "ios": {
-        "resourceClass": "m-medium"
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_AD_ID_ANDROID": "ca-app-pub-5532826448688500/6389636844",
+        "EXPO_PUBLIC_AD_ID_IOS": "ca-app-pub-5532826448688500/6330723255",
+        "EXPO_PUBLIC_API_URL": "https://api.listen-world.com"
       }
-    },
-    "cli": {}
+    }
   },
   "cli": {
+    "appVersionSource": "local",
     "promptToConfigurePushNotifications": false
   }
 }
