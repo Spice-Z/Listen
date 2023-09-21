@@ -1,4 +1,4 @@
-name: "Deploy Graphl Server to Google Cloud Run"
+name: "Deploy Graphql Server to Google Cloud Run"
 
 on:
   workflow_dispatch:
