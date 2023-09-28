@@ -41,7 +41,7 @@
       },
       "bundleIdentifier": "com.spicex.Listen",
       "requireFullScreen": true,
-      "buildNumber": "2"
+      "buildNumber": "7"
     },
     "android": {
       "adaptiveIcon": {
@@ -49,7 +49,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.spicex.Listen",
-      "versionCode": 1
+      "versionCode": 3
     },
     "extra": {
       "eas": {
