@@ -3,24 +3,27 @@
   "private": true,
   "scripts": {
     "start": "expo start --dev-client",
-    "start:production": "expo start --no-dev --minify",
+    "start:production": "NODE_ENV=production expo start --no-dev --minify",
     "lint:fix": "eslint --fix '**/*.{ts,tsx}'",
     "lint": "eslint '**/*.{ts,tsx}'",
     "run:android": "react-native run-android",
     "run:ios": "react-native run-ios",
     "build:local:android-preview": "APP_VARIANT=development eas build --platform android --profile preview --local",
     "build:local:ios": "eas build --profile development --platform ios --local",
-    "build:prod:ios": "eas build --profile production --platform ios",
+    "build:prod:ios": "APP_VARIANT=production eas build --profile production --platform ios",
     "build:prod:android": "eas build --profile production --platform android",
     "build:local:ios-preview": "eas build --profile preview --platform ios --local",
-    "submit:ios": "eas submit --platform ios",
+    "submit:ios": "APP_VARIANT=production && eas submit --platform ios ",
     "submit:android": "eas submit --platform android",
     "eas:device": "eas device:list",
     "eas:devive:create": "eas device:create",
+    "eas:credentials": "eas credentials",
     "android": "expo run:android",
-    "ios": "APP_VARIANT=development expo run:ios",
+    "expo:run:ios": "APP_VARIANT=development expo run:ios",
+    "expo:run:ios:prod": "APP_VARIANT=production expo run:ios",
     "gql:generate": "graphql-codegen",
-    "test": "vitest --config vitest.config.ts"
+    "test": "vitest --config vitest.config.ts",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@apollo/client": "^3.8.1",
@@ -62,7 +65,8 @@
     "react-native-svg": "13.4.0",
     "react-native-track-player": "^3.2.0",
     "react-native-web": "~0.18.7",
-    "react-native-webview": "13.2.2"
+    "react-native-webview": "13.2.2",
+    "expo-tracking-transparency": "~3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

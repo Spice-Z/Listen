@@ -16,6 +16,7 @@ import * as Application from 'expo-application';
 import { compareSemVer } from '../feature/utils/semVer';
 import { useState } from 'react';
 import mobileAds from 'react-native-google-mobile-ads';
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,6 +58,7 @@ export default function Layout() {
       await Promise.all([remoteConfigPromise, admobPromise]);
       setIsInitialized(true);
       SplashScreen.hideAsync();
+      await requestTrackingPermissionsAsync();
     })();
   });
   return (
