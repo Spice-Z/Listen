@@ -27,6 +27,19 @@
       }
     }
   },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "../path/to/api-xxx-yyy-zzz.json",
+        "track": "internal"
+      },
+      "ios": {
+        "appleId": "jigenbakdaaan@gmail.com",
+        "ascAppId": "6467870540",
+        "appleTeamId": "PQLM3W4N6D"
+      }
+    }
+  },
   "cli": {
     "appVersionSource": "local",
     "promptToConfigurePushNotifications": false
