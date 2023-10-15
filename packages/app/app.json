@@ -50,7 +50,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.spicex.Listen",
-      "versionCode": 3
+      "versionCode": 8
     },
     "extra": {
       "eas": {
