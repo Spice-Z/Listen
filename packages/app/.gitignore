@@ -39,6 +39,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+*.tar.gz
 
 # Android/IntelliJ
 #
