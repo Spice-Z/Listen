@@ -42,7 +42,7 @@
       },
       "bundleIdentifier": "com.spicex.Listen",
       "requireFullScreen": true,
-      "buildNumber": "13"
+      "buildNumber": "14"
     },
     "android": {
       "adaptiveIcon": {
