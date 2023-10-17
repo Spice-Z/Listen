@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "plugins": [
       "@react-native-firebase/app",
       [
@@ -36,9 +34,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": [
-          "audio"
-        ]
+        "UIBackgroundModes": ["audio"]
       },
       "bundleIdentifier": "com.spicex.Listen",
       "requireFullScreen": true,
@@ -61,6 +57,6 @@
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-5532826448688500~4365274585",
     "ios_app_id": "ca-app-pub-5532826448688500~5869626627",
-    "user_tracking_usage_description": "This identifier will be used to deliver personalized ads to you."
+    "user_tracking_usage_description": "許可することで、より関連性の高い広告を表示することができるようになります。"
   }
 }
