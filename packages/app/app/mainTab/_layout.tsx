@@ -22,6 +22,7 @@ export default function Layout() {
             elevation: 0,
             backgroundColor: theme.color.bgNone,
           },
+          tabBarLabelPosition: 'below-icon',
         }}
       >
         <Tabs.Screen

@@ -38,11 +38,12 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "audio"
-        ]
+        ],
+        "NSUserTrackingUsageDescription": "アプリのバグ修正や体験向上のために行動データを利用します。"
       },
       "bundleIdentifier": "com.spicex.Listen",
       "requireFullScreen": true,
-      "buildNumber": "15"
+      "buildNumber": "20"
     },
     "android": {
       "adaptiveIcon": {
