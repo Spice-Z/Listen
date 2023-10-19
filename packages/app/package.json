@@ -11,7 +11,7 @@
     "build:local:android-preview": "APP_VARIANT=development eas build --platform android --profile preview --local",
     "build:local:ios": "eas build --profile development --platform ios --local",
     "build:prod:ios": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform ios",
-    "build:prod:ios-local": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform ios --local",
+    "build:prod:ios:local": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform ios --local",
     "build:prod:android": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform android",
     "build:prod:android:local": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform android --local",
     "build:local:ios-preview": "eas build --profile preview --platform ios --local",
