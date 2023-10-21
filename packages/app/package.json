@@ -8,7 +8,7 @@
     "lint": "eslint '**/*.{ts,tsx}'",
     "run:android": "react-native run-android",
     "run:ios": "react-native run-ios",
-    "build:local:android-preview": "APP_VARIANT=development eas build --platform android --profile preview --local",
+    "build:local:android-preview": "APP_VARIANT=development eas build --platform android --profile preview-prod --local",
     "build:local:ios": "eas build --profile development --platform ios --local",
     "build:prod:ios": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform ios",
     "build:prod:ios:local": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform ios --local",
