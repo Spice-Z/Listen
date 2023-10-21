@@ -18,6 +18,8 @@ import { gql } from '../graphql/__generated__';
 import { useQuery } from '@apollo/client';
 import PressableOpacity from '../Pressable/PressableOpacity';
 import SquareShimmer from '../Shimmer/SquareShimmer';
+import BannerAdMob from '../../feature/Ad/BannerAdMob';
+import { BannerAdSize } from 'react-native-google-mobile-ads';
 
 const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
   query GetEpisodeInModalPlayer($channelId: String!, $episodeId: String!) {
@@ -131,9 +133,12 @@ const ModalPlayer = memo(() => {
         transcriptUrl={data?.episode.transcriptUrl}
         currentTimePosition={progress.position}
         width={Dimensions.get('window').width}
-        height={Dimensions.get('window').height * 0.7}
+        height={Dimensions.get('window').height * 0.7 - 60}
         disableAutoScroll={data?.episode.hasChangeableAd}
       />
+      <View style={styles.adContainer}>
+        <BannerAdMob size={BannerAdSize.BANNER} />
+      </View>
       <View style={styles.episodeContainer}>
         <ArtworkImage width={50} height={50} borderRadius={8} />
         <View style={styles.episodeInfo}>
@@ -219,7 +224,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   episodeContainer: {
-    marginTop: 20,
+    marginTop: 4,
     paddingHorizontal: 16,
     flexDirection: 'row',
     width: '100%',
@@ -301,6 +306,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  adContainer: {
+    height: 60,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
