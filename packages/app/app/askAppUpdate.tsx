@@ -4,14 +4,13 @@ import { theme } from '../feature/styles/theme';
 import { Linking, Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
 import PressableScale from '../feature/Pressable/PressableScale';
+import { APP_STORE_URL } from '../constants';
 
 const isIOS = Platform.OS === 'ios';
 
 const AskUpdate = memo(() => {
   const openAppStore = useCallback(() => {
-    Linking.openURL('https://www.apple.com/jp/app-store/').catch((err) =>
-      console.error('An error occurred', err),
-    );
+    Linking.openURL(APP_STORE_URL).catch((err) => console.error('An error occurred', err));
   }, []);
   const openGooglePlay = useCallback(() => {
     Linking.openURL('https://play.google.com/store/apps').catch((err) =>
