@@ -77,12 +77,7 @@ function Channel() {
       <>
         <ChannelInfo channelInfo={channelInfo} />
         <View style={styles.adContainer}>
-          <BannerAdMob
-            size={BannerAdSize.BANNER}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
+          <BannerAdMob size={BannerAdSize.BANNER} />
         </View>
         <Text style={styles.episodeHead}>All Episodes</Text>
       </>

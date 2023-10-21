@@ -143,12 +143,7 @@ function EpisodePage() {
           canAutoScroll={canAutoScroll}
         />
         <View style={styles.adContainer}>
-          <BannerAdMob
-            size={BannerAdSize.MEDIUM_RECTANGLE}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
+          <BannerAdMob size={BannerAdSize.MEDIUM_RECTANGLE} />
         </View>
         <MiniPlayerSpacer />
       </ScrollView>
