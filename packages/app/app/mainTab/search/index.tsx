@@ -13,6 +13,17 @@ import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { BannerAdSize } from 'react-native-google-mobile-ads';
 import BannerAdMob from '../../../feature/Ad/BannerAdMob';
+import { GetChannelsQuery } from '../../../feature/graphql/__generated__/graphql';
+
+type ChannelNode = GetChannelsQuery['channels']['edges'][0]['node'];
+type ListNode = ChannelNode & { isAd: boolean; isAdSpace: boolean };
+const emptyChannelNode = {
+  channelId: '',
+  title: '',
+  description: '',
+  imageUrl: '',
+  author: '',
+};
 
 const SeparatorComponent = memo(() => <View style={{ marginTop: 18 }} />);
 
@@ -37,16 +48,19 @@ const GET_CHANNELS = gql(/* GraphQL */ `
   }
 `);
 
+const ListHeaderComponent = memo(() => {
+  return (
+    <View style={styles.headerContainer}>
+      <BannerAdMob size={BannerAdSize.BANNER} />
+    </View>
+  );
+});
+
 const ListFooterComponent = () => {
   return (
     <>
-      <View style={styles.adContainer}>
-        <BannerAdMob
-          size={BannerAdSize.BANNER}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
+      <View style={styles.footerContainer}>
+        <BannerAdMob size={BannerAdSize.BANNER} />
       </View>
       <MiniPlayerSpacer />
     </>
@@ -63,32 +77,73 @@ function App() {
     },
     [router],
   );
+  const listData = useMemo(() => {
+    let edges = data.channels.edges;
+    // dev環境の場合はedgesが少ないので10倍
+    if (__DEV__) {
+      edges = [
+        ...edges,
+        ...edges,
+        ...edges,
+        ...edges,
+        ...edges,
+        ...edges,
+        ...edges,
+        ...edges,
+        ...edges,
+        ...edges,
+      ];
+    }
+    // 6個に一回、広告データを差し込んだ新しいリストを作成する
+    const list: ListNode[] = [];
+    for (let i = 0; i < edges.length; i++) {
+      list.push({ ...edges[i].node, isAd: false, isAdSpace: false });
+      if (i !== 0 && (i + 1) % 6 === 0) {
+        list.push({ ...emptyChannelNode, id: `ad-${i}`, isAd: true, isAdSpace: false });
+        list.push({ ...emptyChannelNode, id: `ad-${i}-space`, isAd: true, isAdSpace: true });
+      }
+    }
+    return list;
+  }, [data.channels.edges]);
+  const renderItem = useCallback(
+    ({ item }: { item: ListNode }) => {
+      if (item.isAd) {
+        // isAdは二個分のスペースを取る
+        if (item.isAdSpace) {
+          return null;
+        }
+        return (
+          <View style={styles.adInList}>
+            <BannerAdMob size={BannerAdSize.MEDIUM_RECTANGLE} />
+          </View>
+        );
+      }
+      return (
+        <PressableScale style={styles.channelCard} onPress={() => onPressChannel(item.channelId)}>
+          <ExpoImage
+            style={styles.artwork}
+            source={item.imageUrl}
+            placeholder={IMAGE_DEFAULT_BLUR_HASH}
+          />
+          <Text numberOfLines={3} style={styles.channelTitle}>
+            {item.title}
+          </Text>
+        </PressableScale>
+      );
+    },
+    [onPressChannel],
+  );
   return (
     <>
       <View style={styles.container}>
         <FlatList
-          data={data.channels.edges ?? []}
+          data={listData}
           numColumns={2}
-          renderItem={({ item }) => {
-            return (
-              <PressableScale
-                style={styles.channelCard}
-                onPress={() => onPressChannel(item.node.channelId)}
-              >
-                <ExpoImage
-                  style={styles.artwork}
-                  source={item.node.imageUrl}
-                  placeholder={IMAGE_DEFAULT_BLUR_HASH}
-                />
-                <Text numberOfLines={3} style={styles.channelTitle}>
-                  {item.node.title}
-                </Text>
-              </PressableScale>
-            );
-          }}
+          renderItem={renderItem}
           ItemSeparatorComponent={SeparatorComponent}
           contentContainerStyle={styles.contentContainer}
           columnWrapperStyle={styles.columnWrapperStyle}
+          ListHeaderComponent={ListHeaderComponent}
           ListFooterComponent={ListFooterComponent}
         />
       </View>
@@ -108,7 +163,7 @@ function FallBack() {
       <FlatList
         data={data}
         numColumns={2}
-        renderItem={({ item }) => {
+        renderItem={() => {
           return (
             <View style={styles.channelCard}>
               <SquareShimmer width="100%" height={squareSize} />
@@ -120,7 +175,8 @@ function FallBack() {
         ItemSeparatorComponent={SeparatorComponent}
         contentContainerStyle={styles.contentContainer}
         columnWrapperStyle={styles.columnWrapperStyle}
-        ListFooterComponent={MiniPlayerSpacer}
+        ListHeaderComponent={ListHeaderComponent}
+        ListFooterComponent={ListFooterComponent}
       />
     </View>
   );
@@ -171,6 +227,9 @@ const styles = StyleSheet.create({
     color: theme.color.textMain,
     width: (Dimensions.get('window').width - 16 * 2 - 8) / 2,
   },
+  adInList: {
+    width: Dimensions.get('window').width - 16 * 2 - 8,
+  },
   artwork: {
     width: '100%',
     height: 'auto',
@@ -188,7 +247,11 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
   },
-  adContainer: {
+  headerContainer: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  footerContainer: {
     marginTop: 24,
     width: '100%',
   },
