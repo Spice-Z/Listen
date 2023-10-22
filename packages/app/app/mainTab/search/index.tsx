@@ -48,14 +48,6 @@ const GET_CHANNELS = gql(/* GraphQL */ `
   }
 `);
 
-const ListHeaderComponent = memo(() => {
-  return (
-    <View style={styles.headerContainer}>
-      <BannerAdMob size={BannerAdSize.BANNER} />
-    </View>
-  );
-});
-
 const ListFooterComponent = () => {
   return (
     <>
@@ -143,7 +135,6 @@ function App() {
           ItemSeparatorComponent={SeparatorComponent}
           contentContainerStyle={styles.contentContainer}
           columnWrapperStyle={styles.columnWrapperStyle}
-          ListHeaderComponent={ListHeaderComponent}
           ListFooterComponent={ListFooterComponent}
         />
       </View>
@@ -175,7 +166,6 @@ function FallBack() {
         ItemSeparatorComponent={SeparatorComponent}
         contentContainerStyle={styles.contentContainer}
         columnWrapperStyle={styles.columnWrapperStyle}
-        ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={ListFooterComponent}
       />
     </View>
@@ -229,6 +219,7 @@ const styles = StyleSheet.create({
   },
   adInList: {
     width: Dimensions.get('window').width - 16 * 2 - 8,
+    height: 250,
   },
   artwork: {
     width: '100%',
@@ -246,10 +237,6 @@ const styles = StyleSheet.create({
   columnWrapperStyle: {
     width: '100%',
     justifyContent: 'space-between',
-  },
-  headerContainer: {
-    width: '100%',
-    marginBottom: 16,
   },
   footerContainer: {
     marginTop: 24,
