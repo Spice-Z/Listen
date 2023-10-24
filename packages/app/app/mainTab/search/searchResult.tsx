@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, Linking, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Linking, StyleSheet, Text, View, Image } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,7 @@ import PressableScale from '../../../feature/Pressable/PressableScale';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import { Image as ExpoImage } from 'expo-image';
+
 import { IMAGE_DEFAULT_BLUR_HASH, URL_INQUIRY } from '../../../constants';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { BannerAdSize } from 'react-native-google-mobile-ads';
@@ -40,8 +41,8 @@ function SearchResult() {
   );
   const listData = useMemo(() => {
     const edges = data.channels.edges;
-    const filterdEdges = edges.filter((edge) => edge.node.title.includes(searchText as string));
-    return filterdEdges.map((edge) => edge.node);
+    const filteredEdges = edges.filter((edge) => edge.node.title.includes(searchText as string));
+    return filteredEdges.map((edge) => edge.node);
   }, [data.channels.edges, searchText]);
   const renderItem = useCallback(
     ({ item }: { item: ChannelNode }) => {
@@ -67,11 +68,17 @@ function SearchResult() {
 
   const ListEmptyComponent = useMemo(() => {
     return (
-      <View>
-        <Text>Sorry</Text>
-        <Text>You can request any shows from </Text>
-        <PressableScale onPress={openInquiryForm}>
-          <Text>お問い合わせフォーム</Text>
+      <View style={styles.emptyContainer}>
+        <Image
+          width={1810}
+          height={1810}
+          style={styles.emptyImage}
+          source={require('../../../assets/image/depressed-woman.png')}
+        />
+        <Text style={styles.emptyApologize}>Sorry, no channels found...</Text>
+        <Text style={styles.but}>But, you can request any shows!</Text>
+        <PressableScale style={styles.inquiryButton} onPress={openInquiryForm}>
+          <Text style={styles.inquiryText}>リクエストを送る</Text>
         </PressableScale>
       </View>
     );
@@ -124,12 +131,14 @@ function FallBack() {
   );
 }
 
-export default function withSuspense() {
+export default function WithSuspense() {
+  const { searchText } = useLocalSearchParams();
+  const title = `search result of '${searchText}'`;
   return (
     <>
       <Stack.Screen
         options={{
-          title: 'Result',
+          title,
           headerStyle: {
             backgroundColor: theme.color.bgMain,
           },
@@ -150,6 +159,37 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 16,
+  },
+  emptyContainer: {
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  emptyImage: {
+    marginTop: 40,
+    width: 200,
+    height: 200,
+    aspectRatio: 1,
+    resizeMode: 'contain',
+  },
+  emptyApologize: {
+    marginTop: 24,
+    fontSize: 20,
+    fontWeight: '500',
+  },
+  but: {
+    marginTop: 20,
+  },
+  inquiryButton: {
+    marginTop: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: theme.color.accent,
+    borderRadius: 4,
+  },
+  inquiryText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: theme.color.bgNone,
   },
   fallbackContentContainer: {
     backgroundColor: 'red',

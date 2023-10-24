@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     backgroundColor: theme.color.bgMain,
-    paddingHorizontal: 8,
+    paddingLeft: 8,
+    paddingRight: 16,
   },
   content: {
     height: 40,

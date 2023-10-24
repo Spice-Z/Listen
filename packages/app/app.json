@@ -3,7 +3,7 @@
     "name": "Listen",
     "slug": "Listen",
     "scheme": "listen-podcast",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "jsEngine": "hermes",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -43,7 +43,7 @@
       },
       "bundleIdentifier": "com.spicex.Listen",
       "requireFullScreen": true,
-      "buildNumber": "20"
+      "buildNumber": "23"
     },
     "android": {
       "adaptiveIcon": {
