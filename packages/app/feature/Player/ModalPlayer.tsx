@@ -199,7 +199,7 @@ const ModalPlayer = memo(() => {
         </PressableOpacity>
         {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
           <View style={styles.controlButton}>
-            <RightIcon width={28} height={28} fill={theme.color.textMain} />
+            <RightIcon width={28} height={28} color={theme.color.textMain} />
           </View>
         </PressableOpacity> */}
         {hasTranslatedTranscript ? (

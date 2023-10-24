@@ -1,55 +1,22 @@
-import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
+import { Dimensions, FlatList, Linking, StyleSheet, Text, View } from 'react-native';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { StatusBar } from 'expo-status-bar';
 import { memo, useCallback, useMemo } from 'react';
-import { gql } from '../../../feature/graphql/__generated__';
 import { useSuspenseQuery } from '@apollo/client';
 import PressableScale from '../../../feature/Pressable/PressableScale';
 import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 import WithSuspenseAndBoundary from '../../../feature/Suspense/WithSuspenseAndBoundary';
 import { Image as ExpoImage } from 'expo-image';
-import { IMAGE_DEFAULT_BLUR_HASH } from '../../../constants';
+import { IMAGE_DEFAULT_BLUR_HASH, URL_INQUIRY } from '../../../constants';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { BannerAdSize } from 'react-native-google-mobile-ads';
 import BannerAdMob from '../../../feature/Ad/BannerAdMob';
-import { GetChannelsQuery } from '../../../feature/graphql/__generated__/graphql';
-import SearchHeader from '../../../feature/Search/SearchHeader';
-
-export type ChannelNode = GetChannelsQuery['channels']['edges'][0]['node'];
-type ListNode = ChannelNode & { isAd: boolean; isAdSpace: boolean };
-const emptyChannelNode = {
-  channelId: '',
-  title: '',
-  description: '',
-  imageUrl: '',
-  author: '',
-};
+import { ChannelNode, GET_CHANNELS } from '.';
 
 const SeparatorComponent = memo(() => <View style={{ marginTop: 18 }} />);
 
-export const GET_CHANNELS = gql(/* GraphQL */ `
-  query GetChannels($cursor: String) {
-    channels(after: $cursor) {
-      edges {
-        node {
-          id
-          channelId
-          title
-          description
-          imageUrl
-          author
-        }
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
-  }
-`);
-
-const ListFooterComponent = memo(() => {
+const ListFooterComponent = () => {
   return (
     <>
       <View style={styles.footerContainer}>
@@ -58,10 +25,11 @@ const ListFooterComponent = memo(() => {
       <MiniPlayerSpacer />
     </>
   );
-});
+};
 
-function App() {
+function SearchResult() {
   const { data } = useSuspenseQuery(GET_CHANNELS);
+  const { searchText } = useLocalSearchParams();
 
   const router = useRouter();
   const onPressChannel = useCallback(
@@ -70,48 +38,13 @@ function App() {
     },
     [router],
   );
-
   const listData = useMemo(() => {
-    let edges = data.channels.edges;
-    // dev環境の場合はedgesが少ないので10倍
-    if (__DEV__) {
-      edges = [
-        ...edges,
-        ...edges,
-        ...edges,
-        ...edges,
-        ...edges,
-        ...edges,
-        ...edges,
-        ...edges,
-        ...edges,
-        ...edges,
-      ];
-    }
-    // 6個に一回、広告データを差し込んだ新しいリストを作成する
-    const list: ListNode[] = [];
-    for (let i = 0; i < edges.length; i++) {
-      list.push({ ...edges[i].node, isAd: false, isAdSpace: false });
-      if (i !== 0 && (i + 1) % 6 === 0) {
-        list.push({ ...emptyChannelNode, id: `ad-${i}`, isAd: true, isAdSpace: false });
-        list.push({ ...emptyChannelNode, id: `ad-${i}-space`, isAd: true, isAdSpace: true });
-      }
-    }
-    return list;
-  }, [data.channels.edges]);
+    const edges = data.channels.edges;
+    const filterdEdges = edges.filter((edge) => edge.node.title.includes(searchText as string));
+    return filterdEdges.map((edge) => edge.node);
+  }, [data.channels.edges, searchText]);
   const renderItem = useCallback(
-    ({ item }: { item: ListNode }) => {
-      if (item.isAd) {
-        // isAdは二個分のスペースを取る
-        if (item.isAdSpace) {
-          return null;
-        }
-        return (
-          <View style={styles.adInList}>
-            <BannerAdMob size={BannerAdSize.MEDIUM_RECTANGLE} />
-          </View>
-        );
-      }
+    ({ item }: { item: ChannelNode }) => {
       return (
         <PressableScale style={styles.channelCard} onPress={() => onPressChannel(item.channelId)}>
           <ExpoImage
@@ -127,6 +60,22 @@ function App() {
     },
     [onPressChannel],
   );
+
+  const openInquiryForm = useCallback(async () => {
+    await Linking.openURL(URL_INQUIRY);
+  }, []);
+
+  const ListEmptyComponent = useMemo(() => {
+    return (
+      <View>
+        <Text>Sorry</Text>
+        <Text>You can request any shows from </Text>
+        <PressableScale onPress={openInquiryForm}>
+          <Text>お問い合わせフォーム</Text>
+        </PressableScale>
+      </View>
+    );
+  }, [openInquiryForm]);
   return (
     <>
       <View style={styles.container}>
@@ -138,6 +87,7 @@ function App() {
           contentContainerStyle={styles.contentContainer}
           columnWrapperStyle={styles.columnWrapperStyle}
           ListFooterComponent={ListFooterComponent}
+          ListEmptyComponent={ListEmptyComponent}
         />
       </View>
     </>
@@ -179,13 +129,15 @@ export default function withSuspense() {
     <>
       <Stack.Screen
         options={{
-          title: 'Search',
-          header: (_props) => <SearchHeader />,
+          title: 'Result',
+          headerStyle: {
+            backgroundColor: theme.color.bgMain,
+          },
         }}
       />
       <StatusBar style="inverted" />
       <WithSuspenseAndBoundary fallback={<FallBack />}>
-        <App />
+        <SearchResult />
       </WithSuspenseAndBoundary>
     </>
   );

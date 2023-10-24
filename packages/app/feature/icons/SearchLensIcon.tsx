@@ -7,18 +7,9 @@ type Props = {
 };
 
 const SearchLensIcon = React.memo<Props>(({ width, height, color = '#000000' }: Props) => (
-  <Svg
-    viewBox="0 0 24 24"
-    width={width}
-    height={height}
-    fill="none"
-    stroke={color}
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="2"
-  >
-    <Circle cx="11" cy="11" r="8" />
-    <Line x1="21" x2="16.65" y1="21" y2="16.65" />
+  <Svg width={width} height={height} viewBox="0 0 36 36" fill="none">
+    <Circle cx="17" cy="16" r="13" stroke={color} strokeWidth="4" />
+    <Line x1="33.2322" y1="33.7678" x2="25.2322" y2="25.7678" stroke={color} strokeWidth="5" />
   </Svg>
 ));
 
