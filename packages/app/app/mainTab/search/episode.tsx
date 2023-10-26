@@ -103,7 +103,6 @@ function EpisodePage() {
         duration: episode.duration,
         // TODO: add Date from pubDate
       };
-      console.log({ track });
       await playTrackIfNotCurrentlyPlaying(track);
       // TODO: 連続再生のために、次のエピソードをqueueに入れる
     }
