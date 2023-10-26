@@ -7,6 +7,7 @@ import TrackPlayer, {
   useTrackPlayerEvents,
 } from 'react-native-track-player';
 import { useDidMount } from '../../hooks/useDidMount';
+import { logPlayStart } from '../../utils/logger';
 
 type Needed = {
   id: string;
@@ -71,6 +72,7 @@ export const useTrackPlayer = () => {
       await TrackPlayer.reset();
       await TrackPlayer.add(track);
       await TrackPlayer.play();
+      logPlayStart(track.channelId, track.id);
       return;
     }
     const currentState = await TrackPlayer.getState();
