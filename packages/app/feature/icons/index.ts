@@ -6,6 +6,7 @@ import TranslateIcon from './TranslateIcon';
 import LeftIcon from './LeftIcon';
 import RightIcon from './RightIcon';
 import DotsMenuIcon from './DotsMenuIcon';
+import UnVisibleTextIcon from './UnVisibleTextIcon';
 
 export {
   PauseIcon,
@@ -16,4 +17,5 @@ export {
   RightIcon,
   LeftIcon,
   DotsMenuIcon,
+  UnVisibleTextIcon,
 };
