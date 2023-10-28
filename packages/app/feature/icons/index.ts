@@ -5,5 +5,15 @@ import BackDownIcon from './BackDownIcon';
 import TranslateIcon from './TranslateIcon';
 import LeftIcon from './LeftIcon';
 import RightIcon from './RightIcon';
+import DotsMenuIcon from './DotsMenuIcon';
 
-export { PauseIcon, PlayIcon, SkipForwardIcon, BackDownIcon, TranslateIcon, RightIcon, LeftIcon };
+export {
+  PauseIcon,
+  PlayIcon,
+  SkipForwardIcon,
+  BackDownIcon,
+  TranslateIcon,
+  RightIcon,
+  LeftIcon,
+  DotsMenuIcon,
+};
