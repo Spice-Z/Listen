@@ -1,18 +1,17 @@
 import { StyleSheet, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { theme } from '../feature/styles/theme';
-import ModalPlayer from '../feature/Player/ModalPlayer';
 import { memo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BackDownButton from '../feature/Header/BackDownButton';
 
-const modalPlayer = memo(() => {
+const modalDictationPlayer = memo(() => {
   const insets = useSafeAreaInsets();
   return (
     <>
       <Stack.Screen
         options={{
-          headerTitle: 'Transcription',
+          headerTitle: 'Dictation',
           headerLeft: () => <BackDownButton />,
         }}
       />
@@ -26,15 +25,15 @@ const modalPlayer = memo(() => {
           },
         ]}
       >
-        <ModalPlayer />
+        {/* <DictationPlayer /> */}
       </View>
     </>
   );
 });
 
-modalPlayer.displayName = 'ModalPlayer';
+modalDictationPlayer.displayName = 'modalDictationPlayer';
 
-export default modalPlayer;
+export default modalDictationPlayer;
 
 const styles = StyleSheet.create({
   container: {

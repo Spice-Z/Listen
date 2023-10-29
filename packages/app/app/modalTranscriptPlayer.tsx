@@ -1,19 +1,9 @@
 import { StyleSheet, View } from 'react-native';
-import { Stack, useNavigation } from 'expo-router';
+import { Stack } from 'expo-router';
 import { theme } from '../feature/styles/theme';
-import { BackDownIcon } from '../feature/icons';
 import TranscriptPlayer from '../feature/Player/TranscriptPlayer';
 import { memo, useState } from 'react';
-import PressableOpacity from '../feature/Pressable/PressableOpacity';
-
-function BackButton() {
-  const navigation = useNavigation();
-  return (
-    <PressableOpacity hitSlop={4} onPress={navigation.goBack}>
-      <BackDownIcon width={24} height={24} color={theme.color.accent} />
-    </PressableOpacity>
-  );
-}
+import BackDownButton from '../feature/Header/BackDownButton';
 
 // function TranslateIconButton({ onPress }: { onPress: () => void }) {
 //   return (
@@ -70,8 +60,7 @@ const ModalTranscriptPlayer = memo(() => {
       <Stack.Screen
         options={{
           headerTitle: 'Translated Transcription',
-          // eslint-disable-next-line react/no-unstable-nested-components
-          headerLeft: () => <BackButton />,
+          headerLeft: () => <BackDownButton />,
           // headerRight: () => <TranslateIconButton onPress={switchTargetLang} />,
         }}
       />
