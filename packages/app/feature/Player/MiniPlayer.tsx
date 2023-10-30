@@ -42,7 +42,8 @@ export default function MiniPlayer({ hide }: Props) {
     <PressableScale
       style={styles.container}
       onPress={() => {
-        router.push('/modalPlayer');
+        // router.push('/modalPlayer');
+        router.push('/modalDictationPlayer');
       }}
     >
       <ArtworkImage width={56} height={56} borderRadius={0} />

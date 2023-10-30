@@ -31,3 +31,11 @@ export function formatDuration(input: number | string): string {
 
   return `${hours}h${minutes}min`;
 }
+
+export function formatSecToMin(input: number | string): string {
+  const totalSeconds = getTotalSeconds(input);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}

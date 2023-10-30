@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { theme } from '../styles/theme';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import PressableScale from '../Pressable/PressableScale';
 
@@ -49,6 +49,21 @@ const PlaySettingBottomSheet = forwardRef(({ onAfterClose }: Props, ref) => {
     router.push('/modalDictationPlayer');
   }, [onAfterClose, router]);
 
+  const onPressSwitchToNormal = useCallback(async () => {
+    if (!bottomSheetRef.current) {
+      return;
+    }
+    bottomSheetRef.current.close();
+    if (onAfterClose) {
+      await onAfterClose();
+    }
+
+    router.push('/modalPlayer');
+  }, [onAfterClose, router]);
+  const currentPath = usePathname();
+  const isOnTranscriptPlayer = currentPath === '/modalPlayer';
+  const isOnDictationPlayer = currentPath === '/modalDictationPlayer';
+
   const renderBackDrop = useCallback((props) => {
     return (
       <BottomSheetBackdrop
@@ -74,9 +89,16 @@ const PlaySettingBottomSheet = forwardRef(({ onAfterClose }: Props, ref) => {
     >
       <View style={styles.contentContainer}>
         <View>
-          <PressableScale onPress={onPressSwitchToDictation}>
-            <Text style={styles.bottomSheetText}>Switch to Dictation Mode</Text>
-          </PressableScale>
+          {!isOnDictationPlayer && (
+            <PressableScale onPress={onPressSwitchToDictation}>
+              <Text style={styles.bottomSheetText}>Switch to Dictation Mode</Text>
+            </PressableScale>
+          )}
+          {!isOnTranscriptPlayer && (
+            <PressableScale onPress={onPressSwitchToNormal}>
+              <Text style={styles.bottomSheetText}>Switch to Transcript Mode</Text>
+            </PressableScale>
+          )}
         </View>
       </View>
     </BottomSheet>

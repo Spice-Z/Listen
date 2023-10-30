@@ -4,6 +4,7 @@ import { theme } from '../feature/styles/theme';
 import { memo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BackDownButton from '../feature/Header/BackDownButton';
+import DictationPlayer from '../feature/Player/DictationPlayer';
 
 const modalDictationPlayer = memo(() => {
   const insets = useSafeAreaInsets();
@@ -25,7 +26,7 @@ const modalDictationPlayer = memo(() => {
           },
         ]}
       >
-        {/* <DictationPlayer /> */}
+        <DictationPlayer />
       </View>
     </>
   );
