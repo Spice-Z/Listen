@@ -8,7 +8,7 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import { DotsMenuIcon } from '../icons';
+import { DotsMenuIcon, UnVisibleTextIcon } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import { Stack, useRouter } from 'expo-router';
@@ -19,6 +19,9 @@ import PlayPauseIcon from './components/PlayPauseIcon';
 import PlaySettingBottomSheet from '../BottomSheet/PlaySettingBottomSheet';
 import ArtworkImage from './components/ArtworkImage';
 import { formatSecToMin } from '../format/duration';
+import { useQuery } from '@tanstack/react-query';
+import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
+import TextIcon from '../icons/TextIcon';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -46,6 +49,54 @@ const DictationPlayer = memo(() => {
     currentEpisodeChannelId,
     currentEpisodeId,
   });
+  const { data: transcriptData } = useQuery({
+    queryKey: ['getTranscriptFromUrl', episode?.transcriptUrl],
+    queryFn: () => getTranscriptFromUrl(episode?.transcriptUrl || null),
+    enabled: !!episode?.transcriptUrl,
+  });
+
+  const splitedTranscriptData = useMemo(() => {
+    if (!transcriptData) {
+      return [];
+    }
+    const splited: {
+      start: number;
+      end: number;
+      text: string;
+    }[][] = [];
+    // transcriptDataの中身を30秒ごとに分割した配列を作る
+    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが30秒より大きい場合は新しい要素を作ってそこに入れる
+    // そうでない場合は最新要素に追加する
+    transcriptData.forEach((data) => {
+      if (splited.length === 0) {
+        splited.push([data]);
+        return;
+      }
+      const latestSplited = splited[splited.length - 1];
+      const latestSplitedFirstData = latestSplited[0];
+      const latestSplitedLastData = latestSplited[latestSplited.length - 1];
+      if (latestSplitedLastData.end - latestSplitedFirstData.start > 30) {
+        splited.push([data]);
+        return;
+      }
+      latestSplited.push(data);
+    });
+    return splited;
+  }, [transcriptData]);
+
+  const tabs = useMemo(() => {
+    const tabData = splitedTranscriptData.map((splited, index) => {
+      const firstData = splited[0];
+      const lastData = splited[splited.length - 1];
+      return {
+        id: index,
+        startTimeSec: firstData.start,
+        endTimeSec: lastData.end,
+      };
+    });
+
+    return tabData;
+  }, [splitedTranscriptData]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setPlaybackPosition(0);
@@ -57,13 +108,6 @@ const DictationPlayer = memo(() => {
       setPlaybackPosition(0);
     }
   });
-
-  const progress = useProgress(250);
-
-  useEffect(() => {
-    const { position } = progress;
-    setPlaybackPosition(position);
-  }, [progress]);
 
   const handlePlayPause = async () => {
     if (playbackState === State.Playing) {
@@ -101,66 +145,47 @@ const DictationPlayer = memo(() => {
     await new Promise((resolve) => setTimeout(resolve, 50));
   }, [router]);
 
-  const tabs = useMemo(() => {
-    return [
-      {
-        id: 1,
-        startTimeSec: 0,
-        endTimeSec: 10,
-      },
-      {
-        id: 2,
-        startTimeSec: 10,
-        endTimeSec: 20,
-      },
-      {
-        id: 3,
-        startTimeSec: 20,
-        endTimeSec: 30,
-      },
-      {
-        id: 4,
-        startTimeSec: 30,
-        endTimeSec: 40,
-      },
-      {
-        id: 5,
-        startTimeSec: 40,
-        endTimeSec: 50,
-      },
-      {
-        id: 6,
-        startTimeSec: 50,
-        endTimeSec: 60,
-      },
-      {
-        id: 7,
-        startTimeSec: 60,
-        endTimeSec: 70,
-      },
-      {
-        id: 8,
-        startTimeSec: 70,
-        endTimeSec: 80,
-      },
-      {
-        id: 9,
-        startTimeSec: 80,
-        endTimeSec: 90,
-      },
-      {
-        id: 10,
-        startTimeSec: 90,
-        endTimeSec: 100,
-      },
-      {
-        id: 11,
-        startTimeSec: 100,
-        endTimeSec: 110,
-      },
-    ];
-  }, []);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
+  const [isShowTranscript, setIsShowTranscript] = useState(false);
+  const currentTab = useMemo(() => {
+    if (tabs.length === 0) {
+      return undefined;
+    }
+    return tabs[currentTabIndex];
+  }, [currentTabIndex, tabs]);
+  const currentSplitedTranscriptData = useMemo(() => {
+    if (splitedTranscriptData.length === 0) {
+      return undefined;
+    }
+    return splitedTranscriptData[currentTabIndex];
+  }, [currentTabIndex, splitedTranscriptData]);
+  const onPressTranscriptSwitch = useCallback(() => {
+    setIsShowTranscript((prev) => !prev);
+  }, [setIsShowTranscript]);
+
+  const progress = useProgress(250);
+  useEffect(() => {
+    const { position } = progress;
+    setPlaybackPosition(position);
+    // positionがcurrentSplitedTranscriptDataの範囲外になったら再生を止めて、再生位置をそこに合わせる
+    if (
+      currentSplitedTranscriptData &&
+      position > currentSplitedTranscriptData[currentSplitedTranscriptData.length - 1].end
+    ) {
+      TrackPlayer.pause();
+      TrackPlayer.seekTo(currentSplitedTranscriptData[currentSplitedTranscriptData.length - 1].end);
+    }
+  }, [currentSplitedTranscriptData, progress]);
+
+  const onPressTab = useCallback(
+    (index: number) => {
+      setCurrentTabIndex(index);
+      // 再生位置をタブの開始位置に合わせる
+      TrackPlayer.pause();
+      TrackPlayer.seekTo(tabs[index].startTimeSec);
+    },
+    [tabs],
+  );
 
   return (
     <>
@@ -197,7 +222,7 @@ const DictationPlayer = memo(() => {
               <View key={'tabSpacer-1'} style={styles.tabSpacer} />
               {tabs.map((tab, index) => {
                 const isCurrent = currentTabIndex === index;
-                const onPress = () => setCurrentTabIndex(index);
+                const onPress = () => onPressTab(index);
                 return (
                   <Fragment key={tab.id}>
                     <View style={styles.tabSpacer} />
@@ -215,13 +240,23 @@ const DictationPlayer = memo(() => {
               <View key={'tabSpacer-2'} style={styles.tabSpacer} />
             </ScrollView>
           </View>
-          <View style={styles.dictationContainer}>
-            <Text>
+          {currentTab && (
+            <View style={styles.dictationContainer}>
               {/* currentTabのTimeを表示 */}
-              {tabs[currentTabIndex].startTimeSec} ~ {tabs[currentTabIndex].endTimeSec}
-            </Text>
-          </View>
-
+              <Text>
+                {currentTab.startTimeSec} ~ {currentTab.endTimeSec}
+              </Text>
+              {/* currentTabのテキストを繋げて表示 */}
+              <View>
+                <Text>
+                  {splitedTranscriptData[currentTabIndex]
+                    ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
+                    : ''}
+                </Text>
+                {!isShowTranscript && <View style={styles.transcriptHideBox} />}
+              </View>
+            </View>
+          )}
           <View style={styles.sliderContainer}>
             <Slider
               style={styles.seekBar}
@@ -246,7 +281,15 @@ const DictationPlayer = memo(() => {
                 <PlayPauseIcon isLoading={isLoading} isPlaying={isPlaying} />
               </View>
             </PressableOpacity>
-            <View style={styles.playerContainerItem} />
+            <PressableOpacity style={styles.playerContainerItem} onPress={onPressTranscriptSwitch}>
+              <View style={styles.controlButton}>
+                {isShowTranscript ? (
+                  <TextIcon width={24} height={24} color={theme.color.textMain} />
+                ) : (
+                  <UnVisibleTextIcon color={theme.color.textMain} width={30} height={30} />
+                )}
+              </View>
+            </PressableOpacity>
           </View>
         </View>
       )}
@@ -384,6 +427,14 @@ const styles = StyleSheet.create({
     color: theme.color.textMain,
     fontSize: 16,
     fontWeight: '800',
+  },
+  transcriptHideBox: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
   },
 });
 
