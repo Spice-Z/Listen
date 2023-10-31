@@ -32,10 +32,10 @@ export function formatDuration(input: number | string): string {
   return `${hours}h${minutes}min`;
 }
 
-export function formatSecToMin(input: number | string): string {
-  const totalSeconds = getTotalSeconds(input);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+// 秒を分:秒に変換する
+// 少数点以下は切り捨てる
+export function formatSecToMin(seconds: number): string {
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+  return `${min}:${sec.toString().padStart(2, '0')}`;
 }
