@@ -3,6 +3,7 @@ import {
   CHANNEL_DOCUMENT_NAME,
   EPISODE_DOCUMENT_NAME,
   TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME,
+  TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
 } from '../constants.js';
 import { fetchChannelDataByFeedUrl } from '../services/fetchChannelDataByFeedUrl.js';
 import { Timestamp, getFirestore } from 'firebase-admin/firestore';
@@ -57,6 +58,21 @@ export const autoUpdateChannelAndEpisodes = functions
           if (!episodeData) {
             // エピソードが削除された場合
             await episodeFromDB.ref.delete();
+
+            // transcriptPendingEpisodes,transcriptPendingEpisodesからも削除する
+            try {
+              await firestore
+                .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
+                .doc(episodeFromDB.id)
+                .delete();
+              await firestore
+                .collection(TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME)
+                .doc(episodeFromDB.id)
+                .delete();
+            } catch (error) {
+              console.log('delete 失敗', error);
+            }
+
             return;
           }
           const pubDateFromDB = fromDB.pubDate;
