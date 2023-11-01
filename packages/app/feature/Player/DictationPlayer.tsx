@@ -110,6 +110,13 @@ const DictationPlayer = memo(() => {
   });
 
   const handlePlayPause = async () => {
+    // 再生前に、再生位置がcurrentTabの範囲外になっていたらcurrentTabの開始位置に合わせる
+    if (
+      currentTab &&
+      (playbackPosition <= currentTab.startTimeSec || playbackPosition >= currentTab.endTimeSec)
+    ) {
+      await TrackPlayer.seekTo(currentTab.startTimeSec);
+    }
     if (playbackState === State.Playing) {
       await TrackPlayer.pause();
     } else {
@@ -201,9 +208,9 @@ const DictationPlayer = memo(() => {
       ) : (
         <View style={styles.container}>
           <View style={styles.episodeContainer}>
-            <ArtworkImage width={50} height={50} borderRadius={8} />
+            <ArtworkImage width={60} height={60} borderRadius={8} />
             <View style={styles.episodeInfo}>
-              <Text style={styles.episodeTitle} numberOfLines={1}>
+              <Text style={styles.episodeTitle} numberOfLines={2}>
                 {currentTrack.title}
               </Text>
               <Text style={styles.channelName} numberOfLines={1}>
@@ -243,12 +250,14 @@ const DictationPlayer = memo(() => {
           {currentTab && (
             <View style={styles.dictationContainer}>
               {/* currentTabのTimeを表示 */}
-              <Text>
-                {currentTab.startTimeSec} ~ {currentTab.endTimeSec}
+              <Text style={styles.dictationTitle}>
+                {`${formatSecToMin(currentTab.startTimeSec)} ~ ${formatSecToMin(
+                  currentTab.endTimeSec,
+                )}`}
               </Text>
               {/* currentTabのテキストを繋げて表示 */}
-              <View>
-                <Text>
+              <View style={styles.dictationTextContainer}>
+                <Text style={styles.dictationText}>
                   {splitedTranscriptData[currentTabIndex]
                     ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
                     : ''}
@@ -300,6 +309,7 @@ const DictationPlayer = memo(() => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: theme.color.bgMain,
     color: theme.color.textMain,
     width: '100%',
@@ -310,12 +320,20 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: theme.color.bgMain,
     flexDirection: 'row',
+    gap: 8,
   },
   tabListContainer: {
     flexDirection: 'column-reverse',
   },
-  episodeInfo: {},
-  episodeTitle: {},
+  episodeInfo: {
+    justifyContent: 'center',
+    gap: 2,
+    flexShrink: 1,
+  },
+  episodeTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
   tabUnder: {
     backgroundColor: theme.color.bgMain,
     height: 4,
@@ -349,8 +367,21 @@ const styles = StyleSheet.create({
     height: 43,
   },
   dictationContainer: {
+    flex: 1,
     marginTop: 8,
     paddingHorizontal: 16,
+  },
+  dictationTitle: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  dictationTextContainer: {
+    marginTop: 8,
+  },
+  dictationText: {
+    fontSize: 16,
+    fontWeight: '500',
+    lineHeight: 24,
   },
   channelName: {
     fontSize: 14,
