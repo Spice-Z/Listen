@@ -32,7 +32,10 @@ export const autoUpdateChannelAndEpisodes = functions
 
         // チャンネルデータを更新する
         // ※firestoreの書き込みカウントはupdateの実行数なので、差分データだけ抽出する必要はない
-        await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelDoc.id).update(channel);
+        await firestore
+          .collection(CHANNEL_DOCUMENT_NAME)
+          .doc(channelDoc.id)
+          .update({ ...channel, updatedAt: channel.channelPubDate });
 
         const updatedEpisodes: {
           episodeId: string;

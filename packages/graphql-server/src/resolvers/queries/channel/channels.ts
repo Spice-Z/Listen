@@ -24,7 +24,7 @@ const resolver: QueryResolvers['channels'] = async (parent, args, context, info)
     .collection(CHANNEL_DOCUMENT_NAME)
     .withConverter(channelConverter)
     .limit(first)
-    .orderBy('updatedAt', 'desc')
+    .orderBy('channelPubDate', 'desc')
     .get();
   const edges = snapshot.docs.map((doc) => {
     const data = doc.data();
