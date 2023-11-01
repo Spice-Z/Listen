@@ -64,8 +64,8 @@ const DictationPlayer = memo(() => {
       end: number;
       text: string;
     }[][] = [];
-    // transcriptDataの中身を30秒ごとに分割した配列を作る
-    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが30秒より大きい場合は新しい要素を作ってそこに入れる
+    // transcriptDataの中身を20秒ごとに分割した配列を作る
+    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが20秒より大きい場合は新しい要素を作ってそこに入れる
     // そうでない場合は最新要素に追加する
     transcriptData.forEach((data) => {
       if (splited.length === 0) {
@@ -75,7 +75,7 @@ const DictationPlayer = memo(() => {
       const latestSplited = splited[splited.length - 1];
       const latestSplitedFirstData = latestSplited[0];
       const latestSplitedLastData = latestSplited[latestSplited.length - 1];
-      if (latestSplitedLastData.end - latestSplitedFirstData.start > 30) {
+      if (latestSplitedLastData.end - latestSplitedFirstData.start > 20) {
         splited.push([data]);
         return;
       }
@@ -124,10 +124,6 @@ const DictationPlayer = memo(() => {
     }
   };
 
-  const handleSeek = async (value) => {
-    const newPosition = value * playingTrackDuration;
-    await TrackPlayer.seekTo(newPosition);
-  };
   const handlePlaybackRate = async () => {
     await switchPlaybackRate();
   };
@@ -160,6 +156,18 @@ const DictationPlayer = memo(() => {
     }
     return tabs[currentTabIndex];
   }, [currentTabIndex, tabs]);
+  const currentTabsDuration = useMemo(() => {
+    if (currentTab) {
+      return currentTab.endTimeSec - currentTab.startTimeSec;
+    }
+    return 0;
+  }, [currentTab]);
+  const currentTabsProgressRate = useMemo(() => {
+    if (currentTab) {
+      return (playbackPosition - currentTab.startTimeSec) / currentTabsDuration;
+    }
+    return 0;
+  }, [currentTab, currentTabsDuration, playbackPosition]);
   const currentSplitedTranscriptData = useMemo(() => {
     if (splitedTranscriptData.length === 0) {
       return undefined;
@@ -269,13 +277,13 @@ const DictationPlayer = memo(() => {
           <View style={styles.sliderContainer}>
             <Slider
               style={styles.seekBar}
-              value={playingTrackDuration > 0 ? playbackPosition / playingTrackDuration : 0}
-              onSlidingComplete={handleSeek}
+              value={currentTabsDuration * currentTabsProgressRate}
+              // onSlidingComplete={handleSeek}
               minimumTrackTintColor={theme.color.accent}
               maximumTrackTintColor={theme.color.bgEmphasis}
               thumbImage={require('../../assets/player/thumb.png')}
               minimumValue={0}
-              maximumValue={1}
+              maximumValue={currentTabsDuration}
               step={0.01}
             />
           </View>
