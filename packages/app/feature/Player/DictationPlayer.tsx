@@ -1,5 +1,15 @@
 import { useState, useEffect, memo, useRef, useCallback, useMemo, Fragment } from 'react';
-import { StyleSheet, View, Text, Dimensions, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Dimensions,
+  ScrollView,
+  TextInput,
+  TextInputContentSizeChangeEventData,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
   usePlaybackState,
@@ -22,6 +32,7 @@ import { formatSecToMin } from '../format/duration';
 import { useQuery } from '@tanstack/react-query';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 import TextIcon from '../icons/TextIcon';
+import { NativeSyntheticEvent } from 'react-native';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -35,7 +46,6 @@ const DictationPlayer = memo(() => {
   const playbackState = usePlaybackState();
 
   const {
-    playingTrackDuration,
     currentQueue,
     currentTrack,
     currentPlaybackRate,
@@ -64,8 +74,8 @@ const DictationPlayer = memo(() => {
       end: number;
       text: string;
     }[][] = [];
-    // transcriptDataの中身を20秒ごとに分割した配列を作る
-    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが20秒より大きい場合は新しい要素を作ってそこに入れる
+    // transcriptDataの中身を15秒ごとに分割した配列を作る
+    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが15秒より大きい場合は新しい要素を作ってそこに入れる
     // そうでない場合は最新要素に追加する
     transcriptData.forEach((data) => {
       if (splited.length === 0) {
@@ -75,7 +85,7 @@ const DictationPlayer = memo(() => {
       const latestSplited = splited[splited.length - 1];
       const latestSplitedFirstData = latestSplited[0];
       const latestSplitedLastData = latestSplited[latestSplited.length - 1];
-      if (latestSplitedLastData.end - latestSplitedFirstData.start > 20) {
+      if (latestSplitedLastData.end - latestSplitedFirstData.start > 15) {
         splited.push([data]);
         return;
       }
@@ -202,6 +212,19 @@ const DictationPlayer = memo(() => {
     [tabs],
   );
 
+  const [inputValue, setInputValue] = useState('');
+  const [textInputHeight, setTextInputHeight] = useState(0);
+  const onContentSizeChange = useCallback(
+    (event: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
+      const contentSize = event.nativeEvent.contentSize;
+      if (contentSize.height < 40 || contentSize.height > 120) {
+        return;
+      }
+      setTextInputHeight(contentSize.height + 20);
+    },
+    [],
+  );
+
   return (
     <>
       <Stack.Screen
@@ -214,101 +237,118 @@ const DictationPlayer = memo(() => {
           <LoadingView />
         </View>
       ) : (
-        <View style={styles.container}>
-          <View style={styles.episodeContainer}>
-            <ArtworkImage width={60} height={60} borderRadius={8} />
-            <View style={styles.episodeInfo}>
-              <Text style={styles.episodeTitle} numberOfLines={2}>
-                {currentTrack.title}
-              </Text>
-              <Text style={styles.channelName} numberOfLines={1}>
-                {currentTrack.artist}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.tabListContainer}>
-            <View style={styles.tabUnder} />
-            <ScrollView
-              style={styles.tabsContainer}
-              contentContainerStyle={styles.tabsContentContainerStyle}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            >
-              <View key={'tabSpacer-1'} style={styles.tabSpacer} />
-              {tabs.map((tab, index) => {
-                const isCurrent = currentTabIndex === index;
-                const onPress = () => onPressTab(index);
-                return (
-                  <Fragment key={tab.id}>
-                    <View style={styles.tabSpacer} />
-                    <PressableOpacity
-                      onPress={onPress}
-                      style={[styles.tab, isCurrent && styles.currentTab]}
-                    >
-                      <Text>{`${formatSecToMin(tab.startTimeSec)} ~ ${formatSecToMin(
-                        tab.endTimeSec,
-                      )}`}</Text>
-                    </PressableOpacity>
-                  </Fragment>
-                );
-              })}
-              <View key={'tabSpacer-2'} style={styles.tabSpacer} />
-            </ScrollView>
-          </View>
-          {currentTab && (
-            <View style={styles.dictationContainer}>
-              {/* currentTabのTimeを表示 */}
-              <Text style={styles.dictationTitle}>
-                {`${formatSecToMin(currentTab.startTimeSec)} ~ ${formatSecToMin(
-                  currentTab.endTimeSec,
-                )}`}
-              </Text>
-              {/* currentTabのテキストを繋げて表示 */}
-              <View style={styles.dictationTextContainer}>
-                <Text style={styles.dictationText}>
-                  {splitedTranscriptData[currentTabIndex]
-                    ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
-                    : ''}
+        <KeyboardAvoidingView
+          behavior={Platform.select({ android: 'height', default: 'padding' })}
+          contentContainerStyle={{ flex: 1, backgroundColor: 'red' }}
+        >
+          <View style={styles.container}>
+            <View style={styles.episodeContainer}>
+              <ArtworkImage width={60} height={60} borderRadius={8} />
+              <View style={styles.episodeInfo}>
+                <Text style={styles.episodeTitle} numberOfLines={2}>
+                  {currentTrack.title}
                 </Text>
-                {!isShowTranscript && <View style={styles.transcriptHideBox} />}
+                <Text style={styles.channelName} numberOfLines={1}>
+                  {currentTrack.artist}
+                </Text>
               </View>
             </View>
-          )}
-          <View style={styles.sliderContainer}>
-            <Slider
-              style={styles.seekBar}
-              value={currentTabsDuration * currentTabsProgressRate}
-              // onSlidingComplete={handleSeek}
-              minimumTrackTintColor={theme.color.accent}
-              maximumTrackTintColor={theme.color.bgEmphasis}
-              thumbImage={require('../../assets/player/thumb.png')}
-              minimumValue={0}
-              maximumValue={currentTabsDuration}
-              step={0.01}
-            />
+            <View style={styles.tabListContainer}>
+              <View style={styles.tabUnder} />
+              <ScrollView
+                style={styles.tabsContainer}
+                contentContainerStyle={styles.tabsContentContainerStyle}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              >
+                <View key={'tabSpacer-1'} style={styles.tabSpacer} />
+                {tabs.map((tab, index) => {
+                  const isCurrent = currentTabIndex === index;
+                  const onPress = () => onPressTab(index);
+                  return (
+                    <Fragment key={tab.id}>
+                      <View style={styles.tabSpacer} />
+                      <PressableOpacity
+                        onPress={onPress}
+                        style={[styles.tab, isCurrent && styles.currentTab]}
+                      >
+                        <Text>{`${formatSecToMin(tab.startTimeSec)} ~ ${formatSecToMin(
+                          tab.endTimeSec,
+                        )}`}</Text>
+                      </PressableOpacity>
+                    </Fragment>
+                  );
+                })}
+                <View key={'tabSpacer-2'} style={styles.tabSpacer} />
+              </ScrollView>
+            </View>
+            {currentTab && (
+              <View style={styles.dictationContainer}>
+                {/* currentTabのTimeを表示 */}
+                <Text style={styles.dictationTitle}>
+                  {`${formatSecToMin(currentTab.startTimeSec)} ~ ${formatSecToMin(
+                    currentTab.endTimeSec,
+                  )}`}
+                </Text>
+                {/* currentTabのテキストを繋げて表示 */}
+                <View style={styles.dictationTextContainer}>
+                  <Text style={styles.dictationText} selectable>
+                    {splitedTranscriptData[currentTabIndex]
+                      ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
+                      : ''}
+                  </Text>
+                  {!isShowTranscript && <View style={styles.transcriptHideBox} />}
+                </View>
+              </View>
+            )}
+            <View style={styles.inputContainer}>
+              <TextInput
+                multiline
+                style={[styles.input, { height: textInputHeight }]}
+                value={inputValue}
+                onChangeText={setInputValue}
+                onContentSizeChange={onContentSizeChange}
+              />
+            </View>
+            <View style={styles.sliderContainer}>
+              <Slider
+                style={styles.seekBar}
+                value={currentTabsDuration * currentTabsProgressRate}
+                // onSlidingComplete={handleSeek}
+                minimumTrackTintColor={theme.color.accent}
+                maximumTrackTintColor={theme.color.bgEmphasis}
+                thumbImage={require('../../assets/player/thumb.png')}
+                minimumValue={0}
+                maximumValue={currentTabsDuration}
+                step={0.01}
+              />
+            </View>
+            <View style={styles.playerContainer}>
+              <PressableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
+                <View style={styles.controlButton}>
+                  <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
+                </View>
+              </PressableOpacity>
+              <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
+                <View style={styles.playPauseButton}>
+                  <PlayPauseIcon isLoading={isLoading} isPlaying={isPlaying} />
+                </View>
+              </PressableOpacity>
+              <PressableOpacity
+                style={styles.playerContainerItem}
+                onPress={onPressTranscriptSwitch}
+              >
+                <View style={styles.controlButton}>
+                  {isShowTranscript ? (
+                    <TextIcon width={24} height={24} color={theme.color.textMain} />
+                  ) : (
+                    <UnVisibleTextIcon color={theme.color.textMain} width={30} height={30} />
+                  )}
+                </View>
+              </PressableOpacity>
+            </View>
           </View>
-          <View style={styles.playerContainer}>
-            <PressableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
-              <View style={styles.controlButton}>
-                <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
-              </View>
-            </PressableOpacity>
-            <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
-              <View style={styles.playPauseButton}>
-                <PlayPauseIcon isLoading={isLoading} isPlaying={isPlaying} />
-              </View>
-            </PressableOpacity>
-            <PressableOpacity style={styles.playerContainerItem} onPress={onPressTranscriptSwitch}>
-              <View style={styles.controlButton}>
-                {isShowTranscript ? (
-                  <TextIcon width={24} height={24} color={theme.color.textMain} />
-                ) : (
-                  <UnVisibleTextIcon color={theme.color.textMain} width={30} height={30} />
-                )}
-              </View>
-            </PressableOpacity>
-          </View>
-        </View>
+        </KeyboardAvoidingView>
       )}
       <PlaySettingBottomSheet ref={playSettingBottomSheetRef} onAfterClose={backAndWaitAnimation} />
     </>
@@ -317,10 +357,8 @@ const DictationPlayer = memo(() => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: theme.color.bgMain,
     color: theme.color.textMain,
-    width: '100%',
     height: '100%',
   },
   episodeContainer: {
@@ -375,7 +413,6 @@ const styles = StyleSheet.create({
     height: 43,
   },
   dictationContainer: {
-    flex: 1,
     marginTop: 8,
     paddingHorizontal: 16,
   },
@@ -474,6 +511,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#fff',
+  },
+  inputContainer: {},
+  input: {
+    minHeight: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
 });
 
