@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { BannerAd, BannerAdSize, RequestOptions, TestIds } from 'react-native-google-mobile-ads';
 import ErrorBoundary from '../Suspense/ErrorBoundary';
+import analytics from '@react-native-firebase/analytics';
 
 const isIOS = Platform.OS === 'ios';
 
@@ -20,9 +21,17 @@ const BannerAdMob = ({ size, requestOptions }: Props) => {
     }
     return process.env.EXPO_PUBLIC_AD_ID_ANDROID;
   }, []);
+  const onAdFailedToLoad = useCallback((error: Error) => {
+    analytics().logEvent('admob_failed_load', { error });
+  }, []);
   return (
     <View style={styles.adContainer}>
-      <BannerAd unitId={adUnitId} size={size} requestOptions={requestOptions} />
+      <BannerAd
+        unitId={adUnitId}
+        size={size}
+        requestOptions={requestOptions}
+        onAdFailedToLoad={onAdFailedToLoad}
+      />
     </View>
   );
 };
