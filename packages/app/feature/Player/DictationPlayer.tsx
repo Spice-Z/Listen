@@ -33,6 +33,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 import TextIcon from '../icons/TextIcon';
 import { NativeSyntheticEvent } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -213,17 +214,19 @@ const DictationPlayer = memo(() => {
   );
 
   const [inputValue, setInputValue] = useState('');
-  const [textInputHeight, setTextInputHeight] = useState(0);
+  const [textInputHeight, setTextInputHeight] = useState(60);
   const onContentSizeChange = useCallback(
     (event: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
       const contentSize = event.nativeEvent.contentSize;
-      if (contentSize.height < 40 || contentSize.height > 120) {
+      if (contentSize.height < 60 || contentSize.height > 120) {
         return;
       }
       setTextInputHeight(contentSize.height + 20);
     },
     [],
   );
+
+  const insets = useSafeAreaInsets();
 
   return (
     <>
@@ -238,10 +241,11 @@ const DictationPlayer = memo(() => {
         </View>
       ) : (
         <KeyboardAvoidingView
-          behavior={Platform.select({ android: 'height', default: 'padding' })}
-          contentContainerStyle={{ flex: 1, backgroundColor: 'red' }}
+          behavior={Platform.select({ ios: 'padding', android: 'height' })}
+          style={{ flex: 1 }}
+          keyboardVerticalOffset={insets.top + 40}
         >
-          <View style={styles.container}>
+          <ScrollView style={styles.container}>
             <View style={styles.episodeContainer}>
               <ArtworkImage width={60} height={60} borderRadius={8} />
               <View style={styles.episodeInfo}>
@@ -347,7 +351,7 @@ const DictationPlayer = memo(() => {
                 </View>
               </PressableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       )}
       <PlaySettingBottomSheet ref={playSettingBottomSheetRef} onAfterClose={backAndWaitAnimation} />
@@ -359,7 +363,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.color.bgMain,
     color: theme.color.textMain,
-    height: '100%',
   },
   episodeContainer: {
     paddingHorizontal: 16,
@@ -514,9 +517,9 @@ const styles = StyleSheet.create({
   },
   inputContainer: {},
   input: {
-    minHeight: 40,
     margin: 12,
     borderWidth: 1,
+    borderColor: theme.color.textWeak,
     padding: 10,
   },
 });
