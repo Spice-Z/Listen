@@ -127,6 +127,10 @@ export const autoUpdateChannelAndEpisodes = functions
             console.log('追加しない');
             return;
           }
+          // channelDocのshouldNotMakeTextが存在してtrueの場合、追加しない
+          if (!!channelFromDB.shouldNotMakeText) {
+            return;
+          }
           // audioが更新された場合、transcriptPendingEpisodesに追加する
           if (episode.isAudioUpdated) {
             await firestore
