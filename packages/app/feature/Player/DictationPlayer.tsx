@@ -223,6 +223,10 @@ const DictationPlayer = memo(() => {
       // 再生位置をタブの開始位置に合わせる
       TrackPlayer.pause();
       TrackPlayer.seekTo(tabs[index].startTimeSec);
+      // テキストを非表示にする
+      setIsShowTranscript(false);
+      // テキスト入力をクリアする
+      setInputValue('');
     },
     [tabs],
   );
