@@ -3,6 +3,7 @@ import Parser from 'rss-parser';
 
 const parser = new Parser();
 export async function fetchChannelDataByFeedUrl(feedUrl: string) {
+  console.log('fetchChannelDataByFeedUrl', feedUrl);
   const feed = await parser.parseURL(feedUrl);
   const now = new Date();
   let latestPubDateTimestamp: null | Timestamp = null;
