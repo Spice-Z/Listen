@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, useRef, useCallback, useMemo, Fragment } from 'react';
+import { useState, useEffect, memo, useRef, useCallback, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -34,6 +34,7 @@ import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 import TextIcon from '../icons/TextIcon';
 import { NativeSyntheticEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import TabList from './components/TabList';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -257,35 +258,7 @@ const DictationPlayer = memo(() => {
                 </Text>
               </View>
             </View>
-            <View style={styles.tabListContainer}>
-              <View style={styles.tabUnder} />
-              <ScrollView
-                style={styles.tabsContainer}
-                contentContainerStyle={styles.tabsContentContainerStyle}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              >
-                <View key={'tabSpacer-1'} style={styles.tabSpacer} />
-                {tabs.map((tab, index) => {
-                  const isCurrent = currentTabIndex === index;
-                  const onPress = () => onPressTab(index);
-                  return (
-                    <Fragment key={tab.id}>
-                      <View style={styles.tabSpacer} />
-                      <PressableOpacity
-                        onPress={onPress}
-                        style={[styles.tab, isCurrent && styles.currentTab]}
-                      >
-                        <Text>{`${formatSecToMin(tab.startTimeSec)} ~ ${formatSecToMin(
-                          tab.endTimeSec,
-                        )}`}</Text>
-                      </PressableOpacity>
-                    </Fragment>
-                  );
-                })}
-                <View key={'tabSpacer-2'} style={styles.tabSpacer} />
-              </ScrollView>
-            </View>
+            <TabList currentTabIndex={currentTabIndex} onPressTab={onPressTab} tabs={tabs} />
             {currentTab && (
               <View style={styles.dictationContainer}>
                 {/* currentTabのTimeを表示 */}
@@ -371,9 +344,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
-  tabListContainer: {
-    flexDirection: 'column-reverse',
-  },
   episodeInfo: {
     justifyContent: 'center',
     gap: 2,
@@ -382,38 +352,6 @@ const styles = StyleSheet.create({
   episodeTitle: {
     fontSize: 16,
     fontWeight: '500',
-  },
-  tabUnder: {
-    backgroundColor: theme.color.bgMain,
-    height: 4,
-    width: '100%',
-  },
-  tabsContainer: {
-    marginTop: 4,
-    flexDirection: 'row',
-  },
-  tabsContentContainerStyle: {
-    alignItems: 'flex-end',
-  },
-  tab: {
-    backgroundColor: theme.color.bgMain,
-    padding: 4,
-    width: 100,
-    height: 40,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    borderWidth: 3,
-    borderColor: theme.color.accent,
-  },
-  tabSpacer: {
-    width: 16,
-    height: 3,
-    backgroundColor: theme.color.accent,
-  },
-  currentTab: {
-    marginBottom: -2,
-    borderBottomWidth: 0,
-    height: 43,
   },
   dictationContainer: {
     marginTop: 8,
