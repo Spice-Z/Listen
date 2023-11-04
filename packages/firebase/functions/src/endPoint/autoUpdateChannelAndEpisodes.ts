@@ -6,7 +6,7 @@ import {
   TRANSLATE_PENDING_EPISODES_DOCUMENT_NAME,
 } from '../constants.js';
 import { fetchChannelDataByFeedUrl } from '../services/fetchChannelDataByFeedUrl.js';
-import { Timestamp, getFirestore } from 'firebase-admin/firestore';
+import { Timestamp, getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 export const autoUpdateChannelAndEpisodes = functions
   .runWith({
@@ -42,6 +42,7 @@ export const autoUpdateChannelAndEpisodes = functions
           episodeId: string;
           pubDate: Timestamp;
           url: string;
+          isAudioUpdated: boolean;
         }[] = [];
 
         const episodesFromDB = await firestore
@@ -80,12 +81,23 @@ export const autoUpdateChannelAndEpisodes = functions
           if (episodeData.pubDate.isEqual(pubDateFromDB)) {
             return;
           }
+          const isAudioUpdated = episodeData.url !== fromDB.url;
           // エピソードの更新を行う
-          await episodeFromDB.ref.update(episodeData);
+          await episodeFromDB.ref.update({
+            ...episodeData,
+            updatedAt: episodeData.pubDate,
+            ...(isAudioUpdated
+              ? {
+                  transcriptUrl: FieldValue.delete(),
+                  translatedTranscripts: [],
+                }
+              : {}),
+          });
           updatedEpisodes.push({
             episodeId: episodeFromDB.id,
             pubDate: episodeData.pubDate,
             url: episodeData.url,
+            isAudioUpdated,
           });
         });
         await Promise.all(updateEpisodesPromises);
@@ -102,6 +114,7 @@ export const autoUpdateChannelAndEpisodes = functions
             episodeId: addedEpisode.id,
             pubDate: episode.pubDate,
             url: episode.url,
+            isAudioUpdated: true,
           });
         });
         await Promise.all(newEpisodesPromises);
@@ -114,14 +127,17 @@ export const autoUpdateChannelAndEpisodes = functions
             console.log('追加しない');
             return;
           }
-          await firestore
-            .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
-            .doc(episode.episodeId)
-            .set({
-              channelId: channelDoc.id,
-              pubDate: episode.pubDate,
-              url: episode.url,
-            });
+          // audioが更新された場合、transcriptPendingEpisodesに追加する
+          if (episode.isAudioUpdated) {
+            await firestore
+              .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
+              .doc(episode.episodeId)
+              .set({
+                channelId: channelDoc.id,
+                pubDate: episode.pubDate,
+                url: episode.url,
+              });
+          }
         });
         await Promise.all(pendingEpisodesPromises);
       }),
