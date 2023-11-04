@@ -28,7 +28,6 @@ import { useCurrentEpisodeData } from './hooks/useCurrentEpisodeData';
 import PlayPauseIcon from './components/PlayPauseIcon';
 import PlaySettingBottomSheet from '../BottomSheet/PlaySettingBottomSheet';
 import ArtworkImage from './components/ArtworkImage';
-import { formatSecToMin } from '../format/duration';
 import { useQuery } from '@tanstack/react-query';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
 import TextIcon from '../icons/TextIcon';
@@ -95,18 +94,34 @@ const DictationPlayer = memo(() => {
     }
     return splitedTranscriptData[currentTabIndex];
   }, [currentTabIndex, splitedTranscriptData]);
+  const resetStateWithIndexTab = useCallback(
+    (index: number) => {
+      // 再生位置をタブの開始位置に合わせる
+      TrackPlayer.pause();
+      TrackPlayer.seekTo(tabs[index].startTimeSec);
+      // テキストを非表示にする
+      setIsShowTranscript(false);
+      // テキスト入力をクリアする
+      setInputValue('');
+    },
+    [tabs],
+  );
   const onPressNext = useCallback(() => {
     if (currentTabIndex === tabs.length - 1) {
       return;
     }
-    setCurrentTabIndex((prev) => prev + 1);
-  }, [currentTabIndex, tabs.length]);
+    const nextIndex = currentTabIndex + 1;
+    setCurrentTabIndex(nextIndex);
+    resetStateWithIndexTab(nextIndex);
+  }, [currentTabIndex, resetStateWithIndexTab, tabs.length]);
   const onPressPrev = useCallback(() => {
     if (currentTabIndex === 0) {
       return;
     }
-    setCurrentTabIndex((prev) => prev - 1);
-  }, [currentTabIndex]);
+    const prevIndex = currentTabIndex - 1;
+    setCurrentTabIndex(prevIndex);
+    resetStateWithIndexTab(prevIndex);
+  }, [currentTabIndex, resetStateWithIndexTab]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setPlaybackPosition(0);
@@ -194,14 +209,9 @@ const DictationPlayer = memo(() => {
     (index: number) => {
       setCurrentTabIndex(index);
       // 再生位置をタブの開始位置に合わせる
-      TrackPlayer.pause();
-      TrackPlayer.seekTo(tabs[index].startTimeSec);
-      // テキストを非表示にする
-      setIsShowTranscript(false);
-      // テキスト入力をクリアする
-      setInputValue('');
+      resetStateWithIndexTab(index);
     },
-    [tabs],
+    [resetStateWithIndexTab],
   );
 
   const [inputValue, setInputValue] = useState('');
@@ -253,9 +263,7 @@ const DictationPlayer = memo(() => {
               <View style={styles.dictationContainer}>
                 {/* currentTabのTimeを表示 */}
                 <Text style={styles.dictationTitle}>
-                  {`${formatSecToMin(currentTab.startTimeSec)} ~ ${formatSecToMin(
-                    currentTab.endTimeSec,
-                  )}`}
+                  {` ${currentTabIndex + 1} of ${tabs.length}`}
                 </Text>
                 {/* currentTabのテキストを繋げて表示 */}
                 <View style={styles.dictationInfo}>
@@ -263,11 +271,11 @@ const DictationPlayer = memo(() => {
                     <LeftIcon width={20} height={20} color={theme.color.bgMain} />
                   </PressableOpacity>
                   <View style={styles.dictationTextContainer}>
-                    <Text style={styles.dictationText} selectable>
+                    <TextInput style={styles.dictationText} editable={false} multiline>
                       {splitedTranscriptData[currentTabIndex]
                         ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
                         : ''}
-                    </Text>
+                    </TextInput>
                     {!isShowTranscript && <View style={styles.transcriptHideBox} />}
                   </View>
                   <PressableOpacity onPress={onPressNext} style={styles.prevNextButton}>
@@ -363,6 +371,7 @@ const styles = StyleSheet.create({
   },
   dictationContainer: {
     marginTop: 8,
+    paddingHorizontal: 4,
   },
   dictationTitle: {
     fontSize: 14,
@@ -371,21 +380,37 @@ const styles = StyleSheet.create({
   dictationInfo: {
     marginTop: 8,
     flexDirection: 'row',
-    gap: 4,
+    gap: 8,
+    alignItems: 'center',
   },
   prevNextButton: {
-    backgroundColor: theme.color.accent90,
-    paddingHorizontal: 4,
+    backgroundColor: theme.color.accent,
     flexShrink: 0,
     justifyContent: 'center',
+    alignItems: 'center',
+    justifyItems: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 4,
   },
   dictationTextContainer: {
     flexShrink: 1,
+    borderRadius: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   dictationText: {
     fontSize: 16,
     fontWeight: '500',
     lineHeight: 24,
+    backgroundColor: theme.color.bgNone,
+    padding: 4,
   },
   channelName: {
     fontSize: 14,
@@ -469,7 +494,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff',
+    backgroundColor: theme.color.bgNone,
+    borderRadius: 2,
   },
   inputContainer: {
     marginHorizontal: 24,
