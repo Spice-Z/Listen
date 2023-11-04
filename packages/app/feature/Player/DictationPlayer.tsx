@@ -36,6 +36,7 @@ import { NativeSyntheticEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TabList from './components/TabList';
 import RepeatIcon from '../icons/RepeatIcon';
+import { useSplittedTranscript } from './hooks/useSplittedTranscript';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -68,48 +69,32 @@ const DictationPlayer = memo(() => {
     enabled: !!episode?.transcriptUrl,
   });
 
-  const splitedTranscriptData = useMemo(() => {
-    if (!transcriptData) {
-      return [];
+  const { splitedTranscriptData, tabs } = useSplittedTranscript({ transcriptData });
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
+  const currentTab = useMemo(() => {
+    if (tabs.length === 0) {
+      return undefined;
     }
-    const splited: {
-      start: number;
-      end: number;
-      text: string;
-    }[][] = [];
-    // transcriptDataの中身を10秒ごとに分割した配列を作る
-    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが10秒より大きい場合は新しい要素を作ってそこに入れる
-    // そうでない場合は最新要素に追加する
-    transcriptData.forEach((data) => {
-      if (splited.length === 0) {
-        splited.push([data]);
-        return;
-      }
-      const latestSplited = splited[splited.length - 1];
-      const latestSplitedFirstData = latestSplited[0];
-      const latestSplitedLastData = latestSplited[latestSplited.length - 1];
-      if (latestSplitedLastData.end - latestSplitedFirstData.start > 10) {
-        splited.push([data]);
-        return;
-      }
-      latestSplited.push(data);
-    });
-    return splited;
-  }, [transcriptData]);
-
-  const tabs = useMemo(() => {
-    const tabData = splitedTranscriptData.map((splited, index) => {
-      const firstData = splited[0];
-      const lastData = splited[splited.length - 1];
-      return {
-        id: index,
-        startTimeSec: firstData.start,
-        endTimeSec: lastData.end,
-      };
-    });
-
-    return tabData;
-  }, [splitedTranscriptData]);
+    return tabs[currentTabIndex];
+  }, [currentTabIndex, tabs]);
+  const currentTabsDuration = useMemo(() => {
+    if (currentTab) {
+      return currentTab.endTimeSec - currentTab.startTimeSec;
+    }
+    return 0;
+  }, [currentTab]);
+  const currentTabsProgressRate = useMemo(() => {
+    if (currentTab) {
+      return (playbackPosition - currentTab.startTimeSec) / currentTabsDuration;
+    }
+    return 0;
+  }, [currentTab, currentTabsDuration, playbackPosition]);
+  const currentSplitedTranscriptData = useMemo(() => {
+    if (splitedTranscriptData.length === 0) {
+      return undefined;
+    }
+    return splitedTranscriptData[currentTabIndex];
+  }, [currentTabIndex, splitedTranscriptData]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setPlaybackPosition(0);
@@ -161,35 +146,11 @@ const DictationPlayer = memo(() => {
     await new Promise((resolve) => setTimeout(resolve, 50));
   }, [router]);
 
-  const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const [isShowTranscript, setIsShowTranscript] = useState(false);
   const [isRepeat, toggleIsRepeat] = useReducer((state) => {
     return !state;
   }, false);
-  const currentTab = useMemo(() => {
-    if (tabs.length === 0) {
-      return undefined;
-    }
-    return tabs[currentTabIndex];
-  }, [currentTabIndex, tabs]);
-  const currentTabsDuration = useMemo(() => {
-    if (currentTab) {
-      return currentTab.endTimeSec - currentTab.startTimeSec;
-    }
-    return 0;
-  }, [currentTab]);
-  const currentTabsProgressRate = useMemo(() => {
-    if (currentTab) {
-      return (playbackPosition - currentTab.startTimeSec) / currentTabsDuration;
-    }
-    return 0;
-  }, [currentTab, currentTabsDuration, playbackPosition]);
-  const currentSplitedTranscriptData = useMemo(() => {
-    if (splitedTranscriptData.length === 0) {
-      return undefined;
-    }
-    return splitedTranscriptData[currentTabIndex];
-  }, [currentTabIndex, splitedTranscriptData]);
+
   const onPressTranscriptSwitch = useCallback(() => {
     setIsShowTranscript((prev) => !prev);
   }, [setIsShowTranscript]);
