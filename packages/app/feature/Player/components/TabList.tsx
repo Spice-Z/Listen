@@ -1,9 +1,13 @@
-import { Fragment, memo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { memo, useCallback, useEffect, useRef } from 'react';
+import { Text, View, useWindowDimensions } from 'react-native';
 import { theme } from '../../styles/theme';
 import { StyleSheet } from 'react-native';
 import PressableOpacity from '../../Pressable/PressableOpacity';
 import { formatSecToMin } from '../../format/duration';
+import { FlatList } from 'react-native-gesture-handler';
+
+const TAB_WIDTH = 100;
+const TAB_SPACER_WIDTH = 16;
 
 type Props = {
   currentTabIndex: number;
@@ -12,35 +16,61 @@ type Props = {
 };
 
 const TabList = memo<Props>(({ currentTabIndex, onPressTab, tabs }) => {
+  const listRef = useRef<FlatList>(null);
+  const { width } = useWindowDimensions();
+
+  const renderItem = useCallback(
+    ({ item, index }) => {
+      const isCurrent = currentTabIndex === index;
+      const onPress = () => onPressTab(index);
+      return (
+        <View style={styles.item}>
+          <View style={styles.tabSpacer} />
+          <PressableOpacity onPress={onPress} style={[styles.tab, isCurrent && styles.currentTab]}>
+            <Text>{`${formatSecToMin(item.startTimeSec)} ~ ${formatSecToMin(
+              item.endTimeSec,
+            )}`}</Text>
+          </PressableOpacity>
+          {index === tabs.length - 1 && <View style={styles.tabSpacer} />}
+        </View>
+      );
+    },
+    [currentTabIndex, onPressTab, tabs.length],
+  );
+  const getItemLayout = useCallback((_, index) => {
+    const itemLength = TAB_WIDTH + TAB_SPACER_WIDTH;
+    return {
+      length: itemLength,
+      offset: itemLength * index + TAB_SPACER_WIDTH,
+      index,
+    };
+  }, []);
+
+  // タブが変わった時にスクロールする
+  useEffect(() => {
+    if (tabs.length === 0) {
+      return;
+    }
+    const itemLength = TAB_WIDTH + TAB_SPACER_WIDTH;
+
+    listRef.current?.scrollToIndex({
+      index: currentTabIndex,
+      viewOffset: width / 2 - itemLength / 2,
+    });
+  }, [currentTabIndex, tabs.length, width]);
+
   return (
     <View style={styles.container}>
       <View style={styles.tabUnder} />
-      <ScrollView
+      <FlatList
+        ref={listRef}
+        data={tabs}
         style={styles.tabsContainer}
-        contentContainerStyle={styles.tabsContentContainerStyle}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
         horizontal
-        showsHorizontalScrollIndicator={false}
-      >
-        <View key={'tabSpacer-1'} style={styles.tabSpacer} />
-        {tabs.map((tab, index) => {
-          const isCurrent = currentTabIndex === index;
-          const onPress = () => onPressTab(index);
-          return (
-            <Fragment key={tab.id}>
-              <View style={styles.tabSpacer} />
-              <PressableOpacity
-                onPress={onPress}
-                style={[styles.tab, isCurrent && styles.currentTab]}
-              >
-                <Text>{`${formatSecToMin(tab.startTimeSec)} ~ ${formatSecToMin(
-                  tab.endTimeSec,
-                )}`}</Text>
-              </PressableOpacity>
-            </Fragment>
-          );
-        })}
-        <View key={'tabSpacer-2'} style={styles.tabSpacer} />
-      </ScrollView>
+        getItemLayout={getItemLayout}
+      />
     </View>
   );
 });
@@ -56,15 +86,11 @@ const styles = StyleSheet.create({
   },
   tabsContainer: {
     marginTop: 4,
-    flexDirection: 'row',
-  },
-  tabsContentContainerStyle: {
-    alignItems: 'flex-end',
   },
   tab: {
     backgroundColor: theme.color.bgMain,
     padding: 4,
-    width: 100,
+    width: TAB_WIDTH,
     height: 40,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -72,9 +98,16 @@ const styles = StyleSheet.create({
     borderColor: theme.color.accent,
   },
   tabSpacer: {
-    width: 16,
+    width: TAB_SPACER_WIDTH,
     height: 3,
     backgroundColor: theme.color.accent,
+    // borderBottomWidth: 3,
+    // borderBottomColor: theme.color.accent,
+    // boxSizing: 'border-box',
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
   currentTab: {
     marginBottom: -2,
