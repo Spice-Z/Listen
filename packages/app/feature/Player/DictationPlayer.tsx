@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, memo, useRef, useCallback, useMemo, useReducer } from 'react';
 import {
   StyleSheet,
   View,
@@ -35,6 +35,7 @@ import TextIcon from '../icons/TextIcon';
 import { NativeSyntheticEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TabList from './components/TabList';
+import RepeatIcon from '../icons/RepeatIcon';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -76,8 +77,8 @@ const DictationPlayer = memo(() => {
       end: number;
       text: string;
     }[][] = [];
-    // transcriptDataの中身を15秒ごとに分割した配列を作る
-    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが15秒より大きい場合は新しい要素を作ってそこに入れる
+    // transcriptDataの中身を10秒ごとに分割した配列を作る
+    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが10秒より大きい場合は新しい要素を作ってそこに入れる
     // そうでない場合は最新要素に追加する
     transcriptData.forEach((data) => {
       if (splited.length === 0) {
@@ -87,7 +88,7 @@ const DictationPlayer = memo(() => {
       const latestSplited = splited[splited.length - 1];
       const latestSplitedFirstData = latestSplited[0];
       const latestSplitedLastData = latestSplited[latestSplited.length - 1];
-      if (latestSplitedLastData.end - latestSplitedFirstData.start > 15) {
+      if (latestSplitedLastData.end - latestSplitedFirstData.start > 10) {
         splited.push([data]);
         return;
       }
@@ -162,6 +163,9 @@ const DictationPlayer = memo(() => {
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
   const [isShowTranscript, setIsShowTranscript] = useState(false);
+  const [isRepeat, toggleIsRepeat] = useReducer((state) => {
+    return !state;
+  }, false);
   const currentTab = useMemo(() => {
     if (tabs.length === 0) {
       return undefined;
@@ -194,15 +198,24 @@ const DictationPlayer = memo(() => {
   useEffect(() => {
     const { position } = progress;
     setPlaybackPosition(position);
-    // positionがcurrentSplitedTranscriptDataの範囲外になったら再生を止めて、再生位置をそこに合わせる
-    if (
-      currentSplitedTranscriptData &&
-      position > currentSplitedTranscriptData[currentSplitedTranscriptData.length - 1].end
-    ) {
-      TrackPlayer.pause();
+    if (!currentSplitedTranscriptData) {
+      return;
+    }
+    const isOver =
+      position > currentSplitedTranscriptData[currentSplitedTranscriptData.length - 1].end;
+    if (!isOver) {
+      return;
+    }
+
+    // positionがcurrentSplitedTranscriptDataの範囲外になったら再生を止めて、isRepeatがtrueならば再生開始位置に戻して再生する。isRepeatがfalseならば最後の位置に戻して再生する
+    TrackPlayer.pause();
+    if (isRepeat) {
+      TrackPlayer.seekTo(currentSplitedTranscriptData[0].start);
+      TrackPlayer.play();
+    } else {
       TrackPlayer.seekTo(currentSplitedTranscriptData[currentSplitedTranscriptData.length - 1].end);
     }
-  }, [currentSplitedTranscriptData, progress]);
+  }, [currentSplitedTranscriptData, isRepeat, progress]);
 
   const onPressTab = useCallback(
     (index: number) => {
@@ -321,6 +334,16 @@ const DictationPlayer = memo(() => {
                   ) : (
                     <UnVisibleTextIcon color={theme.color.textMain} width={30} height={30} />
                   )}
+                </View>
+              </PressableOpacity>
+              <PressableOpacity style={styles.playerContainerItem} onPress={toggleIsRepeat}>
+                <View style={styles.controlButton}>
+                  <RepeatIcon
+                    width={30}
+                    height={30}
+                    color={theme.color.textMain}
+                    showDot={isRepeat}
+                  />
                 </View>
               </PressableOpacity>
             </View>
