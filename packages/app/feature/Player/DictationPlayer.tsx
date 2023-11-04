@@ -18,7 +18,7 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import { DotsMenuIcon, UnVisibleTextIcon } from '../icons';
+import { DotsMenuIcon, LeftIcon, RightIcon, UnVisibleTextIcon } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import { Stack, useRouter } from 'expo-router';
@@ -95,6 +95,18 @@ const DictationPlayer = memo(() => {
     }
     return splitedTranscriptData[currentTabIndex];
   }, [currentTabIndex, splitedTranscriptData]);
+  const onPressNext = useCallback(() => {
+    if (currentTabIndex === tabs.length - 1) {
+      return;
+    }
+    setCurrentTabIndex((prev) => prev + 1);
+  }, [currentTabIndex, tabs.length]);
+  const onPressPrev = useCallback(() => {
+    if (currentTabIndex === 0) {
+      return;
+    }
+    setCurrentTabIndex((prev) => prev - 1);
+  }, [currentTabIndex]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setPlaybackPosition(0);
@@ -246,13 +258,21 @@ const DictationPlayer = memo(() => {
                   )}`}
                 </Text>
                 {/* currentTabのテキストを繋げて表示 */}
-                <View style={styles.dictationTextContainer}>
-                  <Text style={styles.dictationText} selectable>
-                    {splitedTranscriptData[currentTabIndex]
-                      ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
-                      : ''}
-                  </Text>
-                  {!isShowTranscript && <View style={styles.transcriptHideBox} />}
+                <View style={styles.dictationInfo}>
+                  <PressableOpacity onPress={onPressPrev} style={styles.prevNextButton}>
+                    <LeftIcon width={20} height={20} color={theme.color.bgMain} />
+                  </PressableOpacity>
+                  <View style={styles.dictationTextContainer}>
+                    <Text style={styles.dictationText} selectable>
+                      {splitedTranscriptData[currentTabIndex]
+                        ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
+                        : ''}
+                    </Text>
+                    {!isShowTranscript && <View style={styles.transcriptHideBox} />}
+                  </View>
+                  <PressableOpacity onPress={onPressNext} style={styles.prevNextButton}>
+                    <RightIcon width={20} height={20} color={theme.color.bgMain} />
+                  </PressableOpacity>
                 </View>
               </View>
             )}
@@ -343,14 +363,24 @@ const styles = StyleSheet.create({
   },
   dictationContainer: {
     marginTop: 8,
-    paddingHorizontal: 16,
   },
   dictationTitle: {
     fontSize: 14,
     textAlign: 'center',
   },
-  dictationTextContainer: {
+  dictationInfo: {
     marginTop: 8,
+    flexDirection: 'row',
+    gap: 4,
+  },
+  prevNextButton: {
+    backgroundColor: theme.color.accent90,
+    paddingHorizontal: 4,
+    flexShrink: 0,
+    justifyContent: 'center',
+  },
+  dictationTextContainer: {
+    flexShrink: 1,
   },
   dictationText: {
     fontSize: 16,
@@ -441,9 +471,11 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: '#fff',
   },
-  inputContainer: {},
+  inputContainer: {
+    marginHorizontal: 24,
+    marginTop: 24,
+  },
   input: {
-    margin: 12,
     borderWidth: 1,
     borderColor: theme.color.textWeak,
     padding: 10,

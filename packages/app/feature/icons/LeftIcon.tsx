@@ -1,14 +1,14 @@
-import React from 'react';
+import { memo } from 'react';
 import Svg, { Path } from 'react-native-svg';
 type Props = {
   width: number;
   height: number;
-  fill?: string;
+  color: string;
 };
 
-const LeftIcon = React.memo<Props>((props: Props) => (
-  <Svg width={props.width} height={props.height} viewBox="0 0 40 40" fill="none">
-    <Path d="M5 19.5L29.75 5.21058L29.75 33.7894L5 19.5Z" fill={props.fill ?? 'white'} />
+const LeftIcon = memo<Props>(({ width, height, color }: Props) => (
+  <Svg width={width} height={height} viewBox="0 0 50 50" fill="none">
+    <Path d="M40.0006 44.9999L10.0006 24.9999L40.0006 4.99993" stroke={color} strokeWidth="6" />
   </Svg>
 ));
 
