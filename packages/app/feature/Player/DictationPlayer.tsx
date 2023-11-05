@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  Keyboard,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
@@ -245,6 +246,21 @@ const DictationPlayer = memo(() => {
   }, [currentTab, playbackPosition]);
 
   const insets = useSafeAreaInsets();
+  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollToBottom = useCallback(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  }, []);
+  useEffect(() => {
+    // キーボードが表示された時のイベントリスナーを追加
+    const showSubscription = Keyboard.addListener('keyboardDidShow', scrollToBottom);
+
+    // コンポーネントのクリーンアップ時にイベントリスナーを削除
+    return () => {
+      showSubscription.remove();
+    };
+  }, [scrollToBottom]);
 
   return (
     <>
@@ -263,7 +279,7 @@ const DictationPlayer = memo(() => {
           style={{ flex: 1 }}
           keyboardVerticalOffset={insets.top + 40}
         >
-          <ScrollView style={styles.container}>
+          <ScrollView ref={scrollViewRef} style={styles.container}>
             <View style={styles.episodeContainer}>
               <ArtworkImage width={60} height={60} borderRadius={8} />
               <View style={styles.episodeInfo}>
