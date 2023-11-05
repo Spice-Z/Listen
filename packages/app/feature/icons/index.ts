@@ -7,6 +7,9 @@ import LeftIcon from './LeftIcon';
 import RightIcon from './RightIcon';
 import DotsMenuIcon from './DotsMenuIcon';
 import UnVisibleTextIcon from './UnVisibleTextIcon';
+import TapIcon from './TapIcon';
+import IndicateDownIcon from './IndicateDownIcon';
+import FiveSecBackIcon from './FiveSecBackIcon';
 
 export {
   PauseIcon,
@@ -18,4 +21,7 @@ export {
   LeftIcon,
   DotsMenuIcon,
   UnVisibleTextIcon,
+  TapIcon,
+  IndicateDownIcon,
+  FiveSecBackIcon,
 };

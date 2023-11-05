@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Svg, { Path, Rect } from 'react-native-svg';
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   color?: string;
 };
 
-const TranslateIcon: React.FC<Props> = ({ width = 24, height = 24, color = 'white' }) => {
+const TranslateIcon = memo<Props>(({ width = 24, height = 24, color = 'white' }) => {
   return (
     <Svg width={width} height={height} viewBox="0 0 40 40" fill="none">
       <Rect width="18" height="18" x="19" y="19" stroke={color} stroke-width="2" rx="3" />
@@ -22,6 +22,6 @@ const TranslateIcon: React.FC<Props> = ({ width = 24, height = 24, color = 'whit
       />
     </Svg>
   );
-};
+});
 
-export default memo(TranslateIcon);
+export default TranslateIcon;

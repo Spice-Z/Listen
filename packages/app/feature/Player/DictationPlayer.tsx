@@ -9,6 +9,7 @@ import {
   TextInputContentSizeChangeEventData,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
@@ -18,7 +19,14 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import { DotsMenuIcon, LeftIcon, RightIcon, UnVisibleTextIcon } from '../icons';
+import {
+  DotsMenuIcon,
+  FiveSecBackIcon,
+  IndicateDownIcon,
+  LeftIcon,
+  RightIcon,
+  UnVisibleTextIcon,
+} from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import { Stack, useRouter } from 'expo-router';
@@ -30,12 +38,12 @@ import PlaySettingBottomSheet from '../BottomSheet/PlaySettingBottomSheet';
 import ArtworkImage from './components/ArtworkImage';
 import { useQuery } from '@tanstack/react-query';
 import { getTranscriptFromUrl } from '../dataLoader/getTranscriptFromUrl';
-import TextIcon from '../icons/TextIcon';
 import { NativeSyntheticEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TabList from './components/TabList';
 import RepeatIcon from '../icons/RepeatIcon';
 import { useSplittedTranscript } from './hooks/useSplittedTranscript';
+import TextIcon from '../icons/TextIcon';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -176,7 +184,7 @@ const DictationPlayer = memo(() => {
   const [isShowTranscript, setIsShowTranscript] = useState(false);
   const [isRepeat, toggleIsRepeat] = useReducer((state) => {
     return !state;
-  }, false);
+  }, true);
 
   const onPressTranscriptSwitch = useCallback(() => {
     setIsShowTranscript((prev) => !prev);
@@ -195,7 +203,6 @@ const DictationPlayer = memo(() => {
       return;
     }
 
-    // positionがcurrentSplitedTranscriptDataの範囲外になったら再生を止めて、isRepeatがtrueならば再生開始位置に戻して再生する。isRepeatがfalseならば最後の位置に戻して再生する
     TrackPlayer.pause();
     if (isRepeat) {
       TrackPlayer.seekTo(currentSplitedTranscriptData[0].start);
@@ -203,7 +210,9 @@ const DictationPlayer = memo(() => {
     } else {
       TrackPlayer.seekTo(currentSplitedTranscriptData[currentSplitedTranscriptData.length - 1].end);
     }
-  }, [currentSplitedTranscriptData, isRepeat, progress]);
+    // positionがcurrentSplitedTranscriptDataの範囲外になったら再生を止めて、isRepeatがtrueならば再生開始位置に戻して再生する。isRepeatがfalseならば最後の位置に戻して再生する
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress]);
 
   const onPressTab = useCallback(
     (index: number) => {
@@ -226,6 +235,14 @@ const DictationPlayer = memo(() => {
     },
     [],
   );
+  const onPressFiveSecBack = useCallback(() => {
+    const fiveSecBackPosition = playbackPosition - 5;
+    if (currentTab && fiveSecBackPosition < currentTab.startTimeSec) {
+      TrackPlayer.seekTo(currentTab.startTimeSec);
+    } else {
+      TrackPlayer.seekTo(fiveSecBackPosition);
+    }
+  }, [currentTab, playbackPosition]);
 
   const insets = useSafeAreaInsets();
 
@@ -266,24 +283,29 @@ const DictationPlayer = memo(() => {
                   {` ${currentTabIndex + 1} of ${tabs.length}`}
                 </Text>
                 {/* currentTabのテキストを繋げて表示 */}
-                <View style={styles.dictationInfo}>
-                  <PressableOpacity onPress={onPressPrev} style={styles.prevNextButton}>
-                    <LeftIcon width={20} height={20} color={theme.color.bgMain} />
-                  </PressableOpacity>
-                  <View style={styles.dictationTextContainer}>
-                    <TextInput style={styles.dictationText} editable={false} multiline>
-                      {splitedTranscriptData[currentTabIndex]
-                        ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
-                        : ''}
-                    </TextInput>
-                    {!isShowTranscript && <View style={styles.transcriptHideBox} />}
-                  </View>
-                  <PressableOpacity onPress={onPressNext} style={styles.prevNextButton}>
-                    <RightIcon width={20} height={20} color={theme.color.bgMain} />
-                  </PressableOpacity>
+                <View style={styles.dictationTextContainer}>
+                  <TextInput style={styles.dictationText} editable={false} multiline>
+                    {splitedTranscriptData[currentTabIndex]
+                      ? splitedTranscriptData[currentTabIndex].map((data) => data.text).join('')
+                      : ''}
+                  </TextInput>
+                  {!isShowTranscript && (
+                    <Pressable onPress={onPressTranscriptSwitch} style={styles.transcriptHideBox}>
+                      <IndicateDownIcon width={30} height={30} color={theme.color.textWeak} />
+                    </Pressable>
+                  )}
                 </View>
               </View>
             )}
+            <View style={styles.textVisibleContainer}>
+              <PressableOpacity onPress={onPressTranscriptSwitch}>
+                {isShowTranscript ? (
+                  <TextIcon width={30} height={30} color={theme.color.textMain} />
+                ) : (
+                  <UnVisibleTextIcon color={theme.color.textMain} width={30} height={30} />
+                )}
+              </PressableOpacity>
+            </View>
             <View style={styles.inputContainer}>
               <TextInput
                 multiline
@@ -312,21 +334,14 @@ const DictationPlayer = memo(() => {
                   <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
                 </View>
               </PressableOpacity>
+              <PressableOpacity style={styles.playerContainerItem} onPress={onPressFiveSecBack}>
+                <View style={styles.controlButton}>
+                  <FiveSecBackIcon width={30} height={30} color={theme.color.textMain} />
+                </View>
+              </PressableOpacity>
               <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
                 <View style={styles.playPauseButton}>
                   <PlayPauseIcon isLoading={isLoading} isPlaying={isPlaying} />
-                </View>
-              </PressableOpacity>
-              <PressableOpacity
-                style={styles.playerContainerItem}
-                onPress={onPressTranscriptSwitch}
-              >
-                <View style={styles.controlButton}>
-                  {isShowTranscript ? (
-                    <TextIcon width={24} height={24} color={theme.color.textMain} />
-                  ) : (
-                    <UnVisibleTextIcon color={theme.color.textMain} width={30} height={30} />
-                  )}
                 </View>
               </PressableOpacity>
               <PressableOpacity style={styles.playerContainerItem} onPress={toggleIsRepeat}>
@@ -340,6 +355,15 @@ const DictationPlayer = memo(() => {
                 </View>
               </PressableOpacity>
             </View>
+            <View style={styles.prevNextContainer}>
+              <PressableOpacity style={styles.prevNextItem} onPress={onPressPrev}>
+                <LeftIcon width={20} height={20} color={theme.color.bgMain} />
+              </PressableOpacity>
+              <View style={styles.prevNextSeparator} />
+              <PressableOpacity style={styles.prevNextItem} onPress={onPressNext}>
+                <RightIcon width={20} height={20} color={theme.color.bgMain} />
+              </PressableOpacity>
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       )}
@@ -350,6 +374,7 @@ const DictationPlayer = memo(() => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: theme.color.bgMain,
     color: theme.color.textMain,
   },
@@ -377,24 +402,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
-  dictationInfo: {
-    marginTop: 8,
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-  },
-  prevNextButton: {
-    backgroundColor: theme.color.accent,
-    flexShrink: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    justifyItems: 'center',
-    width: 40,
-    height: 40,
-    borderRadius: 4,
-  },
   dictationTextContainer: {
-    flexShrink: 1,
+    marginTop: 8,
+    marginHorizontal: 16,
     borderRadius: 2,
     shadowColor: '#000',
     shadowOffset: {
@@ -432,14 +442,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  prevNextContainer: {
+    marginLeft: 'auto',
+    marginRight: 16,
+    backgroundColor: theme.color.accent,
+    height: 40,
+    flexDirection: 'row',
+    // 右に寄せる
+    justifyContent: 'flex-end',
+    justifyItems: 'flex-end',
+    alignItems: 'flex-end',
+    alignContent: 'flex-end',
+    width: 82,
+    borderRadius: 4,
+  },
+  prevNextItem: {
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  prevNextSeparator: {
+    height: '100%',
+    width: 2,
+    backgroundColor: theme.color.bgNone,
+  },
   playerContainerItem: {
     width: '15%',
     alignItems: 'center',
   },
   playPauseButton: {
     backgroundColor: theme.color.accent,
-    height: 56,
-    width: 56,
+    height: 40,
+    width: 40,
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
@@ -479,15 +514,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
-  },
-  bottomSheetText: {
-    color: theme.color.textMain,
-    fontSize: 16,
-    fontWeight: '800',
-  },
   transcriptHideBox: {
     position: 'absolute',
     top: 0,
@@ -496,6 +522,8 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: theme.color.bgNone,
     borderRadius: 2,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   inputContainer: {
     marginHorizontal: 24,
@@ -505,6 +533,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.color.textWeak,
     padding: 10,
+  },
+  textVisibleContainer: {
+    marginTop: 8,
+    marginHorizontal: 16,
+    alignItems: 'center',
   },
 });
 
