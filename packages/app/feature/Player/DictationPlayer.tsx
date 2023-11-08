@@ -84,18 +84,14 @@ const DictationPlayer = memo(() => {
     }
     return tabs[currentTabIndex];
   }, [currentTabIndex, tabs]);
-  const currentTabsDuration = useMemo(() => {
-    if (currentTab) {
-      return currentTab.endTimeSec - currentTab.startTimeSec;
-    }
-    return 0;
-  }, [currentTab]);
   const currentTabsProgressRate = useMemo(() => {
     if (currentTab) {
-      return (playbackPosition - currentTab.startTimeSec) / currentTabsDuration;
+      const currentTabDuration = currentTab.endTimeSec - currentTab.startTimeSec;
+      const rate = (playbackPosition - currentTab.startTimeSec) / currentTabDuration;
+      return rate <= 100 ? rate : 100;
     }
     return 0;
-  }, [currentTab, currentTabsDuration, playbackPosition]);
+  }, [currentTab, playbackPosition]);
   const currentSplitedTranscriptData = useMemo(() => {
     if (splitedTranscriptData.length === 0) {
       return undefined;
@@ -313,8 +309,14 @@ const DictationPlayer = memo(() => {
                   <View style={styles.progressBar}>
                     <View
                       style={[
-                        { backgroundColor: theme.color.accent, height: 2 },
-                        { width: `${Math.floor(currentTabsProgressRate * 100)}%` },
+                        styles.progressBarContent,
+                        {
+                          width: `${
+                            Math.floor(currentTabsProgressRate * 100) <= 100
+                              ? Math.floor(currentTabsProgressRate * 100)
+                              : 100
+                          }%`,
+                        },
                       ]}
                     />
                   </View>
@@ -445,6 +447,10 @@ const styles = StyleSheet.create({
   progressBar: {
     width: '100%',
     backgroundColor: theme.color.bgEmphasis,
+  },
+  progressBarContent: {
+    backgroundColor: theme.color.accent,
+    height: 2,
   },
   seekBar: {
     width: Dimensions.get('window').width - 32,
