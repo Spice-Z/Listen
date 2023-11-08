@@ -22,7 +22,9 @@ const BannerAdMob = ({ size, requestOptions }: Props) => {
     return process.env.EXPO_PUBLIC_AD_ID_ANDROID;
   }, []);
   const onAdFailedToLoad = useCallback((error: Error) => {
-    analytics().logEvent('admob_failed_load', { error });
+    analytics().logEvent('admob_failed_load', {
+      error_message: error.message,
+    });
   }, []);
   return (
     <View style={styles.adContainer}>
