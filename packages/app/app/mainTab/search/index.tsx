@@ -106,11 +106,13 @@ function App() {
         if (item.isAdSpace) {
           return null;
         }
-        return (
-          <View style={styles.adInList}>
-            <BannerAdMob size={BannerAdSize.MEDIUM_RECTANGLE} />
-          </View>
-        );
+        // AdMobが正常に表示されないので一旦コメントアウト
+        return null;
+        // return (
+        //   <View style={styles.adInList}>
+        //     <BannerAdMob size={BannerAdSize.MEDIUM_RECTANGLE} />
+        //   </View>
+        // );
       }
       return (
         <PressableScale style={styles.channelCard} onPress={() => onPressChannel(item.channelId)}>
