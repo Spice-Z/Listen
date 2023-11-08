@@ -354,14 +354,7 @@ const DictationPlayer = memo(() => {
                 <FiveSecBackIcon width={30} height={30} color={theme.color.textMain} />
               </View>
             </PressableOpacity>
-            <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
-              <PlayPauseIcon
-                size={30}
-                color={theme.color.textMain}
-                isLoading={isLoading}
-                isPlaying={isPlaying}
-              />
-            </PressableOpacity>
+
             <PressableOpacity style={styles.playerContainerItem} onPress={toggleIsRepeat}>
               <View style={styles.controlButton}>
                 <RepeatIcon
@@ -375,6 +368,14 @@ const DictationPlayer = memo(() => {
             <View style={styles.prevNextContainer}>
               <PressableOpacity style={styles.prevItem} onPress={onPressPrev}>
                 <LeftIcon width={16} height={16} color={theme.color.bgMain} />
+              </PressableOpacity>
+              <PressableOpacity style={styles.playItem} onPress={handlePlayPause}>
+                <PlayPauseIcon
+                  size={24}
+                  color={theme.color.bgMain}
+                  isLoading={isLoading}
+                  isPlaying={isPlaying}
+                />
               </PressableOpacity>
               <PressableOpacity style={styles.nextItem} onPress={onPressNext}>
                 <RightIcon width={16} height={16} color={theme.color.bgMain} />
@@ -470,7 +471,7 @@ const styles = StyleSheet.create({
     justifyItems: 'flex-end',
     alignItems: 'flex-end',
     alignContent: 'flex-end',
-    gap: 4,
+    gap: 6,
   },
   prevItem: {
     height: 30,
@@ -480,6 +481,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.color.accent,
     borderTopLeftRadius: 4,
     borderBottomLeftRadius: 4,
+  },
+  playItem: {
+    height: 30,
+    width: 30,
+    backgroundColor: theme.color.accent,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 2,
   },
   nextItem: {
     height: 30,
@@ -491,7 +500,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   playerContainerItem: {
-    width: 38,
+    width: 30,
     alignItems: 'center',
   },
   playPauseButton: {
