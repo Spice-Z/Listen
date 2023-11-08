@@ -22,6 +22,7 @@ export const autoUpdateChannelAndEpisodes = functions
       channelCollectionShapshot.docs.map(async (channelDoc) => {
         const channelFromDB = channelDoc.data();
         const { channel, episodes } = await fetchChannelDataByFeedUrl(channelFromDB.feedUrl);
+        const canDirection = channelFromDB.canDirection ? !!channelFromDB.canDirection : false;
 
         // pubDateが更新されていない場合は処理を終了する
         if (
@@ -109,7 +110,10 @@ export const autoUpdateChannelAndEpisodes = functions
         );
         const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelDoc.id);
         const newEpisodesPromises = newEpisodes.map(async (episode) => {
-          const addedEpisode = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episode);
+          const addedEpisode = await channelRef.collection(EPISODE_DOCUMENT_NAME).add({
+            ...episode,
+            canDirection,
+          });
           updatedEpisodes.push({
             episodeId: addedEpisode.id,
             pubDate: episode.pubDate,

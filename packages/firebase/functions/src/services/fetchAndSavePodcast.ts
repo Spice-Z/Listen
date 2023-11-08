@@ -42,6 +42,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
       ...podcastData,
       hasChangeableAd: false,
       includeInfoInPrompt: true,
+      canDirection: false,
     });
     isNewPodcastShow = true;
     console.log('new');
@@ -63,6 +64,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     pubDate: Date;
     season: string | undefined;
     episode: string | undefined;
+    canDirection: boolean;
   };
 
   // lastBuildDateが一ヶ月以上前の場合、エピソードを更新しない
@@ -84,6 +86,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
       pubDate: item.pubDate ? new Date(item.pubDate) : now,
       season: item.itunes ? item.itunes.season : undefined,
       episode: item.itunes ? item.itunes.episode : undefined,
+      canDirection: false,
     };
   });
 
@@ -96,16 +99,6 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     if (isNewPodcastShow) {
       // 新規ポッドキャストの場合、重複チェックなしでエピソードを追加
       const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
-      const addedEpisode = await episodeDocRef.get();
-
-      const availableEpisodeData = {
-        channelId: channelRef.id,
-        pubDate: episodeData.pubDate,
-      };
-      await store
-        .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
-        .doc(addedEpisode.id)
-        .set(availableEpisodeData);
 
       episodeId = episodeDocRef.id;
       pubDate = episodeData.pubDate;
