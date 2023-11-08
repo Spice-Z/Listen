@@ -12,7 +12,6 @@ import {
   Pressable,
   Keyboard,
 } from 'react-native';
-import Slider from '@react-native-community/slider';
 import TrackPlayer, {
   usePlaybackState,
   useTrackPlayerEvents,
@@ -292,6 +291,7 @@ const DictationPlayer = memo(() => {
               </View>
             </View>
             <TabList currentTabIndex={currentTabIndex} onPressTab={onPressTab} tabs={tabs} />
+
             {currentTab && (
               <View style={styles.dictationContainer}>
                 {/* currentTabのTimeを表示 */}
@@ -310,6 +310,14 @@ const DictationPlayer = memo(() => {
                       <IndicateDownIcon width={30} height={30} color={theme.color.textWeak} />
                     </Pressable>
                   )}
+                  <View style={styles.progressBar}>
+                    <View
+                      style={[
+                        { backgroundColor: theme.color.accent, height: 2 },
+                        { width: `${Math.floor(currentTabsProgressRate * 100)}%` },
+                      ]}
+                    />
+                  </View>
                 </View>
               </View>
             )}
@@ -322,6 +330,7 @@ const DictationPlayer = memo(() => {
                 )}
               </PressableOpacity>
             </View>
+
             <View style={styles.inputContainer}>
               <TextInput
                 multiline
@@ -331,56 +340,45 @@ const DictationPlayer = memo(() => {
                 onContentSizeChange={onContentSizeChange}
               />
             </View>
-            <View style={styles.sliderContainer}>
-              <Slider
-                style={styles.seekBar}
-                value={currentTabsDuration * currentTabsProgressRate}
-                // onSlidingComplete={handleSeek}
-                minimumTrackTintColor={theme.color.accent}
-                maximumTrackTintColor={theme.color.bgEmphasis}
-                thumbImage={require('../../assets/player/thumb.png')}
-                minimumValue={0}
-                maximumValue={currentTabsDuration}
-                step={0.01}
-              />
-            </View>
-            <View style={styles.playerContainer}>
-              <PressableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
-                <View style={styles.controlButton}>
-                  <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
-                </View>
-              </PressableOpacity>
-              <PressableOpacity style={styles.playerContainerItem} onPress={onPressFiveSecBack}>
-                <View style={styles.controlButton}>
-                  <FiveSecBackIcon width={30} height={30} color={theme.color.textMain} />
-                </View>
-              </PressableOpacity>
-              <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
-                <View style={styles.playPauseButton}>
-                  <PlayPauseIcon isLoading={isLoading} isPlaying={isPlaying} />
-                </View>
-              </PressableOpacity>
-              <PressableOpacity style={styles.playerContainerItem} onPress={toggleIsRepeat}>
-                <View style={styles.controlButton}>
-                  <RepeatIcon
-                    width={30}
-                    height={30}
-                    color={theme.color.textMain}
-                    showDot={isRepeat}
-                  />
-                </View>
-              </PressableOpacity>
-            </View>
-            <View style={styles.prevNextContainer}>
-              <PressableOpacity style={styles.prevNextItem} onPress={onPressPrev}>
-                <LeftIcon width={20} height={20} color={theme.color.bgMain} />
-              </PressableOpacity>
-              <View style={styles.prevNextSeparator} />
-              <PressableOpacity style={styles.prevNextItem} onPress={onPressNext}>
-                <RightIcon width={20} height={20} color={theme.color.bgMain} />
-              </PressableOpacity>
-            </View>
           </ScrollView>
+          <View style={styles.playerContainer}>
+            <PressableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
+              <View style={styles.controlButton}>
+                <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
+              </View>
+            </PressableOpacity>
+            <PressableOpacity style={styles.playerContainerItem} onPress={onPressFiveSecBack}>
+              <View style={styles.controlButton}>
+                <FiveSecBackIcon width={30} height={30} color={theme.color.textMain} />
+              </View>
+            </PressableOpacity>
+            <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
+              <PlayPauseIcon
+                size={30}
+                color={theme.color.textMain}
+                isLoading={isLoading}
+                isPlaying={isPlaying}
+              />
+            </PressableOpacity>
+            <PressableOpacity style={styles.playerContainerItem} onPress={toggleIsRepeat}>
+              <View style={styles.controlButton}>
+                <RepeatIcon
+                  width={30}
+                  height={30}
+                  color={theme.color.textMain}
+                  showDot={isRepeat}
+                />
+              </View>
+            </PressableOpacity>
+            <View style={styles.prevNextContainer}>
+              <PressableOpacity style={styles.prevItem} onPress={onPressPrev}>
+                <LeftIcon width={16} height={16} color={theme.color.bgMain} />
+              </PressableOpacity>
+              <PressableOpacity style={styles.nextItem} onPress={onPressNext}>
+                <RightIcon width={16} height={16} color={theme.color.bgMain} />
+              </PressableOpacity>
+            </View>
+          </View>
         </KeyboardAvoidingView>
       )}
       <PlaySettingBottomSheet ref={playSettingBottomSheetRef} onAfterClose={backAndWaitAnimation} />
@@ -393,6 +391,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.color.bgMain,
     color: theme.color.textMain,
+    flexDirection: 'column',
   },
   episodeContainer: {
     paddingHorizontal: 16,
@@ -443,9 +442,9 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: theme.color.textWeak,
   },
-  sliderContainer: {
+  progressBar: {
     width: '100%',
-    marginTop: 4,
+    backgroundColor: theme.color.bgEmphasis,
   },
   seekBar: {
     width: Dimensions.get('window').width - 32,
@@ -453,38 +452,40 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   playerContainer: {
-    height: 80,
+    marginHorizontal: 24,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    gap: 12,
   },
   prevNextContainer: {
-    marginLeft: 'auto',
-    marginRight: 16,
-    backgroundColor: theme.color.accent,
-    height: 40,
     flexDirection: 'row',
-    // 右に寄せる
     justifyContent: 'flex-end',
     justifyItems: 'flex-end',
     alignItems: 'flex-end',
     alignContent: 'flex-end',
-    width: 82,
-    borderRadius: 4,
+    gap: 4,
   },
-  prevNextItem: {
-    height: 40,
-    width: 40,
+  prevItem: {
+    height: 30,
+    width: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.color.accent,
+    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: 4,
   },
-  prevNextSeparator: {
-    height: '100%',
-    width: 2,
-    backgroundColor: theme.color.bgNone,
+  nextItem: {
+    height: 30,
+    width: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.color.accent,
+    borderTopRightRadius: 4,
+    borderBottomRightRadius: 4,
   },
   playerContainerItem: {
-    width: '15%',
+    width: 38,
     alignItems: 'center',
   },
   playPauseButton: {

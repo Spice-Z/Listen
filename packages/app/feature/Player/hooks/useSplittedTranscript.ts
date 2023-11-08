@@ -13,8 +13,8 @@ export const useSplittedTranscript = ({ transcriptData }: Props) => {
       end: number;
       text: string;
     }[][] = [];
-    // transcriptDataの中身を10秒ごとに分割した配列を作る
-    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが10秒より大きい場合は新しい要素を作ってそこに入れる
+    // transcriptDataの中身を7秒ごとに分割した配列を作る
+    // transcriptDataを1つづループで回し、splitedの最新要素のstart - endが7秒より大きい場合は新しい要素を作ってそこに入れる
     // そうでない場合は最新要素に追加する
     transcriptData.forEach((data) => {
       if (splited.length === 0) {
@@ -24,7 +24,7 @@ export const useSplittedTranscript = ({ transcriptData }: Props) => {
       const latestSplited = splited[splited.length - 1];
       const latestSplitedFirstData = latestSplited[0];
       const latestSplitedLastData = latestSplited[latestSplited.length - 1];
-      if (latestSplitedLastData.end - latestSplitedFirstData.start > 10) {
+      if (latestSplitedLastData.end - latestSplitedFirstData.start > 7) {
         splited.push([data]);
         return;
       }

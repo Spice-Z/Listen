@@ -6,17 +6,21 @@ import { memo } from 'react';
 type Props = {
   isLoading: boolean;
   isPlaying: boolean;
+  size?: number;
+  color?: string;
 };
 
-const PlayPauseIcon = memo(({ isLoading, isPlaying }: Props) => {
-  if (isLoading) {
-    return <ActivityIndicator />;
-  }
-  return isPlaying ? (
-    <PauseIcon fill={theme.color.bgMain} width={28} height={28} />
-  ) : (
-    <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
-  );
-});
+const PlayPauseIcon = memo(
+  ({ isLoading, isPlaying, size = 28, color = theme.color.bgMain }: Props) => {
+    if (isLoading) {
+      return <ActivityIndicator />;
+    }
+    return isPlaying ? (
+      <PauseIcon fill={color} width={size} height={size} />
+    ) : (
+      <PlayIcon fill={color} width={size} height={size} />
+    );
+  },
+);
 
 export default PlayPauseIcon;
