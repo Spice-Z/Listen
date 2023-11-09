@@ -21,6 +21,7 @@ class Episode {
       language: string;
       transcriptUrl: string;
     }[],
+    readonly canDirection: boolean,
   ) {}
 }
 
@@ -40,6 +41,7 @@ interface EpisodeDbModel {
         [key: string]: string;
       }
     | undefined;
+  canDirection: boolean;
 }
 
 export const episodeConverter: FirestoreDataConverter<Episode> = {
@@ -62,6 +64,7 @@ export const episodeConverter: FirestoreDataConverter<Episode> = {
       pubDate: Timestamp.fromMillis(episode.pubDate * 1000),
       season: episode.season,
       translatedTranscripts,
+      canDirection: episode.canDirection,
     };
   },
   fromFirestore(snapshot): Episode {
@@ -90,6 +93,7 @@ export const episodeConverter: FirestoreDataConverter<Episode> = {
       data.pubDate.seconds,
       data.season,
       translatedTranscripts,
+      data.canDirection,
     );
   },
 };

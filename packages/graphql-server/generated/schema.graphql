@@ -35,6 +35,7 @@ type ChannelEdge {
 }
 
 type Episode implements Node {
+  canDirection: Boolean!
   content: String!
   description: String!
   duration: Int!

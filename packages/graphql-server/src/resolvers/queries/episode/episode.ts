@@ -23,6 +23,7 @@ const typeDefs = gql`
     # season: String!
     translatedTranscripts: [TranslatedTranscript!]!
     hasChangeableAd: Boolean!
+    canDirection: Boolean!
   }
   type TranslatedTranscript {
     language: String!
