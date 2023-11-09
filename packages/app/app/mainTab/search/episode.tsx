@@ -31,6 +31,7 @@ const GET_EPISODE = gql(/* GraphQL */ `
         language
         transcriptUrl
       }
+      canDirection
     }
   }
 `);

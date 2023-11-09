@@ -8,6 +8,7 @@ export const theme = {
     bgMain: '#f8f8f8',
     bgEmphasis: '#F6F2FF',
     bgDark: '#FAF0DB',
+    bgDrop: '#251b39',
     bgNone: '#FFFFFF',
     accent: '#9F74EB',
     accent90: '#9F74EBB3',

@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, memo } from 'react';
-import { StyleSheet, View, Text, Dimensions, ActivityIndicator, Image } from 'react-native';
+import { useState, useEffect, memo, useRef, useCallback } from 'react';
+import { StyleSheet, View, Text, Dimensions, Image } from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
   usePlaybackState,
@@ -8,38 +8,27 @@ import TrackPlayer, {
   State,
   useProgress,
 } from 'react-native-track-player';
-import { PauseIcon, PlayIcon, TranslateIcon } from '../icons';
+import { DotsMenuIcon, TranslateIcon } from '../icons';
 import { useTrackPlayer } from './hooks/useTrackPlayer';
 import { theme } from '../styles/theme';
 import ArtworkImage from './components/ArtworkImage';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import TranscriptScrollBox from './components/TranscriptScrollBox';
-import { gql } from '../graphql/__generated__';
-import { useQuery } from '@apollo/client';
 import PressableOpacity from '../Pressable/PressableOpacity';
 import SquareShimmer from '../Shimmer/SquareShimmer';
 import BannerAdMob from '../../feature/Ad/BannerAdMob';
 import { BannerAdSize } from 'react-native-google-mobile-ads';
-
-const GET_EPISODE_IN_MODAL_PLAYER = gql(/* GraphQL */ `
-  query GetEpisodeInModalPlayer($channelId: String!, $episodeId: String!) {
-    episode(channelId: $channelId, episodeId: $episodeId) {
-      id
-      transcriptUrl
-      translatedTranscripts {
-        language
-        transcriptUrl
-      }
-      hasChangeableAd
-    }
-  }
-`);
+import { useCurrentEpisodeData } from './hooks/useCurrentEpisodeData';
+import PlayPauseIcon from './components/PlayPauseIcon';
+import PlaySettingBottomSheet from '../BottomSheet/PlaySettingBottomSheet';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
 });
 
 const ModalPlayer = memo(() => {
+  const router = useRouter();
+
   const [playbackPosition, setPlaybackPosition] = useState(0);
 
   const playbackState = usePlaybackState();
@@ -55,30 +44,10 @@ const ModalPlayer = memo(() => {
   } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { data } = useQuery(GET_EPISODE_IN_MODAL_PLAYER, {
-    variables: {
-      channelId: currentEpisodeChannelId,
-      episodeId: currentEpisodeId,
-    },
-    skip: !currentEpisodeChannelId || !currentEpisodeId,
+  const { episode, hasTranslatedTranscript, canDirection } = useCurrentEpisodeData({
+    currentEpisodeChannelId,
+    currentEpisodeId,
   });
-  const hasTranslatedTranscript = useMemo(() => {
-    if (!data?.episode?.translatedTranscripts) {
-      return false;
-    }
-    return data.episode.translatedTranscripts.length > 0;
-  }, [data]);
-
-  const playPauseButton = useMemo(() => {
-    if (isLoading) {
-      return <ActivityIndicator />;
-    }
-    return isPlaying ? (
-      <PauseIcon fill={theme.color.bgMain} width={28} height={28} />
-    ) : (
-      <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
-    );
-  }, [isLoading, isPlaying]);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
     setPlaybackPosition(0);
@@ -106,8 +75,6 @@ const ModalPlayer = memo(() => {
     }
   };
 
-  const router = useRouter();
-
   const handleSkip = async (seconds) => {
     const newPosition = playbackPosition + seconds;
     await TrackPlayer.seekTo(newPosition);
@@ -123,96 +90,135 @@ const ModalPlayer = memo(() => {
     router.push('/modalTranscriptPlayer');
   };
 
-  return currentQueue.length === 0 || currentTrack === null ? (
-    <View style={styles.container}>
-      <LoadingView />
-    </View>
-  ) : (
-    <View style={styles.container}>
-      <TranscriptScrollBox
-        transcriptUrl={data?.episode.transcriptUrl}
-        currentTimePosition={progress.position}
-        width={Dimensions.get('window').width}
-        height={Dimensions.get('window').height * 0.7 - 60}
-        disableAutoScroll={data?.episode.hasChangeableAd}
+  const playSettingBottomSheetRef = useRef(null);
+  const toggleBottomSheet = useCallback(() => {
+    if (playSettingBottomSheetRef.current) {
+      playSettingBottomSheetRef.current.toggleBottomSheet();
+    }
+  }, []);
+  const renderHeaderRight = useCallback(() => {
+    if (!canDirection) {
+      return null;
+    }
+    return (
+      <PressableOpacity hitSlop={4} onPress={toggleBottomSheet}>
+        <DotsMenuIcon width={24} height={24} color={theme.color.textMain} />
+      </PressableOpacity>
+    );
+  }, [canDirection, toggleBottomSheet]);
+
+  const backAndWaitAnimation = useCallback(async () => {
+    router.back();
+    // モーダルが閉じるのを待ってから遷移する
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }, [router]);
+
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          headerRight: renderHeaderRight,
+        }}
       />
-      <View style={styles.adContainer}>
-        <BannerAdMob size={BannerAdSize.BANNER} />
-      </View>
-      <View style={styles.episodeContainer}>
-        <ArtworkImage width={50} height={50} borderRadius={8} />
-        <View style={styles.episodeInfo}>
-          <Text style={styles.episodeTitle} numberOfLines={1}>
-            {currentTrack.title}
-          </Text>
-          <Text style={styles.channelName} numberOfLines={1}>
-            {currentTrack.artist}
-          </Text>
+      {currentQueue.length === 0 || currentTrack === null ? (
+        <View style={styles.container}>
+          <LoadingView />
         </View>
-      </View>
-      <View style={styles.sliderContainer}>
-        <Slider
-          style={styles.seekBar}
-          value={playingTrackDuration > 0 ? playbackPosition / playingTrackDuration : 0}
-          onSlidingComplete={handleSeek}
-          minimumTrackTintColor={theme.color.accent}
-          maximumTrackTintColor={theme.color.bgEmphasis}
-          thumbImage={require('../../assets/player/thumb.png')}
-          minimumValue={0}
-          maximumValue={1}
-          step={0.01}
-        />
-      </View>
-      <View style={styles.playerContainer}>
-        <PressableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
-          <View style={styles.controlButton}>
-            <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
+      ) : (
+        <View style={styles.container}>
+          <TranscriptScrollBox
+            transcriptUrl={episode?.transcriptUrl}
+            currentTimePosition={progress.position}
+            width={Dimensions.get('window').width}
+            height={Dimensions.get('window').height * 0.7 - 60}
+            disableAutoScroll={episode?.hasChangeableAd}
+          />
+          <View style={styles.adContainer}>
+            <BannerAdMob size={BannerAdSize.BANNER} />
           </View>
-        </PressableOpacity>
-        {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
+          <View style={styles.episodeContainer}>
+            <ArtworkImage width={50} height={50} borderRadius={8} />
+            <View style={styles.episodeInfo}>
+              <Text style={styles.episodeTitle} numberOfLines={1}>
+                {currentTrack.title}
+              </Text>
+              <Text style={styles.channelName} numberOfLines={1}>
+                {currentTrack.artist}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.sliderContainer}>
+            <Slider
+              style={styles.seekBar}
+              value={playingTrackDuration > 0 ? playbackPosition / playingTrackDuration : 0}
+              onSlidingComplete={handleSeek}
+              minimumTrackTintColor={theme.color.accent}
+              maximumTrackTintColor={theme.color.bgEmphasis}
+              thumbImage={require('../../assets/player/thumb.png')}
+              minimumValue={0}
+              maximumValue={1}
+              step={0.01}
+            />
+          </View>
+          <View style={styles.playerContainer}>
+            <PressableOpacity style={styles.playerContainerItem} onPress={handlePlaybackRate}>
+              <View style={styles.controlButton}>
+                <Text style={styles.playbackRate}>{currentPlaybackRate}x</Text>
+              </View>
+            </PressableOpacity>
+            {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToPrevious}>
           <View style={styles.controlButton}>
             <LeftIcon width={28} height={28} fill={theme.color.textMain} />
           </View>
         </PressableOpacity> */}
-        <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
-          <View style={styles.controlButton}>
-            <Image
-              style={styles.controlImage}
-              width={28}
-              height={28}
-              source={require('../../assets/player/back15Black.png')}
-            />
-          </View>
-        </PressableOpacity>
-        <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
-          <View style={styles.playPauseButton}>{playPauseButton}</View>
-        </PressableOpacity>
-        <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(15)}>
-          <View style={styles.controlButton}>
-            <Image
-              style={styles.controlImage}
-              width={28}
-              height={28}
-              source={require('../../assets/player/forward15Black.png')}
-            />
-          </View>
-        </PressableOpacity>
-        {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
+            <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(-15)}>
+              <View style={styles.controlButton}>
+                <Image
+                  style={styles.controlImage}
+                  width={28}
+                  height={28}
+                  source={require('../../assets/player/back15Black.png')}
+                />
+              </View>
+            </PressableOpacity>
+            <PressableOpacity style={styles.playerContainerItem} onPress={handlePlayPause}>
+              <View style={styles.playPauseButton}>
+                <PlayPauseIcon isLoading={isLoading} isPlaying={isPlaying} />
+              </View>
+            </PressableOpacity>
+            <PressableOpacity style={styles.playerContainerItem} onPress={() => handleSkip(15)}>
+              <View style={styles.controlButton}>
+                <Image
+                  style={styles.controlImage}
+                  width={28}
+                  height={28}
+                  source={require('../../assets/player/forward15Black.png')}
+                />
+              </View>
+            </PressableOpacity>
+            {/* <PressableOpacity style={styles.playerContainerItem} onPress={skipToNext}>
           <View style={styles.controlButton}>
             <RightIcon width={28} height={28} color={theme.color.textMain} />
           </View>
         </PressableOpacity> */}
-        {hasTranslatedTranscript ? (
-          <PressableOpacity style={styles.playerContainerItem} onPress={handleOpenTranscriptModal}>
-            <View style={styles.controlButton}>
-              <TranslateIcon width={28} height={28} color={theme.color.textMain} />
-            </View>
-          </PressableOpacity>
-        ) : (
-          <View style={styles.playerContainerItem} />
-        )}
-      </View>
-    </View>
+            {hasTranslatedTranscript ? (
+              <PressableOpacity
+                style={styles.playerContainerItem}
+                onPress={handleOpenTranscriptModal}
+              >
+                <View style={styles.controlButton}>
+                  <TranslateIcon width={28} height={28} color={theme.color.textMain} />
+                </View>
+              </PressableOpacity>
+            ) : (
+              <View style={styles.playerContainerItem} />
+            )}
+          </View>
+        </View>
+      )}
+      {/* BottomSheet */}
+      <PlaySettingBottomSheet ref={playSettingBottomSheetRef} onAfterClose={backAndWaitAnimation} />
+    </>
   );
 });
 
@@ -312,6 +318,15 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  bottomSheetText: {
+    color: theme.color.textMain,
+    fontSize: 16,
+    fontWeight: '800',
   },
 });
 
