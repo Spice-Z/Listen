@@ -10,7 +10,7 @@ type Props = {
 type Hooks = {
   episode?: GetEpisodeInCurrentEpisodeDataQuery['episode'];
   hasTranslatedTranscript: boolean;
-  canDirection: boolean;
+  canDictation: boolean;
 };
 
 const GET_EPISODE_IN_CURRENT_EPISODE_DATA = gql(/* GraphQL */ `
@@ -23,7 +23,7 @@ const GET_EPISODE_IN_CURRENT_EPISODE_DATA = gql(/* GraphQL */ `
         transcriptUrl
       }
       hasChangeableAd
-      canDirection
+      canDictation
     }
   }
 `);
@@ -51,18 +51,18 @@ export const useCurrentEpisodeData = ({
     }
     return data.episode.translatedTranscripts.length > 0;
   }, [data]);
-  const canDirection = useMemo(() => {
+  const canDictation = useMemo(() => {
     if (!data) {
       return false;
     }
-    if (!data?.episode?.canDirection) {
+    if (!data?.episode?.canDictation) {
       return false;
     }
-    return data.episode.canDirection;
+    return data.episode.canDictation;
   }, [data]);
   return {
     episode,
     hasTranslatedTranscript,
-    canDirection,
+    canDictation,
   };
 };

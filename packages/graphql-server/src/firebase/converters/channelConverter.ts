@@ -20,7 +20,7 @@ class Channel {
     readonly language: string,
     readonly copyright: string,
     readonly hasChangeableAd: boolean,
-    readonly canDirection: boolean,
+    readonly canDictation: boolean,
   ) {}
 }
 
@@ -40,7 +40,7 @@ interface ChannelDbModel {
   language: string;
   copyright: string;
   hasChangeableAd: boolean;
-  canDirection: boolean;
+  canDictation: boolean;
 }
 
 export const channelConverter: FirestoreDataConverter<Channel> = {
@@ -55,7 +55,7 @@ export const channelConverter: FirestoreDataConverter<Channel> = {
       language: channel.language,
       copyright: channel.copyright,
       hasChangeableAd: channel.hasChangeableAd,
-      canDirection: channel.canDirection,
+      canDictation: channel.canDictation,
     };
   },
   fromFirestore(snapshot): Channel {
@@ -72,7 +72,7 @@ export const channelConverter: FirestoreDataConverter<Channel> = {
       data.language,
       data.copyright,
       data.hasChangeableAd,
-      data.canDirection,
+      data.canDictation,
     );
   },
 };

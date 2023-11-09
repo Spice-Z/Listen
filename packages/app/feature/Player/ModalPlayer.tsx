@@ -44,7 +44,7 @@ const ModalPlayer = memo(() => {
   } = useTrackPlayer();
   const currentEpisodeId = !!currentTrack ? currentTrack.id : null;
   const currentEpisodeChannelId = !!currentTrack ? currentTrack.channelId : null;
-  const { episode, hasTranslatedTranscript, canDirection } = useCurrentEpisodeData({
+  const { episode, hasTranslatedTranscript, canDictation } = useCurrentEpisodeData({
     currentEpisodeChannelId,
     currentEpisodeId,
   });
@@ -97,7 +97,7 @@ const ModalPlayer = memo(() => {
     }
   }, []);
   const renderHeaderRight = useCallback(() => {
-    if (!canDirection) {
+    if (!canDictation) {
       return null;
     }
     return (
@@ -105,7 +105,7 @@ const ModalPlayer = memo(() => {
         <DotsMenuIcon width={24} height={24} color={theme.color.textMain} />
       </PressableOpacity>
     );
-  }, [canDirection, toggleBottomSheet]);
+  }, [canDictation, toggleBottomSheet]);
 
   const backAndWaitAnimation = useCallback(async () => {
     router.back();
