@@ -88,18 +88,16 @@ const PlaySettingBottomSheet = forwardRef(({ onAfterClose }: Props, ref) => {
       enablePanDownToClose
     >
       <View style={styles.contentContainer}>
-        <View>
-          {!isOnDictationPlayer && (
-            <PressableScale onPress={onPressSwitchToDictation}>
-              <Text style={styles.bottomSheetText}>Switch to Dictation Mode</Text>
-            </PressableScale>
-          )}
-          {!isOnTranscriptPlayer && (
-            <PressableScale onPress={onPressSwitchToNormal}>
-              <Text style={styles.bottomSheetText}>Switch to Transcript Mode</Text>
-            </PressableScale>
-          )}
-        </View>
+        {!isOnDictationPlayer && (
+          <PressableScale style={styles.item} onPress={onPressSwitchToDictation}>
+            <Text style={styles.bottomSheetText}>Switch to Dictation Mode</Text>
+          </PressableScale>
+        )}
+        {!isOnTranscriptPlayer && (
+          <PressableScale style={styles.item} onPress={onPressSwitchToNormal}>
+            <Text style={styles.bottomSheetText}>Switch to Transcript Mode</Text>
+          </PressableScale>
+        )}
       </View>
     </BottomSheet>
   );
@@ -111,6 +109,9 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     paddingHorizontal: 16,
+  },
+  item: {
+    paddingVertical: 16,
   },
   bottomSheetText: {
     color: theme.color.textMain,
