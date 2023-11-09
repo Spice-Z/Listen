@@ -42,7 +42,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
       ...podcastData,
       hasChangeableAd: false,
       includeInfoInPrompt: true,
-      canDirection: false,
+      canDictation: false,
     });
     isNewPodcastShow = true;
     console.log('new');
@@ -64,7 +64,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     pubDate: Date;
     season: string | undefined;
     episode: string | undefined;
-    canDirection: boolean;
+    canDictation: boolean;
   };
 
   // lastBuildDateが一ヶ月以上前の場合、エピソードを更新しない
@@ -86,7 +86,7 @@ export async function fetchAndSavePodcast(feedUrl: string) {
       pubDate: item.pubDate ? new Date(item.pubDate) : now,
       season: item.itunes ? item.itunes.season : undefined,
       episode: item.itunes ? item.itunes.episode : undefined,
-      canDirection: false,
+      canDictation: false,
     };
   });
 

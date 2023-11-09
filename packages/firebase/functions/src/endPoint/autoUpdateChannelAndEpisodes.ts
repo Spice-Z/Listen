@@ -22,7 +22,7 @@ export const autoUpdateChannelAndEpisodes = functions
       channelCollectionShapshot.docs.map(async (channelDoc) => {
         const channelFromDB = channelDoc.data();
         const { channel, episodes } = await fetchChannelDataByFeedUrl(channelFromDB.feedUrl);
-        const canDirection = channelFromDB.canDirection ? !!channelFromDB.canDirection : false;
+        const canDictation = channelFromDB.canDictation ? !!channelFromDB.canDictation : false;
 
         // pubDateが更新されていない場合は処理を終了する
         if (
@@ -112,7 +112,7 @@ export const autoUpdateChannelAndEpisodes = functions
         const newEpisodesPromises = newEpisodes.map(async (episode) => {
           const addedEpisode = await channelRef.collection(EPISODE_DOCUMENT_NAME).add({
             ...episode,
-            canDirection,
+            canDictation,
           });
           updatedEpisodes.push({
             episodeId: addedEpisode.id,
