@@ -8,6 +8,7 @@ import { generateTranslatedTranscript } from './endPoint/generateTranslatedTrans
 import { generateTranscriptFromIds } from './endPoint/generateTranscriptFromIds.js';
 import { updateShow } from './endPoint/updateShow.js';
 import { getAvailableEpisodes } from './endPoint/getAvailableEpisodes.js';
+import { onEpisodeUpdate } from './endPoint/onEpisodeUpdate.js';
 
 initializeApp();
 getFirestore().settings({
@@ -23,4 +24,5 @@ export {
   generateTranslatedTranscript,
   generateTranscriptFromIds,
   updateShow,
+  onEpisodeUpdate,
 };
