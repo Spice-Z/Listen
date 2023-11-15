@@ -31,7 +31,6 @@ export async function fetchAndSavePodcast(feedUrl: string) {
     .get();
   let channelRef: FirebaseFirestore.DocumentReference;
   let isNewPodcastShow = false;
-  let hasChangeableAd = false;
   if (channelSnapshot.empty) {
     // 新規ポッドキャストの場合
     channelRef = await store.collection(CHANNEL_DOCUMENT_NAME).add({
@@ -45,7 +44,6 @@ export async function fetchAndSavePodcast(feedUrl: string) {
   } else {
     // 既存のポッドキャストの場合
     channelRef = channelSnapshot.docs[0].ref;
-    hasChangeableAd = channelSnapshot.docs[0].data().hasChangeableAd;
     await channelRef.update(podcastData);
   }
 
