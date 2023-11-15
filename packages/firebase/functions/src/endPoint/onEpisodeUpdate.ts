@@ -7,8 +7,9 @@ import {
   EPISODE_DOCUMENT_NAME,
 } from '../constants.js';
 
-export const onEpisodeUpdate = functions.firestore
-  .document(`${CHANNEL_DOCUMENT_NAME}/{channelId}/${EPISODE_DOCUMENT_NAME}/{episodeId}`)
+export const onEpisodeUpdate = functions
+  .region('asia-northeast1')
+  .firestore.document(`${CHANNEL_DOCUMENT_NAME}/{channelId}/${EPISODE_DOCUMENT_NAME}/{episodeId}`)
   .onWrite(async (change, context) => {
     const { channelId, episodeId } = context.params;
     console.log({ channelId, episodeId });
