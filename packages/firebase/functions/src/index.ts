@@ -7,7 +7,6 @@ import { autoUpdateChannelAndEpisodes } from './endPoint/autoUpdateChannelAndEpi
 import { generateTranslatedTranscript } from './endPoint/generateTranslatedTranscript.js';
 import { generateTranscriptFromIds } from './endPoint/generateTranscriptFromIds.js';
 import { updateShow } from './endPoint/updateShow.js';
-import { getAvailableEpisodes } from './endPoint/getAvailableEpisodes.js';
 import { onEpisodeUpdate } from './endPoint/onEpisodeUpdate.js';
 
 initializeApp();
@@ -20,7 +19,6 @@ export {
   autoGenerateTranslatedTranscript,
   autoUpdateChannelAndEpisodes,
   registerChannel,
-  getAvailableEpisodes,
   generateTranslatedTranscript,
   generateTranscriptFromIds,
   updateShow,

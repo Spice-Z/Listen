@@ -1,10 +1,6 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import Parser from 'rss-parser';
-import {
-  AVAILABLE_EPISODES_DOCUMENT_NAME,
-  CHANNEL_DOCUMENT_NAME,
-  EPISODE_DOCUMENT_NAME,
-} from '../constants.js';
+import { CHANNEL_DOCUMENT_NAME, EPISODE_DOCUMENT_NAME } from '../constants.js';
 
 const parser = new Parser();
 export async function fetchAndSavePodcast(feedUrl: string) {
@@ -113,17 +109,6 @@ export async function fetchAndSavePodcast(feedUrl: string) {
       if (episodeSnapshot.empty) {
         // 新規エピソードの場合
         const episodeDocRef = await channelRef.collection(EPISODE_DOCUMENT_NAME).add(episodeData);
-        const addedEpisode = await episodeDocRef.get();
-        if (!hasChangeableAd) {
-          const availableEpisodeData = {
-            channelId: channelRef.id,
-            pubDate: episodeData.pubDate,
-          };
-          await store
-            .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
-            .doc(addedEpisode.id)
-            .set(availableEpisodeData);
-        }
         episodeId = episodeDocRef.id;
         pubDate = episodeData.pubDate;
         updated = true;
@@ -139,17 +124,6 @@ export async function fetchAndSavePodcast(feedUrl: string) {
         // rssから取得した更新日時変更されていたらエピソードも更新
         if (episodeData.pubDate !== episodeSnapshot.docs[0].data().pubDate) {
           await episodeDocRef.update(episodeData);
-          const addedEpisode = await episodeDocRef.get();
-          if (!hasChangeableAd) {
-            const availableEpisodeData = {
-              channelId: channelRef.id,
-              pubDate: episodeData.pubDate,
-            };
-            await store
-              .collection(AVAILABLE_EPISODES_DOCUMENT_NAME)
-              .doc(addedEpisode.id)
-              .set(availableEpisodeData);
-          }
           if (episodeData.url !== episodeSnapshot.docs[0].data().url) {
             episodeId = episodeDocRef.id;
             pubDate = episodeData.pubDate;
