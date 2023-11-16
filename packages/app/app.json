@@ -3,7 +3,7 @@
     "name": "Listen",
     "slug": "Listen",
     "scheme": "listen-podcast",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "jsEngine": "hermes",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "plugins": [
       "@react-native-firebase/app",
       [
@@ -34,7 +36,9 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["audio"],
+        "UIBackgroundModes": [
+          "audio"
+        ],
         "NSUserTrackingUsageDescription": "アプリのバグ修正や体験向上のために行動データを利用します。",
         "SKAdNetworkItems": [
           {
@@ -188,7 +192,7 @@
       },
       "bundleIdentifier": "com.spicex.Listen",
       "requireFullScreen": true,
-      "buildNumber": "30"
+      "buildNumber": "32"
     },
     "android": {
       "adaptiveIcon": {
