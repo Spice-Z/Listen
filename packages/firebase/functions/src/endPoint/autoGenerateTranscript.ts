@@ -125,6 +125,17 @@ export const autoGenerateTranscript = functions
         functions.logger.info('error while transcribing', {
           error,
         });
+        // エラーになった場合は、エラーの回数を記録して、次のepisodeに進む
+        // エラーの回数も記録する
+        const dataRef = await store
+          .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
+          .doc(episode.id)
+          .get();
+        const errorCount = dataRef.data()?.errorCount || 0;
+        await store
+          .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
+          .doc(episode.id)
+          .set({ errorCount: errorCount + 1 });
       }
     }
     return;
