@@ -42,10 +42,6 @@ export const autoGenerateTranscript = functions
       };
     });
 
-    functions.logger.info('pandingEpisodes', {
-      length: episodes.length,
-    });
-
     for (const episode of episodes) {
       try {
         const channelRef = store.collection(CHANNEL_DOCUMENT_NAME).doc(episode.channelId);
@@ -123,7 +119,7 @@ export const autoGenerateTranscript = functions
           }),
         );
       } catch (error) {
-        functions.logger.info('error while transcribing', {
+        functions.logger.error('error while transcribing', {
           error,
         });
         // エラーになった場合は、エラーの回数を記録して、次のepisodeに進む
