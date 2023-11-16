@@ -22,12 +22,13 @@ export const autoGenerateTranscript = functions
     memory: '512MB',
   })
   .region('asia-northeast1')
-  .pubsub.schedule('every 30 minutes')
+  .pubsub.schedule('every 10 minutes')
   // .pubsub.schedule('every 12 hours') // dev用
   .onRun(async (context) => {
     const store = getFirestore();
     const pendingEpisodesSnapshot = await store
       .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
+      .where('errorCount', '<', 2)
       .get();
 
     const episodes = pendingEpisodesSnapshot.docs.map((doc) => {
