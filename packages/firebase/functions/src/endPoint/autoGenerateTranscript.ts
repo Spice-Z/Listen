@@ -18,17 +18,16 @@ import { getFirestore } from 'firebase-admin/firestore';
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '';
 export const autoGenerateTranscript = functions
   .runWith({
-    timeoutSeconds: 300,
+    timeoutSeconds: 500,
     memory: '512MB',
   })
   .region('asia-northeast1')
-  .pubsub.schedule('every 10 minutes')
+  .pubsub.schedule('every 30 minutes')
   // .pubsub.schedule('every 12 hours') // dev用
   .onRun(async (context) => {
     const store = getFirestore();
     const pendingEpisodesSnapshot = await store
       .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
-      .where('errorCount', '<', 2)
       .get();
 
     const episodes = pendingEpisodesSnapshot.docs.map((doc) => {
@@ -39,11 +38,20 @@ export const autoGenerateTranscript = functions
         url: data.url,
         title: data.title,
         description: data.content,
+        errorCount: data.errorCount,
       };
     });
 
     for (const episode of episodes) {
       try {
+        if (episode.errorCount && episode.errorCount >= 3) {
+          functions.logger.info('skip transcript', {
+            episodeId: episode.id,
+            title: episode.title,
+            errorCount: episode.errorCount,
+          });
+          return;
+        }
         const channelRef = store.collection(CHANNEL_DOCUMENT_NAME).doc(episode.channelId);
         const channelDoc = await channelRef.get();
 
@@ -128,11 +136,12 @@ export const autoGenerateTranscript = functions
           .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
           .doc(episode.id)
           .get();
-        const errorCount = dataRef.data()?.errorCount || 0;
+        const data = dataRef.data();
+        const errorCount = data?.errorCount || 0;
         await store
           .collection(TRANSCRIPT_PENDING_EPISODES_DOCUMENT_NAME)
           .doc(episode.id)
-          .set({ errorCount: errorCount + 1 });
+          .set({ ...data, errorCount: errorCount + 1 });
       }
     }
     return;
