@@ -18,6 +18,10 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AllEpisodeFilter = {
+  availableType?: InputMaybe<EpisodeAvailableType>;
+};
+
 export type Channel = {
   __typename?: 'Channel';
   author: Scalars['String']['output'];
@@ -70,6 +74,13 @@ export type Episode = Node & {
   url: Scalars['String']['output'];
 };
 
+export enum EpisodeAvailableType {
+  All = 'ALL',
+  Dictation = 'DICTATION',
+  Transcript = 'TRANSCRIPT',
+  TranslatedTranscript = 'TRANSLATED_TRANSCRIPT'
+}
+
 export type EpisodeConnection = {
   __typename?: 'EpisodeConnection';
   edges: Array<EpisodeEdge>;
@@ -96,10 +107,20 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  allEpisodes: EpisodeConnection;
   channel: Channel;
   channels: ChannelConnection;
   episode: Episode;
   node?: Maybe<Node>;
+};
+
+
+export type QueryAllEpisodesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<AllEpisodeFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -208,11 +229,13 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = R
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AllEpisodeFilter: ResolverTypeWrapper<PartialDeep<AllEpisodeFilter,{recurseIntoArrays: true}>>;
   Boolean: ResolverTypeWrapper<PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>>;
   Channel: ResolverTypeWrapper<PartialDeep<Channel,{recurseIntoArrays: true}>>;
   ChannelConnection: ResolverTypeWrapper<PartialDeep<ChannelConnection,{recurseIntoArrays: true}>>;
   ChannelEdge: ResolverTypeWrapper<PartialDeep<ChannelEdge,{recurseIntoArrays: true}>>;
   Episode: ResolverTypeWrapper<PartialDeep<Episode,{recurseIntoArrays: true}>>;
+  EpisodeAvailableType: ResolverTypeWrapper<PartialDeep<EpisodeAvailableType,{recurseIntoArrays: true}>>;
   EpisodeConnection: ResolverTypeWrapper<PartialDeep<EpisodeConnection,{recurseIntoArrays: true}>>;
   EpisodeEdge: ResolverTypeWrapper<PartialDeep<EpisodeEdge,{recurseIntoArrays: true}>>;
   Float: ResolverTypeWrapper<PartialDeep<Scalars['Float']['output'],{recurseIntoArrays: true}>>;
@@ -227,6 +250,7 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AllEpisodeFilter: PartialDeep<AllEpisodeFilter,{recurseIntoArrays: true}>;
   Boolean: PartialDeep<Scalars['Boolean']['output'],{recurseIntoArrays: true}>;
   Channel: PartialDeep<Channel,{recurseIntoArrays: true}>;
   ChannelConnection: PartialDeep<ChannelConnection,{recurseIntoArrays: true}>;
@@ -314,6 +338,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  allEpisodes?: Resolver<ResolversTypes['EpisodeConnection'], ParentType, ContextType, RequireFields<QueryAllEpisodesArgs, 'first'>>;
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'channelId'>>;
   channels?: Resolver<ResolversTypes['ChannelConnection'], ParentType, ContextType, RequireFields<QueryChannelsArgs, 'first'>>;
   episode?: Resolver<ResolversTypes['Episode'], ParentType, ContextType, RequireFields<QueryEpisodeArgs, 'channelId' | 'episodeId'>>;

@@ -10,6 +10,10 @@ directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
 
 directive @key(fields: _FieldSet!) on OBJECT | INTERFACE
 
+input AllEpisodeFilter {
+  availableType: EpisodeAvailableType = ALL
+}
+
 type Channel {
   author: String!
   categories: [String!]!
@@ -50,6 +54,13 @@ type Episode implements Node {
   url: String!
 }
 
+enum EpisodeAvailableType {
+  ALL
+  DICTATION
+  TRANSCRIPT
+  TRANSLATED_TRANSCRIPT
+}
+
 type EpisodeConnection {
   edges: [EpisodeEdge!]!
   pageInfo: PageInfo!
@@ -72,6 +83,7 @@ type PageInfo {
 }
 
 type Query {
+  allEpisodes(after: String, before: String, filter: AllEpisodeFilter, first: Int = 30, last: Int): EpisodeConnection!
   channel(channelId: String!): Channel!
   channels(after: String, before: String, first: Int = 30, last: Int): ChannelConnection!
   episode(channelId: String!, episodeId: String!): Episode!

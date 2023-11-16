@@ -8,6 +8,14 @@ import { GraphQLError } from 'graphql';
 import { channelConverter } from '../../../firebase/converters/channelConverter.js';
 
 const typeDefs = gql`
+  type EpisodeEdge {
+    cursor: String!
+    node: Episode!
+  }
+  type EpisodeConnection {
+    edges: [EpisodeEdge!]!
+    pageInfo: PageInfo!
+  }
   type Episode implements Node {
     id: ID!
     episodeId: String!

@@ -7,14 +7,6 @@ import { episodeConverter } from '../../../firebase/converters/episodeConverter.
 import { channelConverter } from '../../../firebase/converters/channelConverter.js';
 
 const typeDefs = gql`
-  type EpisodeEdge {
-    cursor: String!
-    node: Episode!
-  }
-  type EpisodeConnection {
-    edges: [EpisodeEdge!]!
-    pageInfo: PageInfo!
-  }
   extend type Channel {
     episodes(first: Int = 30, after: String, before: String, last: Int): EpisodeConnection!
   }
@@ -26,7 +18,7 @@ const resolver: ChannelResolvers['episodes'] = async (parent, args, context, inf
     throw new GraphQLError('channelId is required');
   }
   const { first } = args;
-
+  // TODO: dataloader,redis
   const channelRef = firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId);
   const channelData = (await channelRef.withConverter(channelConverter).get()).data();
   if (channelData === undefined) {
