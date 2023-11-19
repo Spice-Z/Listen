@@ -27,6 +27,7 @@ const typeDefs = gql`
 
 const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, _info) => {
   const { first, filter } = args;
+  console.log('allEpisodes');
 
   // TODO: dataloader,redis
   // TODO: ページング
@@ -78,6 +79,7 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
     return episodesData;
   })();
 
+  console.log('fetch all');
   // TODO: dataloader,redis
   const edges = await Promise.all(
     episodesData.map(async (data) => {
@@ -93,6 +95,7 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
       };
     }),
   );
+  console.log('length', edges.length);
 
   if (edges.length === 0) {
     return {
