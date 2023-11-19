@@ -1,9 +1,8 @@
 import gql from 'graphql-tag';
-import type { EpisodeResolvers } from '../../../../generated/resolvers-types';
+import type { EpisodeResolvers, Resolvers } from '../../../../generated/resolvers-types';
 import { ALL_EPISODES_DOCUMENT_NAME } from '../../../constants.js';
-import { allEpisodesEpisodeConverter } from '../../../firebase/converters/allEpisodesEpisodeConverter';
+import { allEpisodesEpisodeConverter } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
 import { firestore } from '../../../firebase/index.js';
-import { channelConverter } from '../../../firebase/converters/channelConverter';
 import { GraphQLError } from 'graphql';
 
 const typeDefs = gql`
@@ -32,8 +31,15 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
     throw new Error('The requested episode does not exist.');
   }
   const channelId = allEpisodeData.docs[0].data().channelId;
-  const channelRef = firestore.collection(ALL_EPISODES_DOCUMENT_NAME).doc(channelId);
-  const channelData = (await channelRef.withConverter(channelConverter).get()).data();
+  const channelDoc = await firestore.collection(ALL_EPISODES_DOCUMENT_NAME).doc(channelId).get();
+  if (!channelDoc.exists) {
+    throw new GraphQLError('The requested channel does not exist.', {
+      extensions: {
+        code: 'NOT_FOUND',
+      },
+    });
+  }
+  const channelData = channelDoc.data();
   if (channelData === undefined) {
     throw new GraphQLError('The requested channel does not exist.', {
       extensions: {
@@ -41,11 +47,15 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
       },
     });
   }
-  return channelData;
+  return {
+    ...channelData,
+  };
 };
 
-const resolvers: EpisodeResolvers = {
-  channel: resolver,
+const resolvers: Resolvers = {
+  Episode: {
+    channel: resolver,
+  },
 };
 
 export default {
