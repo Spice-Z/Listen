@@ -13,8 +13,10 @@ const typeDefs = gql`
 
 const resolver: EpisodeResolvers['channel'] = async (parent) => {
   console.log('episode/channel.ts');
+  console.log('parent', parent);
   const { episodeId } = parent;
   if (episodeId === undefined) {
+    console.log('episodeId is undefined');
     throw new GraphQLError('The episodeId is undefined.', {
       extensions: {
         code: 'NOT_FOUND',
@@ -29,6 +31,7 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
     .limit(1)
     .get();
   if (allEpisodeData.empty) {
+    console.log('allEpisodeData is empty');
     throw new GraphQLError('The episode does not exist.', {
       extensions: {
         code: 'NOT_FOUND',
