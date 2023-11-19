@@ -126,7 +126,7 @@ export default {
   resolvers,
 };
 
-const _aeEpisodeToEpisode = (aeEpisode: AEEpisode, hasChangeableAd: boolean): Episode => {
+const _aeEpisodeToEpisode = (aeEpisode: AEEpisode, hasChangeableAd: boolean): Partial<Episode> => {
   return {
     __typename: 'Episode',
     canDictation: aeEpisode.canDictation,

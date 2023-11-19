@@ -11,7 +11,7 @@ directive @provides(fields: _FieldSet!) on FIELD_DEFINITION
 directive @key(fields: _FieldSet!) on OBJECT | INTERFACE
 
 input AllEpisodeFilter {
-  availableType: EpisodeAvailableType = ALL
+  availableType: EpisodeAvailableType
 }
 
 type Channel {
@@ -40,6 +40,7 @@ type ChannelEdge {
 
 type Episode implements Node {
   canDictation: Boolean!
+  channel: Channel!
   content: String!
   description: String!
   duration: Int!
@@ -55,7 +56,6 @@ type Episode implements Node {
 }
 
 enum EpisodeAvailableType {
-  ALL
   DICTATION
   TRANSCRIPT
   TRANSLATED_TRANSCRIPT

@@ -60,6 +60,7 @@ export type ChannelEdge = {
 export type Episode = Node & {
   __typename?: 'Episode';
   canDictation: Scalars['Boolean']['output'];
+  channel: Channel;
   content: Scalars['String']['output'];
   description: Scalars['String']['output'];
   duration: Scalars['Int']['output'];
@@ -75,7 +76,6 @@ export type Episode = Node & {
 };
 
 export enum EpisodeAvailableType {
-  All = 'ALL',
   Dictation = 'DICTATION',
   Transcript = 'TRANSCRIPT',
   TranslatedTranscript = 'TRANSLATED_TRANSCRIPT'
@@ -297,6 +297,7 @@ export type ChannelEdgeResolvers<ContextType = any, ParentType extends Resolvers
 
 export type EpisodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Episode'] = ResolversParentTypes['Episode']> = ResolversObject<{
   canDictation?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
