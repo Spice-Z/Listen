@@ -14,7 +14,6 @@ const typeDefs = gql`
 
 const resolver: EpisodeResolvers['channel'] = async (parent) => {
   console.log('episode/channel.ts');
-  console.log('parent', parent);
   const { episodeId } = parent;
   if (episodeId === undefined) {
     console.log('episodeId is undefined');
@@ -47,16 +46,14 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
       },
     });
   }
-  console.log('allEpisodeData');
   const channelId = allEpisodeDataData.channelId;
-  console.log('channelId', channelId);
   const channelDoc = await firestore
     .collection(CHANNEL_DOCUMENT_NAME)
     .withConverter(channelConverter)
     .doc(channelId)
     .get();
-  console.log('channelDoc.exists', channelDoc.exists);
   if (!channelDoc.exists) {
+    console.log('channelDoc.exists', channelDoc.exists);
     throw new GraphQLError('The requested channel does not exist.', {
       extensions: {
         code: 'NOT_FOUND',
@@ -64,7 +61,6 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
     });
   }
   const channelData = channelDoc.data();
-  console.log('channelData', channelData);
   if (channelData === undefined) {
     console.log('channelData is undefined');
     throw new GraphQLError('The requested channel does not exist.', {
