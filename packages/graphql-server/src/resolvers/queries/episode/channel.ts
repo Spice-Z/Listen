@@ -27,10 +27,9 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
   const allEpisodeData = await firestore
     .collection(ALL_EPISODES_DOCUMENT_NAME)
     .withConverter(allEpisodesEpisodeConverter)
-    .where('episodeId', '==', episodeId)
-    .limit(1)
+    .doc(episodeId)
     .get();
-  if (allEpisodeData.empty) {
+  if (!allEpisodeData.exists) {
     console.log('allEpisodeData is empty');
     throw new GraphQLError('The episode does not exist.', {
       extensions: {
@@ -38,8 +37,17 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
       },
     });
   }
+  const allEpisodeDataData = allEpisodeData.data();
+  if (allEpisodeDataData === undefined) {
+    console.log('allEpisodeDataData is undefined');
+    throw new GraphQLError('The episode does not exist.', {
+      extensions: {
+        code: 'NOT_FOUND',
+      },
+    });
+  }
   console.log('allEpisodeData');
-  const channelId = allEpisodeData.docs[0].data().channelId;
+  const channelId = allEpisodeDataData.channelId;
   console.log('channelId', channelId);
   const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId).get();
   console.log('channelDoc.exists', channelDoc.exists);
