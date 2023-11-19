@@ -4,6 +4,7 @@ import { ALL_EPISODES_DOCUMENT_NAME, CHANNEL_DOCUMENT_NAME } from '../../../cons
 import { allEpisodesEpisodeConverter } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
 import { firestore } from '../../../firebase/index.js';
 import { GraphQLError } from 'graphql';
+import { channelConverter } from '../../../firebase/converters/channelConverter.js';
 
 const typeDefs = gql`
   extend type Episode {
@@ -49,7 +50,11 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
   console.log('allEpisodeData');
   const channelId = allEpisodeDataData.channelId;
   console.log('channelId', channelId);
-  const channelDoc = await firestore.collection(CHANNEL_DOCUMENT_NAME).doc(channelId).get();
+  const channelDoc = await firestore
+    .collection(CHANNEL_DOCUMENT_NAME)
+    .withConverter(channelConverter)
+    .doc(channelId)
+    .get();
   console.log('channelDoc.exists', channelDoc.exists);
   if (!channelDoc.exists) {
     throw new GraphQLError('The requested channel does not exist.', {
@@ -59,6 +64,7 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
     });
   }
   const channelData = channelDoc.data();
+  console.log('channelData', channelData);
   if (channelData === undefined) {
     console.log('channelData is undefined');
     throw new GraphQLError('The requested channel does not exist.', {
@@ -67,6 +73,7 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
       },
     });
   }
+
   return {
     ...channelData,
   };
