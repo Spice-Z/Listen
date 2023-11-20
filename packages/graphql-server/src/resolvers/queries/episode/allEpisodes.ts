@@ -4,6 +4,7 @@ import { firestore } from '../../../firebase/index.js';
 import { ALL_EPISODES_DOCUMENT_NAME } from '../../../constants.js';
 import type { AEEpisode } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
 import { allEpisodesEpisodeConverter } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
+import { channelConverter } from '../../../firebase/converters/channelConverter';
 
 const typeDefs = gql`
   enum EpisodeAvailableType {
@@ -83,9 +84,13 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
   // TODO: dataloader,redis
   const edges = await Promise.all(
     episodesData.map(async (data) => {
-      const hasChangeableAd = (
-        await firestore.collection('channels').doc(data.channelId).get()
-      ).data()?.hasChangeableAd;
+      const channelDoc = await firestore
+        .collection('channels')
+        .withConverter(channelConverter)
+        .doc(data.channelId)
+        .get();
+      const hasChangeableAd = channelDoc.data()?.hasChangeableAd ?? true;
+
       const episode = _aeEpisodeToEpisode(data, hasChangeableAd);
       return {
         cursor: data.id,
