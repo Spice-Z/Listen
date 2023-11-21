@@ -1,13 +1,14 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Pressable, Animated } from 'react-native';
 
 type PressableScaleProps = {
+  hitSlop?: number;
   children: React.ReactNode;
   style?: Object;
   onPress?: () => void;
 };
 
-const PressableScale = memo<PressableScaleProps>(({ children, style, onPress }) => {
+const PressableScale = ({ hitSlop, children, style, onPress }: PressableScaleProps) => {
   const scaleAnim = new Animated.Value(1);
 
   const handlePressIn = () => {
@@ -27,11 +28,16 @@ const PressableScale = memo<PressableScaleProps>(({ children, style, onPress }) 
   };
 
   return (
-    <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut} onPress={onPress}>
+    <Pressable
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onPress={onPress}
+      hitSlop={hitSlop}
+    >
       <Animated.View style={[style, { transform: [{ scale: scaleAnim }] }]}>
         {children}
       </Animated.View>
     </Pressable>
   );
-});
+};
 export default PressableScale;
