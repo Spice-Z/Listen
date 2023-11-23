@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import type { QueryResolvers } from '../../../../generated/resolvers-types';
 import { GraphQLError } from 'graphql';
-import { chanelDataLoader } from '../../../dataloader/channel';
+import { chanelDataLoader } from '../../../dataloader/channel.js';
 
 const typeDefs = gql`
   type Channel {

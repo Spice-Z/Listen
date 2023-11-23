@@ -4,7 +4,7 @@ import { firestore } from '../../../firebase/index.js';
 import { ALL_EPISODES_DOCUMENT_NAME } from '../../../constants.js';
 import type { AEEpisode } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
 import { allEpisodesEpisodeConverter } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
-import { chanelDataLoader } from '../../../dataloader/channel';
+import { chanelDataLoader } from '../../../dataloader/channel.js';
 import { GraphQLError } from 'graphql';
 
 const typeDefs = gql`
