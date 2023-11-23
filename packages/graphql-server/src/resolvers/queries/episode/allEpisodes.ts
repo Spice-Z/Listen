@@ -4,7 +4,8 @@ import { firestore } from '../../../firebase/index.js';
 import { ALL_EPISODES_DOCUMENT_NAME } from '../../../constants.js';
 import type { AEEpisode } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
 import { allEpisodesEpisodeConverter } from '../../../firebase/converters/allEpisodesEpisodeConverter.js';
-import { channelConverter } from '../../../firebase/converters/channelConverter.js';
+import { chanelDataLoader } from '../../../dataloader/channel';
+import { GraphQLError } from 'graphql';
 
 const typeDefs = gql`
   enum EpisodeAvailableType {
@@ -30,7 +31,7 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
   const { first, filter } = args;
   console.log('allEpisodes');
 
-  // TODO: dataloader,redis
+  // TODO: redis
   // TODO: ページング
   const episodesData = await (async () => {
     if (filter?.availableType === 'TRANSCRIPT') {
@@ -80,17 +81,18 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
     return episodesData;
   })();
 
-  console.log('fetch all');
-  // TODO: dataloader,redis
   const edges = await Promise.all(
     episodesData.map(async (data) => {
-      const channelDoc = await firestore
-        .collection('channels')
-        .withConverter(channelConverter)
-        .doc(data.channelId)
-        .get();
-      const hasChangeableAd = channelDoc.data()?.hasChangeableAd ?? true;
+      const channel = await chanelDataLoader.load(data.channelId);
+      if (channel instanceof Error) {
+        throw new GraphQLError('The requested channel does not exist.', {
+          extensions: {
+            code: 'NOT_FOUND',
+          },
+        });
+      }
 
+      const hasChangeableAd = channel.hasChangeableAd;
       const episode = _aeEpisodeToEpisode(data, hasChangeableAd);
       return {
         cursor: data.id,
@@ -100,7 +102,6 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
       };
     }),
   );
-  console.log('length', edges.length);
 
   if (edges.length === 0) {
     return {

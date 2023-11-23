@@ -2,7 +2,7 @@ import type { FirestoreDataConverter } from 'firebase-admin/firestore';
 import { removeLeadingAndTrailingNewlines } from '../../utils/string.js';
 import { toGlobalId } from '../../utils/globalId.js';
 
-class Channel {
+export class Channel {
   constructor(
     readonly id: string,
     readonly channelId: string,

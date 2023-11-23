@@ -1,9 +1,7 @@
 import gql from 'graphql-tag';
 import type { QueryResolvers } from '../../../../generated/resolvers-types';
-import { CHANNEL_DOCUMENT_NAME } from '../../../constants.js';
-import { firestore } from '../../../firebase/index.js';
-import { channelConverter } from '../../../firebase/converters/channelConverter.js';
 import { GraphQLError } from 'graphql';
+import { chanelDataLoader } from '../../../dataloader/channel';
 
 const typeDefs = gql`
   type Channel {
@@ -25,31 +23,16 @@ const typeDefs = gql`
 
 const resolver: QueryResolvers['channel'] = async (parent, args, context, info) => {
   const channelId = args.channelId;
-  const channelDoc = await firestore
-    .collection(CHANNEL_DOCUMENT_NAME)
-    .withConverter(channelConverter)
-    .doc(channelId)
-    .get();
-  if (!channelDoc.exists) {
-    console.log({ channelDoc });
+  const channel = await chanelDataLoader.load(channelId);
+  if (channel instanceof Error) {
     throw new GraphQLError('The requested channel does not exist.', {
       extensions: {
         code: 'NOT_FOUND',
       },
     });
   }
-
-  const channelData = channelDoc.data();
-  if (channelData === undefined) {
-    throw new GraphQLError('The requested channel does not exist.', {
-      extensions: {
-        code: 'NOT_FOUND',
-      },
-    });
-  }
-
   return {
-    ...channelData,
+    ...channel,
   };
 };
 

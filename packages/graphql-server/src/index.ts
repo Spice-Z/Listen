@@ -25,7 +25,6 @@ const server = new ApolloServer<Context>({
 const { url } = await startStandaloneServer(server, {
   listen: { port: Number(port) },
   context: async ({ req }) => {
-    console.log({ authorization: req.headers.authorization });
     // Bearer tokenからtokenだけを取得する
     const token = req.headers.authorization?.replace('Bearer ', '') ?? '';
     // サーバー自体をログイン状態以外で動作させないので、tokenがない場合はエラーにする
