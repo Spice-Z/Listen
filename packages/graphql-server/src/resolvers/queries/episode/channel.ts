@@ -30,7 +30,7 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
     .where('episodeId', '==', episodeId)
     .limit(1)
     .get();
-  if (!allEpisodeDocs.empty) {
+  if (allEpisodeDocs.empty) {
     console.log(`allEpisodeDocs is empty. episodeId: ${episodeId}`);
     throw new GraphQLError('The episode does not exist.', {
       extensions: {
