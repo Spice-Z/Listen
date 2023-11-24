@@ -29,7 +29,7 @@ const typeDefs = gql`
 
 const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, _info) => {
   const { first, filter } = args;
-  console.log('allEpisodes');
+  console.log(`allEpisodes called. first: ${first}, filter: ${JSON.stringify(filter)}`);
 
   // TODO: redis
   // TODO: ページング
