@@ -87,7 +87,7 @@ export const allEpisodesEpisodeConverter: FirestoreDataConverter<AEEpisode> = {
     const duration = getTotalSeconds(data.duration);
     return new AEEpisode(
       toGlobalId('Episode', snapshot.id),
-      snapshot.id,
+      data.episodeId,
       data.channelId,
       removeLeadingAndTrailingNewlines(data.title),
       removeLeadingAndTrailingNewlines(data.description),
