@@ -24,29 +24,30 @@ const resolver: EpisodeResolvers['channel'] = async (parent) => {
     });
   }
 
-  const allEpisodeData = await firestore
+  const allEpisodeDocs = await firestore
     .collection(ALL_EPISODES_DOCUMENT_NAME)
     .withConverter(allEpisodesEpisodeConverter)
-    .doc(episodeId)
+    .where('episodeId', '==', episodeId)
+    .limit(1)
     .get();
-  if (!allEpisodeData.exists) {
-    console.log('allEpisodeData is empty');
+  if (!allEpisodeDocs.empty) {
+    console.log('allEpisodeDocs is empty');
     throw new GraphQLError('The episode does not exist.', {
       extensions: {
         code: 'NOT_FOUND',
       },
     });
   }
-  const allEpisodeDataData = allEpisodeData.data();
-  if (allEpisodeDataData === undefined) {
-    console.log('allEpisodeDataData is undefined');
+  const allEpisodeData = allEpisodeDocs.docs[0].data();
+  if (allEpisodeData === undefined) {
+    console.log('allEpisodeData is undefined');
     throw new GraphQLError('The episode does not exist.', {
       extensions: {
         code: 'NOT_FOUND',
       },
     });
   }
-  const channelId = allEpisodeDataData.channelId;
+  const channelId = allEpisodeData.channelId;
   const channelDoc = await firestore
     .collection(CHANNEL_DOCUMENT_NAME)
     .withConverter(channelConverter)
