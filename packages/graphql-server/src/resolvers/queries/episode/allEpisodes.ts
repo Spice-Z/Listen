@@ -59,6 +59,7 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
       return episodesData;
     }
     if (filter?.availableType === 'DICTATION') {
+      console.log('DICTATION');
       const episodesData = (
         await firestore
           .collection(ALL_EPISODES_DOCUMENT_NAME)
@@ -80,6 +81,8 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
     ).docs.map((doc) => doc.data());
     return episodesData;
   })();
+
+  console.log(`episodesData: ${JSON.stringify(episodesData)}`);
 
   const edges = await Promise.all(
     episodesData.map(async (data) => {
