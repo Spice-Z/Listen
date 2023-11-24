@@ -60,15 +60,19 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
     }
     if (filter?.availableType === 'DICTATION') {
       console.log('DICTATION');
-      const episodesData = (
-        await firestore
-          .collection(ALL_EPISODES_DOCUMENT_NAME)
-          .withConverter(allEpisodesEpisodeConverter)
-          .where('canDictation', '==', true)
-          .orderBy('pubDate', 'desc')
-          .limit(first)
-          .get()
-      ).docs.map((doc) => doc.data());
+      const episodeDocs = await firestore
+        .collection(ALL_EPISODES_DOCUMENT_NAME)
+        .withConverter(allEpisodesEpisodeConverter)
+        .where('canDictation', '==', true)
+        .orderBy('pubDate', 'desc')
+        .limit(first)
+        .get();
+      if (episodeDocs.empty) {
+        console.log('empty');
+        return [];
+      }
+      const episodesData = episodeDocs.docs.map((doc) => doc.data());
+
       return episodesData;
     }
     const episodesData = (
