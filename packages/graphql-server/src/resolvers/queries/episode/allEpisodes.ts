@@ -35,28 +35,38 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
   // TODO: ページング
   const episodesData = await (async () => {
     if (filter?.availableType === 'TRANSCRIPT') {
-      const episodesData = (
-        await firestore
-          .collection(ALL_EPISODES_DOCUMENT_NAME)
-          .withConverter(allEpisodesEpisodeConverter)
-          .where('transcriptUrl', '!=', null)
-          .orderBy('pubDate', 'desc')
-          .limit(first)
-          .get()
-      ).docs.map((doc) => doc.data());
-      return episodesData;
+      try {
+        const episodesData = (
+          await firestore
+            .collection(ALL_EPISODES_DOCUMENT_NAME)
+            .withConverter(allEpisodesEpisodeConverter)
+            .where('transcriptUrl', '!=', null)
+            .orderBy('pubDate', 'desc')
+            .limit(first)
+            .get()
+        ).docs.map((doc) => doc.data());
+        return episodesData;
+      } catch (error) {
+        console.log(error);
+        return [];
+      }
     }
     if (filter?.availableType === 'TRANSLATED_TRANSCRIPT') {
-      const episodesData = (
-        await firestore
-          .collection(ALL_EPISODES_DOCUMENT_NAME)
-          .withConverter(allEpisodesEpisodeConverter)
-          .where('translatedTranscripts', '!=', null)
-          .orderBy('pubDate', 'desc')
-          .limit(first)
-          .get()
-      ).docs.map((doc) => doc.data());
-      return episodesData;
+      try {
+        const episodesData = (
+          await firestore
+            .collection(ALL_EPISODES_DOCUMENT_NAME)
+            .withConverter(allEpisodesEpisodeConverter)
+            .where('translatedTranscripts', '!=', null)
+            .orderBy('pubDate', 'desc')
+            .limit(first)
+            .get()
+        ).docs.map((doc) => doc.data());
+        return episodesData;
+      } catch (error) {
+        console.log(error);
+        return [];
+      }
     }
     if (filter?.availableType === 'DICTATION') {
       console.log('DICTATION');
@@ -76,7 +86,6 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
 
         return episodesData;
       } catch (e) {
-        console.log('error');
         console.log(e);
         return [];
       }
