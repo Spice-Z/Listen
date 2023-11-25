@@ -41,11 +41,21 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
             .collection(ALL_EPISODES_DOCUMENT_NAME)
             .withConverter(allEpisodesEpisodeConverter)
             .where('transcriptUrl', '!=', null)
-            .orderBy('transcriptUrl')
+            .orderBy('transcriptUrl', 'desc')
             .orderBy('pubDate', 'desc')
             .limit(first)
             .get()
         ).docs.map((doc) => doc.data());
+        // pubDateでdescソート
+        episodesData.sort((a, b) => {
+          if (a.pubDate > b.pubDate) {
+            return -1;
+          }
+          if (a.pubDate < b.pubDate) {
+            return 1;
+          }
+          return 0;
+        });
         return episodesData;
       } catch (error) {
         console.log(error);
@@ -59,11 +69,22 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
             .collection(ALL_EPISODES_DOCUMENT_NAME)
             .withConverter(allEpisodesEpisodeConverter)
             .where('translatedTranscripts', '!=', null)
-            .orderBy('translatedTranscripts')
+            .orderBy('translatedTranscripts', 'desc')
             .orderBy('pubDate', 'desc')
             .limit(first)
             .get()
         ).docs.map((doc) => doc.data());
+        // pubDateでdescソート
+        episodesData.sort((a, b) => {
+          if (a.pubDate > b.pubDate) {
+            return -1;
+          }
+          if (a.pubDate < b.pubDate) {
+            return 1;
+          }
+          return 0;
+        });
+
         return episodesData;
       } catch (error) {
         console.log(error);
