@@ -102,11 +102,11 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
           .limit(first)
           .get();
         if (episodeDocs.empty) {
-          console.log('empty');
           return [];
         }
         const episodesData = episodeDocs.docs.map((doc) => doc.data());
-
+        // transcriptUrlがnullのものを除外
+        episodesData.filter((episode) => episode.transcriptUrl !== null);
         return episodesData;
       } catch (e) {
         console.log(e);
@@ -123,8 +123,6 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
     ).docs.map((doc) => doc.data());
     return episodesData;
   })();
-
-  console.log(`episodesData: ${JSON.stringify(episodesData)}`);
 
   const edges = await Promise.all(
     episodesData.map(async (data) => {
