@@ -17,6 +17,7 @@ import { compareSemVer } from '../feature/utils/semVer';
 import { useState } from 'react';
 import mobileAds from 'react-native-google-mobile-ads';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
+import { PlayerProvider } from '../feature/context/player/PlayerProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -67,60 +68,62 @@ export default function Layout() {
         <AuthProvider isInitialized={isInitialized}>
           <ApolloProviderHelper>
             <QueryClientProvider client={queryClient}>
-              <StatusBar style="inverted" />
-              <Stack>
-                <Stack.Screen
-                  name="mainTab"
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="modalPlayer"
-                  options={{
-                    presentation: 'transparentModal',
-                    animation: 'slide_from_bottom',
-                    headerStyle: {
-                      backgroundColor: theme.color.bgMain,
-                    },
-                    headerTitleStyle: {
-                      color: theme.color.textMain,
-                      fontWeight: theme.fontWeight.bold,
-                      fontSize: 18,
-                    },
-                  }}
-                />
-                <Stack.Screen
-                  name="modalDictationPlayer"
-                  options={{
-                    presentation: 'transparentModal',
-                    animation: 'slide_from_bottom',
-                    headerStyle: {
-                      backgroundColor: theme.color.bgMain,
-                    },
-                    headerTitleStyle: {
-                      color: theme.color.textMain,
-                      fontWeight: theme.fontWeight.bold,
-                      fontSize: 18,
-                    },
-                  }}
-                />
-                <Stack.Screen
-                  name="modalTranscriptPlayer"
-                  options={{
-                    presentation: 'transparentModal',
-                    animation: 'slide_from_bottom',
-                    headerStyle: {
-                      backgroundColor: theme.color.bgMain,
-                    },
-                    headerTitleStyle: {
-                      color: theme.color.textMain,
-                      fontWeight: theme.fontWeight.bold,
-                      fontSize: 18,
-                    },
-                  }}
-                />
-              </Stack>
+              <PlayerProvider>
+                <StatusBar style="inverted" />
+                <Stack>
+                  <Stack.Screen
+                    name="mainTab"
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="modalPlayer"
+                    options={{
+                      presentation: 'transparentModal',
+                      animation: 'slide_from_bottom',
+                      headerStyle: {
+                        backgroundColor: theme.color.bgMain,
+                      },
+                      headerTitleStyle: {
+                        color: theme.color.textMain,
+                        fontWeight: theme.fontWeight.bold,
+                        fontSize: 18,
+                      },
+                    }}
+                  />
+                  <Stack.Screen
+                    name="modalDictationPlayer"
+                    options={{
+                      presentation: 'transparentModal',
+                      animation: 'slide_from_bottom',
+                      headerStyle: {
+                        backgroundColor: theme.color.bgMain,
+                      },
+                      headerTitleStyle: {
+                        color: theme.color.textMain,
+                        fontWeight: theme.fontWeight.bold,
+                        fontSize: 18,
+                      },
+                    }}
+                  />
+                  <Stack.Screen
+                    name="modalTranscriptPlayer"
+                    options={{
+                      presentation: 'transparentModal',
+                      animation: 'slide_from_bottom',
+                      headerStyle: {
+                        backgroundColor: theme.color.bgMain,
+                      },
+                      headerTitleStyle: {
+                        color: theme.color.textMain,
+                        fontWeight: theme.fontWeight.bold,
+                        fontSize: 18,
+                      },
+                    }}
+                  />
+                </Stack>
+              </PlayerProvider>
             </QueryClientProvider>
           </ApolloProviderHelper>
         </AuthProvider>
