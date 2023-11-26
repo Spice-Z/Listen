@@ -1,13 +1,16 @@
 import { memo, useMemo } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
-import { PauseIcon, PlayIcon, TranslateIcon } from '../icons';
+import { TranslateIcon } from '../icons';
 import { formatDMMMYY } from '../format/date';
 import { formatDuration } from '../format/duration';
 import PressableOpacity from '../Pressable/PressableOpacity';
 import { Image as ExpoImage } from 'expo-image';
 import { IMAGE_DEFAULT_BLUR_HASH } from '../../constants';
 import TextIcon from '../icons/TextIcon';
+import PressableScale from '../Pressable/PressableScale';
+import PlayPauseIcon from '../Player/components/PlayPauseIcon';
+import { PlayType } from '../context/player/context';
 
 type Props = {
   channelTitle: string;
@@ -19,9 +22,13 @@ type Props = {
   isPlaying: boolean;
   isLoading: boolean;
   onPressPlay: () => void;
+  onPressDictationPlay: () => void;
+  onPressChannel: () => void;
   hasTranslatedTranscript: boolean;
   hasTranscript: boolean;
   canAutoScroll: boolean;
+  canDictation: boolean;
+  currentPlayType: PlayType;
 };
 
 const Episode = memo(
@@ -35,9 +42,13 @@ const Episode = memo(
     isPlaying,
     isLoading,
     onPressPlay,
+    onPressDictationPlay,
+    onPressChannel,
     hasTranslatedTranscript,
     hasTranscript,
     canAutoScroll,
+    canDictation,
+    currentPlayType,
   }: Props) => {
     const formattedDate = useMemo(() => {
       return formatDMMMYY(dateUnixTime);
@@ -47,19 +58,17 @@ const Episode = memo(
       return formatDuration(duration);
     }, [duration]);
 
-    const playPauseButton = useMemo(() => {
-      if (isLoading) {
-        return <ActivityIndicator />;
-      }
-      return isPlaying ? (
-        <PauseIcon fill={theme.color.bgMain} width={28} height={28} />
-      ) : (
-        <PlayIcon fill={theme.color.bgMain} width={28} height={28} />
-      );
-    }, [isLoading, isPlaying]);
+    const isPlayingDefault = useMemo(() => {
+      return currentPlayType === 'default' && isPlaying;
+    }, [currentPlayType, isPlaying]);
+
+    const isPlayingDictation = useMemo(() => {
+      return currentPlayType === 'dictation' && isPlaying;
+    }, [currentPlayType, isPlaying]);
+
     return (
       <ScrollView style={styles.container}>
-        <View style={styles.head}>
+        <PressableScale onPress={onPressChannel} style={styles.head}>
           <ExpoImage
             style={styles.image}
             source={episodeImageUrl}
@@ -71,7 +80,7 @@ const Episode = memo(
             </Text>
             <Text style={styles.date}>{formattedDate}</Text>
           </View>
-        </View>
+        </PressableScale>
         <Text selectable style={styles.episodeTitle}>
           {episodeTitle}
         </Text>
@@ -83,11 +92,18 @@ const Episode = memo(
               <TextIcon width={18} height={18} color={theme.color.accent} />
             ) : null}
             {canAutoScroll && <Text style={styles.runEmoji}>🏃‍♀️</Text>}
+            {canDictation && <Text style={styles.runEmoji}>📝</Text>}
           </View>
           <View style={styles.buttonContainer}>
             <Text style={styles.duration}>{formattedDuration}</Text>
+            {canDictation && (
+              <PressableOpacity style={styles.playDictationButton} onPress={onPressDictationPlay}>
+                <Text style={styles.runEmoji}>📝</Text>
+                <PlayPauseIcon isPlaying={isPlayingDictation} isLoading={isLoading} size={24} />
+              </PressableOpacity>
+            )}
             <PressableOpacity style={styles.playButton} onPress={onPressPlay}>
-              {playPauseButton}
+              <PlayPauseIcon isPlaying={isPlayingDefault} isLoading={isLoading} size={24} />
             </PressableOpacity>
           </View>
         </View>
@@ -167,13 +183,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    gap: 10,
   },
   playButton: {
-    marginLeft: 16,
     backgroundColor: theme.color.accent,
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
     borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playDictationButton: {
+    flexDirection: 'row',
+    backgroundColor: theme.color.accent,
+    height: 40,
+    borderRadius: 50,
+    paddingHorizontal: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },

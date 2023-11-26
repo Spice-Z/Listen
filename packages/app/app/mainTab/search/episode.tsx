@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { useGlobalSearchParams, Stack } from 'expo-router';
+import { useGlobalSearchParams, Stack, useRouter } from 'expo-router';
 import Episode from '../../../feature/Episode/Episode';
 import { theme } from '../../../feature/styles/theme';
 import { TrackPlayerTrack, useTrackPlayer } from '../../../feature/Player/hooks/useTrackPlayer';
@@ -13,6 +13,7 @@ import MiniPlayerSpacer from '../../../feature/Spacer/MiniPlayerSpacer';
 import SquareShimmer from '../../../feature/Shimmer/SquareShimmer';
 import { BannerAdSize } from 'react-native-google-mobile-ads';
 import BannerAdMob from '../../../feature/Ad/BannerAdMob';
+import { usePlayerContext } from '../../../feature/context/player/context';
 
 const GET_EPISODE = gql(/* GraphQL */ `
   query GetEpisode($channelId: String!, $episodeId: String!) {
@@ -49,6 +50,8 @@ const GET_CHANNEL = gql(/* GraphQL */ `
 `);
 
 function EpisodePage() {
+  const router = useRouter();
+  const { playType, setPlayType } = usePlayerContext();
   const { channelId, episodeId } = useGlobalSearchParams();
   const { data } = useSuspenseQuery(GET_EPISODE, {
     variables: {
@@ -92,7 +95,12 @@ function EpisodePage() {
   }, [currentTrack?.url, episode, isPlaying]);
   const onPressPlay = useCallback(async () => {
     if (isThisEpisodePlaying) {
-      TrackPlayer.pause();
+      if (playType === 'dictation') {
+        setPlayType('default');
+        router.push('/modalPlayer');
+      } else {
+        TrackPlayer.pause();
+      }
     } else {
       const track: TrackPlayerTrack = {
         id: episode.episodeId,
@@ -105,7 +113,8 @@ function EpisodePage() {
         // TODO: add Date from pubDate
       };
       await playTrackIfNotCurrentlyPlaying(track);
-      // TODO: 連続再生のために、次のエピソードをqueueに入れる
+      setPlayType('default');
+      router.push('/modalPlayer');
     }
   }, [
     channel.channelId,
@@ -118,7 +127,56 @@ function EpisodePage() {
     episode.url,
     isThisEpisodePlaying,
     playTrackIfNotCurrentlyPlaying,
+    playType,
+    router,
+    setPlayType,
   ]);
+
+  const onPressDictationPlay = useCallback(async () => {
+    if (isThisEpisodePlaying) {
+      if (playType === 'default') {
+        setPlayType('dictation');
+        router.push('/modalDictationPlayer');
+      } else {
+        TrackPlayer.pause();
+      }
+    } else {
+      const track: TrackPlayerTrack = {
+        id: episode.episodeId,
+        channelId: channel.channelId,
+        title: episode.title,
+        artist: channel.title,
+        artwork: episode.imageUrl || channel.imageUrl,
+        url: episode.url,
+        duration: episode.duration,
+        // TODO: add Date from pubDate
+      };
+      await playTrackIfNotCurrentlyPlaying(track);
+      setPlayType('dictation');
+      router.push('/modalDictationPlayer');
+    }
+  }, [
+    channel.channelId,
+    channel.imageUrl,
+    channel.title,
+    episode.duration,
+    episode.episodeId,
+    episode.imageUrl,
+    episode.title,
+    episode.url,
+    isThisEpisodePlaying,
+    playTrackIfNotCurrentlyPlaying,
+    playType,
+    router,
+    setPlayType,
+  ]);
+
+  const onPressChannel = useCallback(() => {
+    router.push({
+      pathname: 'mainTab/search/channel',
+      params: { channelId: channel.channelId },
+    });
+  }, [channel.channelId, router]);
 
   return (
     <>
@@ -137,10 +195,14 @@ function EpisodePage() {
           duration={episode.duration}
           isPlaying={isThisEpisodePlaying}
           isLoading={isThisEpisodeLoading}
+          onPressChannel={onPressChannel}
           onPressPlay={onPressPlay}
+          currentPlayType={playType}
+          onPressDictationPlay={onPressDictationPlay}
           hasTranslatedTranscript={hasTranslatedTranscript}
           hasTranscript={hasTranscript}
           canAutoScroll={canAutoScroll}
+          canDictation={episode.canDictation && hasTranscript}
         />
         <View style={styles.adContainer}>
           <BannerAdMob size={BannerAdSize.MEDIUM_RECTANGLE} />

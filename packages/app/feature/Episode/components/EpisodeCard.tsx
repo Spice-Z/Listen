@@ -20,6 +20,7 @@ type Props = {
   hasTranslatedTranscript: boolean;
   hasTranscript: boolean;
   canAutoScroll: boolean;
+  canDictation: boolean;
 };
 
 function removeTagsFromString(htmlString) {
@@ -41,6 +42,7 @@ const EpisodeCard = memo(
     hasTranslatedTranscript,
     hasTranscript,
     canAutoScroll,
+    canDictation,
   }: Props) => {
     const arrangedDescription = useMemo(() => {
       return convertNewlinesToSpaces(removeTagsFromString(description));
@@ -80,6 +82,7 @@ const EpisodeCard = memo(
                 </View>
               ) : null}
               {canAutoScroll && <Text>🏃‍♀️</Text>}
+              {canDictation && <Text>📝</Text>}
             </View>
           </View>
         </View>

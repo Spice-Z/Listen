@@ -37,6 +37,7 @@ const GET_CHANNEL = gql(/* GraphQL */ `
               language
               transcriptUrl
             }
+            canDictation
           }
         }
       }
@@ -118,6 +119,7 @@ function Channel() {
                 hasTranslatedTranscript={item.translatedTranscripts.length > 0}
                 hasTranscript={item.transcriptUrl !== null}
                 canAutoScroll={!item.hasChangeableAd && item.transcriptUrl !== null}
+                canDictation={item.canDictation && item.transcriptUrl !== null}
               />
             );
           }}

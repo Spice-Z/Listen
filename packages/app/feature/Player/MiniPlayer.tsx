@@ -5,10 +5,11 @@ import { useRouter } from 'expo-router';
 import { PauseIcon, PlayIcon } from '../icons';
 import TrackPlayer from 'react-native-track-player';
 import ArtworkImage from './components/ArtworkImage';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import PressableScale from '../Pressable/PressableScale';
 import PressableOpacity from '../Pressable/PressableOpacity';
 import { MINI_PLAYER_HEIGHT } from '../../constants';
+import { usePlayerContext } from '../context/player/context';
 
 type Props = {
   hide: boolean;
@@ -17,6 +18,7 @@ export default function MiniPlayer({ hide }: Props) {
   const { isPlaying, isLoading, currentTrack } = useTrackPlayer();
   const hasPlayingTrack = currentTrack !== null;
   const router = useRouter();
+  const { playType } = usePlayerContext();
 
   const handlePlayPause = async () => {
     if (isLoading) {
@@ -38,13 +40,15 @@ export default function MiniPlayer({ hide }: Props) {
       <PlayIcon fill={theme.color.bgMain} width={20} height={20} />
     );
   }, [isLoading, isPlaying]);
+  const onPress = useCallback(() => {
+    if (playType === 'dictation') {
+      router.push('/modalDictationPlayer');
+      return;
+    }
+    router.push('/modalPlayer');
+  }, [playType, router]);
   return hasPlayingTrack && !hide ? (
-    <PressableScale
-      style={styles.container}
-      onPress={() => {
-        router.push('/modalPlayer');
-      }}
-    >
+    <PressableScale style={styles.container} onPress={onPress}>
       <ArtworkImage width={56} height={56} borderRadius={0} />
       <View style={styles.texts}>
         <Text numberOfLines={1} style={styles.title}>
