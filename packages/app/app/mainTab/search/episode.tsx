@@ -33,18 +33,13 @@ const GET_EPISODE = gql(/* GraphQL */ `
         transcriptUrl
       }
       canDictation
-    }
-  }
-`);
-
-const GET_CHANNEL = gql(/* GraphQL */ `
-  query GetChannelInEpisode($channelId: String!) {
-    channel(channelId: $channelId) {
-      id
-      channelId
-      title
-      imageUrl
-      author
+      channel {
+        id
+        channelId
+        title
+        imageUrl
+        author
+      }
     }
   }
 `);
@@ -69,13 +64,6 @@ function EpisodePage() {
   const canAutoScroll = useMemo(() => {
     return !episode.hasChangeableAd && hasTranscript;
   }, [episode.hasChangeableAd, hasTranscript]);
-
-  const { data: channelData } = useSuspenseQuery(GET_CHANNEL, {
-    variables: {
-      channelId: channelId as string,
-    },
-  });
-  const channel = channelData.channel;
 
   const { playTrackIfNotCurrentlyPlaying, currentTrack, isPlaying, isLoading } = useTrackPlayer();
   const isThisEpisodeLoading = useMemo(() => {
@@ -104,10 +92,10 @@ function EpisodePage() {
     } else {
       const track: TrackPlayerTrack = {
         id: episode.episodeId,
-        channelId: channel.channelId,
+        channelId: episode.channel.channelId,
         title: episode.title,
-        artist: channel.title,
-        artwork: episode.imageUrl || channel.imageUrl,
+        artist: episode.channel.title,
+        artwork: episode.imageUrl || episode.channel.imageUrl,
         url: episode.url,
         duration: episode.duration,
         // TODO: add Date from pubDate
@@ -117,9 +105,9 @@ function EpisodePage() {
       router.push('/modalPlayer');
     }
   }, [
-    channel.channelId,
-    channel.imageUrl,
-    channel.title,
+    episode.channel.channelId,
+    episode.channel.imageUrl,
+    episode.channel.title,
     episode.duration,
     episode.episodeId,
     episode.imageUrl,
@@ -143,10 +131,10 @@ function EpisodePage() {
     } else {
       const track: TrackPlayerTrack = {
         id: episode.episodeId,
-        channelId: channel.channelId,
+        channelId: episode.channel.channelId,
         title: episode.title,
-        artist: channel.title,
-        artwork: episode.imageUrl || channel.imageUrl,
+        artist: episode.channel.title,
+        artwork: episode.imageUrl || episode.channel.imageUrl,
         url: episode.url,
         duration: episode.duration,
         // TODO: add Date from pubDate
@@ -156,9 +144,9 @@ function EpisodePage() {
       router.push('/modalDictationPlayer');
     }
   }, [
-    channel.channelId,
-    channel.imageUrl,
-    channel.title,
+    episode.channel.channelId,
+    episode.channel.imageUrl,
+    episode.channel.title,
     episode.duration,
     episode.episodeId,
     episode.imageUrl,
@@ -174,9 +162,9 @@ function EpisodePage() {
   const onPressChannel = useCallback(() => {
     router.push({
       pathname: 'mainTab/search/channel',
-      params: { channelId: channel.channelId },
+      params: { channelId: episode.channel.channelId },
     });
-  }, [channel.channelId, router]);
+  }, [episode.channel.channelId, router]);
 
   return (
     <>
@@ -187,11 +175,12 @@ function EpisodePage() {
           }}
         />
         <Episode
-          channelTitle={channel.title}
+          channelTitle={episode.channel.title}
+          channelAuthor={episode.channel.author}
           dateUnixTime={episode.pubDate}
           episodeTitle={episode.title}
           episodeDescription={episode.content}
-          episodeImageUrl={episode.imageUrl || channel.imageUrl}
+          episodeImageUrl={episode.imageUrl || episode.channel.imageUrl}
           duration={episode.duration}
           isPlaying={isThisEpisodePlaying}
           isLoading={isThisEpisodeLoading}
@@ -250,7 +239,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.bgMain,
-    padding: 16,
+    paddingHorizontal: 16,
   },
   adContainer: {
     alignItems: 'center',

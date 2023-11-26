@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 6,
-    backgroundColor: theme.color.bgDark,
   },
   info: {
     flexShrink: 0,

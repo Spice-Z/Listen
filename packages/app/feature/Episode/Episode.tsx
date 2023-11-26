@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../styles/theme';
 import { TranslateIcon } from '../icons';
 import { formatDMMMYY } from '../format/date';
@@ -11,9 +11,11 @@ import TextIcon from '../icons/TextIcon';
 import PressableScale from '../Pressable/PressableScale';
 import PlayPauseIcon from '../Player/components/PlayPauseIcon';
 import { PlayType } from '../context/player/context';
+import Spacer from '../Spacer/Spacer';
 
 type Props = {
   channelTitle: string;
+  channelAuthor: string;
   episodeTitle: string;
   episodeDescription: string;
   episodeImageUrl: string;
@@ -34,6 +36,7 @@ type Props = {
 const Episode = memo(
   ({
     channelTitle,
+    channelAuthor,
     episodeTitle,
     episodeDescription,
     episodeImageUrl,
@@ -67,7 +70,7 @@ const Episode = memo(
     }, [currentPlayType, isPlaying]);
 
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <PressableScale onPress={onPressChannel} style={styles.head}>
           <ExpoImage
             style={styles.image}
@@ -78,12 +81,16 @@ const Episode = memo(
             <Text numberOfLines={2} style={styles.channelTitle}>
               {channelTitle}
             </Text>
-            <Text style={styles.date}>{formattedDate}</Text>
+            <Text style={styles.author}>{channelAuthor}</Text>
           </View>
         </PressableScale>
+        <Spacer height={8} />
         <Text selectable style={styles.episodeTitle}>
           {episodeTitle}
         </Text>
+        <Spacer height={4} />
+        <Text style={styles.date}>{formattedDate}</Text>
+        <Spacer height={8} />
         <View style={styles.subContainer}>
           <View style={styles.infoContainer}>
             {hasTranslatedTranscript ? (
@@ -107,10 +114,11 @@ const Episode = memo(
             </PressableOpacity>
           </View>
         </View>
+        <Spacer height={12} />
         <Text selectable style={styles.description}>
           {episodeDescription}
         </Text>
-      </ScrollView>
+      </View>
     );
   },
 );
@@ -120,7 +128,9 @@ Episode.displayName = 'Episode';
 export default Episode;
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   head: {
     flexDirection: 'row',
   },
@@ -134,6 +144,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     height: 60,
     justifyContent: 'center',
+    gap: 2,
   },
   channelTitle: {
     fontSize: 14,
@@ -141,23 +152,26 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: theme.color.textMain,
   },
+  author: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600',
+    color: theme.color.textWeak,
+  },
   date: {
     fontSize: 12,
     lineHeight: 16,
     fontWeight: '600',
     color: theme.color.textWeak,
-    marginTop: 2,
   },
   episodeTitle: {
     fontSize: 24,
     lineHeight: 32,
     fontWeight: '800',
     color: theme.color.textMain,
-    marginTop: 12,
   },
   description: {
     color: theme.color.textMain,
-    marginTop: 8,
     fontSize: 14,
     lineHeight: 20,
     fontWeight: '400',
@@ -166,7 +180,6 @@ const styles = StyleSheet.create({
     color: theme.color.textWeak,
   },
   subContainer: {
-    marginTop: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
