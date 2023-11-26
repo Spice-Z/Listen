@@ -76,9 +76,8 @@ export type Episode = Node & {
 };
 
 export enum EpisodeAvailableType {
-  Dictation = 'DICTATION',
-  Transcript = 'TRANSCRIPT',
-  TranslatedTranscript = 'TRANSLATED_TRANSCRIPT'
+  Perfect = 'PERFECT',
+  Transcript = 'TRANSCRIPT'
 }
 
 export type EpisodeConnection = {
