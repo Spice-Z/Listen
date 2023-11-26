@@ -56,9 +56,8 @@ type Episode implements Node {
 }
 
 enum EpisodeAvailableType {
-  DICTATION
+  PERFECT
   TRANSCRIPT
-  TRANSLATED_TRANSCRIPT
 }
 
 type EpisodeConnection {

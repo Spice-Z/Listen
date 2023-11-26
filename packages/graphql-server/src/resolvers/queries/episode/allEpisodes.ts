@@ -9,9 +9,8 @@ import { GraphQLError } from 'graphql';
 
 const typeDefs = gql`
   enum EpisodeAvailableType {
+    PERFECT
     TRANSCRIPT
-    TRANSLATED_TRANSCRIPT
-    DICTATION
   }
   input AllEpisodeFilter {
     availableType: EpisodeAvailableType
@@ -34,6 +33,27 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
   // TODO: redis
   // TODO: ページング
   const episodesData = await (async () => {
+    if (filter?.availableType === 'PERFECT') {
+      try {
+        const episodeDocs = await firestore
+          .collection(ALL_EPISODES_DOCUMENT_NAME)
+          .where('canDictation', '==', true)
+          .withConverter(allEpisodesEpisodeConverter)
+          .orderBy('pubDate', 'desc')
+          .limit(first)
+          .get();
+        if (episodeDocs.empty) {
+          return [];
+        }
+        const episodesData = episodeDocs.docs.map((doc) => doc.data());
+        // transcriptUrlがnullのものを除外
+        episodesData.filter((episode) => episode.transcriptUrl !== null);
+        return episodesData;
+      } catch (e) {
+        console.log(e);
+        return [];
+      }
+    }
     if (filter?.availableType === 'TRANSCRIPT') {
       try {
         const episodesData = (
@@ -59,57 +79,6 @@ const resolver: QueryResolvers['allEpisodes'] = async (_parent, args, _context, 
         return episodesData;
       } catch (error) {
         console.log(error);
-        return [];
-      }
-    }
-    if (filter?.availableType === 'TRANSLATED_TRANSCRIPT') {
-      try {
-        const episodesData = (
-          await firestore
-            .collection(ALL_EPISODES_DOCUMENT_NAME)
-            .withConverter(allEpisodesEpisodeConverter)
-            .where('translatedTranscripts', '!=', null)
-            .orderBy('translatedTranscripts', 'desc')
-            .orderBy('pubDate', 'desc')
-            .limit(first)
-            .get()
-        ).docs.map((doc) => doc.data());
-        // pubDateでdescソート
-        episodesData.sort((a, b) => {
-          if (a.pubDate > b.pubDate) {
-            return -1;
-          }
-          if (a.pubDate < b.pubDate) {
-            return 1;
-          }
-          return 0;
-        });
-
-        return episodesData;
-      } catch (error) {
-        console.log(error);
-        return [];
-      }
-    }
-    if (filter?.availableType === 'DICTATION') {
-      console.log('DICTATION');
-      try {
-        const episodeDocs = await firestore
-          .collection(ALL_EPISODES_DOCUMENT_NAME)
-          .where('canDictation', '==', true)
-          .withConverter(allEpisodesEpisodeConverter)
-          .orderBy('pubDate', 'desc')
-          .limit(first)
-          .get();
-        if (episodeDocs.empty) {
-          return [];
-        }
-        const episodesData = episodeDocs.docs.map((doc) => doc.data());
-        // transcriptUrlがnullのものを除外
-        episodesData.filter((episode) => episode.transcriptUrl !== null);
-        return episodesData;
-      } catch (e) {
-        console.log(e);
         return [];
       }
     }
