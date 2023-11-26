@@ -3,7 +3,7 @@
     "name": "Listen",
     "slug": "Listen",
     "scheme": "listen-podcast",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "jsEngine": "hermes",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -39,6 +39,7 @@
         "UIBackgroundModes": [
           "audio"
         ],
+        "ITSAppUsesNonExemptEncryption": false,
         "NSUserTrackingUsageDescription": "アプリのバグ修正や体験向上のために行動データを利用します。",
         "SKAdNetworkItems": [
           {
@@ -192,7 +193,7 @@
       },
       "bundleIdentifier": "com.spicex.Listen",
       "requireFullScreen": true,
-      "buildNumber": "32"
+      "buildNumber": "39"
     },
     "android": {
       "adaptiveIcon": {
@@ -200,7 +201,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.spicex.Listen",
-      "versionCode": 10
+      "versionCode": 11
     },
     "extra": {
       "eas": {
