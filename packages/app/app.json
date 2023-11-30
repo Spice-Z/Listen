@@ -17,6 +17,7 @@
     ],
     "plugins": [
       "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
       [
         "expo-build-properties",
         {
@@ -198,10 +199,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#f8f8f8"
       },
       "package": "com.spicex.Listen",
-      "versionCode": 11
+      "versionCode": 15
     },
     "extra": {
       "eas": {

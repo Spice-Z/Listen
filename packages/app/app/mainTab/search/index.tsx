@@ -1,11 +1,11 @@
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { theme } from '../../../feature/styles/theme';
 import { useMemo, useState } from 'react';
 import { EpisodeAvailableType } from '../../../feature/graphql/__generated__/graphql';
 import { TabHeader } from '../../../feature/Tab/TabHeader';
 import { EpisodeQueriedList } from '../../../feature/Episode/components/EpisodeQueriedList';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 
 const App = () => {
   const [selectedFilter, setSelectedFilter] = useState<EpisodeAvailableType | undefined>(
@@ -50,8 +50,8 @@ export default function withSuspense() {
           headerShown: false,
         }}
       />
-      <StatusBar style="inverted" />
-      <SafeAreaView style={{ flex: 1, backgroundColor: theme.color.bgMain }}>
+      <ExpoStatusBar style="inverted" />
+      <SafeAreaView style={styles.container}>
         <App />
       </SafeAreaView>
     </>
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.bgMain,
+    paddingTop: Platform.OS === 'android' ? 30 : 0,
   },
   listContainer: {
     flex: 1,
