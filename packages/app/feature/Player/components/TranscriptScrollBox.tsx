@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { getTranscriptFromUrl } from '../../dataLoader/getTranscriptFromUrl';
 import { ScrollView } from 'react-native-gesture-handler';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import { theme } from '../../styles/theme';
 import SquareShimmer from '../../Shimmer/SquareShimmer';
 
@@ -79,9 +79,18 @@ function TranscriptScrollBox({
               transcriptYPositions.current = Ys;
             }}
           >
-            <Text style={[styles.transcript]} selectable>
-              {transcript.text}
-            </Text>
+            {Platform.select({
+              ios: (
+                <TextInput style={styles.transcript} editable={false} multiline>
+                  {transcript.text}
+                </TextInput>
+              ),
+              default: (
+                <Text style={styles.transcript} selectable>
+                  {transcript.text}
+                </Text>
+              ),
+            })}
           </View>
         ))
       ) : isFetching ? (
@@ -126,6 +135,8 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: theme.color.textMain,
     fontWeight: '600',
+    paddingTop: 0, // TextInputだとpaddingが入ってしまうが、paddingTopじゃないと反映されない
+    paddingBottom: 0,
   },
   noTranscriptText: {
     width: '100%',
