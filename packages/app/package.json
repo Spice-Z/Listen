@@ -6,7 +6,7 @@
     "start:production": "NODE_ENV=production expo start --no-dev --minify",
     "lint:fix": "eslint --fix '**/*.{ts,tsx}'",
     "lint": "eslint '**/*.{ts,tsx}'",
-    "build:development:android": "APP_VARIANT=development eas build --profile development --platform android --local",
+    "build:development:android": "APP_VARIANT=development eas build --profile development --platform android",
     "build:development:ios": "eas build --profile development --platform ios --local",
     "build:prod:ios": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform ios",
     "build:prod:ios:local": "APP_VARIANT=production NODE_ENV=production eas build --profile production --platform ios --local",
@@ -71,7 +71,9 @@
     "react-native-svg": "13.4.0",
     "react-native-track-player": "^3.2.0",
     "react-native-web": "~0.18.7",
-    "react-native-webview": "13.2.2"
+    "react-native-webview": "13.2.2",
+    "expo-notifications": "~0.20.1",
+    "expo-device": "~5.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

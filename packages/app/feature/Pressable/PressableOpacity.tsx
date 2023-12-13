@@ -4,7 +4,7 @@ import { Pressable } from 'react-native';
 type Props = {
   children: React.ReactNode;
   style?: Object;
-  onPress?: () => void;
+  onPress?: () => void | Promise<void>;
   hitSlop?: number;
 };
 

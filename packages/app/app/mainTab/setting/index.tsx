@@ -92,21 +92,28 @@ export default function SettingPage() {
           data={[
             {
               id: '1',
+              text: 'Reminder',
+              onPress: () => {
+                router.push('mainTab/setting/reminder');
+              },
+            },
+            {
+              id: '2',
               text: 'Licenses',
               onPress: goToLicenses,
             },
             {
-              id: '2',
+              id: '3',
               text: 'Terms of Services',
               onPress: goToTermsOfServices,
             },
             {
-              id: '3',
+              id: '4',
               text: 'Privacy Policy',
               onPress: goToPrivacyPolicy,
             },
             {
-              id: '4',
+              id: '5',
               text: 'Contact / Feature Request',
               onPress: openInquiryForm,
             },
@@ -130,20 +137,20 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    paddingBottom: 32,
-    marginBottom: 32,
+    paddingBottom: 24,
+    marginBottom: 18,
     backgroundColor: theme.color.bgNone,
     borderRadius: 8,
   },
   headerImage: {
-    width: '70%',
+    width: '50%',
     height: 'auto',
     aspectRatio: 1,
     resizeMode: 'contain',
     marginVertical: 'auto',
   },
   headerText: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '600',
     color: theme.color.textMain,
     textAlign: 'center',

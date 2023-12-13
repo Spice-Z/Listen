@@ -5,103 +5,109 @@ import { usePathname, useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import PressableScale from '../Pressable/PressableScale';
 
+export type PlaySettingBottomSheetHandler = {
+  toggleBottomSheet: () => void;
+};
+
 type Props = {
   onAfterClose?: () => void | Promise<void>;
 };
 
-const PlaySettingBottomSheet = forwardRef(({ onAfterClose }: Props, ref) => {
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const bottomSheetRef = useRef<BottomSheet>(null);
+const PlaySettingBottomSheet = forwardRef<PlaySettingBottomSheetHandler, Props>(
+  ({ onAfterClose }, ref) => {
+    const router = useRouter();
+    const [isOpen, setIsOpen] = useState(false);
+    const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+    const snapPoints = useMemo(() => ['25%', '50%'], []);
 
-  const handleSheetChanges = useCallback((index: number) => {
-    if (index === -1) {
-      setIsOpen(false);
-    } else {
-      setIsOpen(true);
-    }
-  }, []);
+    const handleSheetChanges = useCallback((index: number) => {
+      if (index === -1) {
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
+      }
+    }, []);
 
-  const toggleBottomSheet = useCallback(() => {
-    if (bottomSheetRef.current) {
-      if (isOpen) {
-        bottomSheetRef.current.close();
+    const toggleBottomSheet = useCallback(() => {
+      if (bottomSheetRef.current) {
+        if (isOpen) {
+          bottomSheetRef.current.close();
+          return;
+        }
+        bottomSheetRef.current.snapToIndex(1);
+      }
+    }, [isOpen]);
+    useImperativeHandle(ref, () => ({
+      toggleBottomSheet,
+    }));
+
+    const onPressSwitchToDictation = useCallback(async () => {
+      if (!bottomSheetRef.current) {
         return;
       }
-      bottomSheetRef.current.snapToIndex(1);
-    }
-  }, [isOpen]);
-  useImperativeHandle(ref, () => ({
-    toggleBottomSheet,
-  }));
+      bottomSheetRef.current.close();
+      if (onAfterClose) {
+        await onAfterClose();
+      }
 
-  const onPressSwitchToDictation = useCallback(async () => {
-    if (!bottomSheetRef.current) {
-      return;
-    }
-    bottomSheetRef.current.close();
-    if (onAfterClose) {
-      await onAfterClose();
-    }
+      router.push('/modalDictationPlayer');
+    }, [onAfterClose, router]);
 
-    router.push('/modalDictationPlayer');
-  }, [onAfterClose, router]);
+    const onPressSwitchToNormal = useCallback(async () => {
+      if (!bottomSheetRef.current) {
+        return;
+      }
+      bottomSheetRef.current.close();
+      if (onAfterClose) {
+        await onAfterClose();
+      }
 
-  const onPressSwitchToNormal = useCallback(async () => {
-    if (!bottomSheetRef.current) {
-      return;
-    }
-    bottomSheetRef.current.close();
-    if (onAfterClose) {
-      await onAfterClose();
-    }
+      router.push('/modalPlayer');
+    }, [onAfterClose, router]);
+    const currentPath = usePathname();
+    const isOnTranscriptPlayer = currentPath === '/modalPlayer';
+    const isOnDictationPlayer = currentPath === '/modalDictationPlayer';
 
-    router.push('/modalPlayer');
-  }, [onAfterClose, router]);
-  const currentPath = usePathname();
-  const isOnTranscriptPlayer = currentPath === '/modalPlayer';
-  const isOnDictationPlayer = currentPath === '/modalDictationPlayer';
+    const renderBackDrop = useCallback((props) => {
+      return (
+        <BottomSheetBackdrop
+          {...props}
+          disappearsOnIndex={-1}
+          style={[props.style, { backgroundColor: theme.color.bgDrop }]}
+          opacity={0.9}
+        />
+      );
+    }, []);
 
-  const renderBackDrop = useCallback((props) => {
     return (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        style={[props.style, { backgroundColor: theme.color.bgDrop }]}
-        opacity={0.9}
-      />
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        backgroundStyle={{
+          backgroundColor: theme.color.bgMain,
+        }}
+        onChange={handleSheetChanges}
+        backdropComponent={renderBackDrop}
+        enablePanDownToClose
+      >
+        <View style={styles.contentContainer}>
+          {!isOnDictationPlayer && (
+            <PressableScale style={styles.item} onPress={onPressSwitchToDictation}>
+              <Text style={styles.bottomSheetText}>Switch to Dictation Mode</Text>
+            </PressableScale>
+          )}
+          {!isOnTranscriptPlayer && (
+            <PressableScale style={styles.item} onPress={onPressSwitchToNormal}>
+              <Text style={styles.bottomSheetText}>Switch to Transcript Mode</Text>
+            </PressableScale>
+          )}
+        </View>
+      </BottomSheet>
     );
-  }, []);
-
-  return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={-1}
-      snapPoints={snapPoints}
-      backgroundStyle={{
-        backgroundColor: theme.color.bgMain,
-      }}
-      onChange={handleSheetChanges}
-      backdropComponent={renderBackDrop}
-      enablePanDownToClose
-    >
-      <View style={styles.contentContainer}>
-        {!isOnDictationPlayer && (
-          <PressableScale style={styles.item} onPress={onPressSwitchToDictation}>
-            <Text style={styles.bottomSheetText}>Switch to Dictation Mode</Text>
-          </PressableScale>
-        )}
-        {!isOnTranscriptPlayer && (
-          <PressableScale style={styles.item} onPress={onPressSwitchToNormal}>
-            <Text style={styles.bottomSheetText}>Switch to Transcript Mode</Text>
-          </PressableScale>
-        )}
-      </View>
-    </BottomSheet>
-  );
-});
+  },
+);
 
 export default PlaySettingBottomSheet;
 

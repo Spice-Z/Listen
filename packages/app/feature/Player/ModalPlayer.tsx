@@ -20,7 +20,9 @@ import BannerAdMob from '../../feature/Ad/BannerAdMob';
 import { BannerAdSize } from 'react-native-google-mobile-ads';
 import { useCurrentEpisodeData } from './hooks/useCurrentEpisodeData';
 import PlayPauseIcon from './components/PlayPauseIcon';
-import PlaySettingBottomSheet from '../BottomSheet/PlaySettingBottomSheet';
+import PlaySettingBottomSheet, {
+  PlaySettingBottomSheetHandler,
+} from '../BottomSheet/PlaySettingBottomSheet';
 
 const LoadingView = memo(() => {
   return <SquareShimmer width="100%" height={500} />;
@@ -90,7 +92,7 @@ const ModalPlayer = memo(() => {
     router.push('/modalTranscriptPlayer');
   };
 
-  const playSettingBottomSheetRef = useRef(null);
+  const playSettingBottomSheetRef = useRef<PlaySettingBottomSheetHandler>(null);
   const toggleBottomSheet = useCallback(() => {
     if (playSettingBottomSheetRef.current) {
       playSettingBottomSheetRef.current.toggleBottomSheet();
