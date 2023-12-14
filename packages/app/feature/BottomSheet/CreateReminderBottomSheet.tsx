@@ -4,6 +4,7 @@ import { theme } from '../styles/theme';
 import { StyleSheet, Text, View } from 'react-native';
 import { DailyTriggerInput } from 'expo-notifications';
 import PressableOpacity from '../Pressable/PressableOpacity';
+import Spacer from '../Spacer/Spacer';
 
 export type CreateReminderBottomSheetHandler = {
   toggleBottomSheet: () => void;
@@ -114,9 +115,20 @@ const CreateReminderBottomSheet = forwardRef<CreateReminderBottomSheetHandler, P
             }}
             inputMode="numeric"
           />
-          <BottomSheetTextInput value={title} onChangeText={setTitle} />
-          <BottomSheetTextInput value={subTitle} onChangeText={setSubTitle} />
-          <BottomSheetTextInput value={body} onChangeText={setBody} />
+          <Spacer height={8} />
+          <Text style={styles.inputTitle}>Title</Text>
+          <BottomSheetTextInput value={title} onChangeText={setTitle} style={styles.textInput} />
+          <Spacer height={8} />
+          <Text>SubTitle</Text>
+          <BottomSheetTextInput
+            value={subTitle}
+            onChangeText={setSubTitle}
+            style={styles.textInput}
+          />
+          <Spacer height={8} />
+          <Text style={styles.inputTitle}>Message</Text>
+          <BottomSheetTextInput value={body} onChangeText={setBody} style={styles.textInput} />
+          <Spacer height={20} />
           <PressableOpacity onPress={onPress}>
             <Text>登録</Text>
           </PressableOpacity>
@@ -136,10 +148,16 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: 16,
   },
+  inputTitle: {
+    fontSize: 14,
+    color: theme.color.textWeak,
+  },
   textInput: {
     color: theme.color.textMain,
     fontSize: 16,
-    fontWeight: '800',
     backgroundColor: theme.color.bgMain,
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+    width: '100%',
   },
 });
