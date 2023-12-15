@@ -36,7 +36,7 @@ export default function ReminderPage() {
   const addNotification = useCallback(
     async (props: {
       title: string;
-      subTitle: string;
+      subtitle: string;
       body: string;
       trigger: Notifications.DailyTriggerInput;
     }) => {
@@ -70,7 +70,15 @@ export default function ReminderPage() {
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Reminder', animation: 'slide_from_right' }} />
+      <Stack.Screen
+        options={{
+          title: 'Reminder',
+          animation: 'slide_from_right',
+          headerStyle: {
+            backgroundColor: theme.color.bgMain,
+          },
+        }}
+      />
       <View style={styles.container}>
         <FlatList
           style={styles.listContainer}
@@ -96,6 +104,7 @@ export default function ReminderPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.color.bgMain,
   },
   listContainer: {
     flex: 1,
@@ -117,5 +126,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
+    shadowColor: theme.color.accents.normal,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 2,
+    elevation: 1,
   },
 });

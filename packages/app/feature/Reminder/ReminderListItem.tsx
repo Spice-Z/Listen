@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.color.bgNone,
     borderRadius: 8,
     flexDirection: 'row',
-    gap: 20,
+    gap: 8,
     paddingHorizontal: 8,
     paddingVertical: 16,
     position: 'relative',
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   content: {
-    gap: 8,
+    gap: 6,
+    flexShrink: 1,
   },
   title: {
     fontSize: 18,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     marginRight: 24,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: theme.color.textWeak,
   },
   body: {
