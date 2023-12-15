@@ -23,6 +23,13 @@ export default function Layout() {
             backgroundColor: theme.color.bgNone,
           },
           tabBarLabelPosition: 'below-icon',
+          headerTitleAlign: 'center',
+          headerTintColor: theme.color.accent,
+          headerTitleStyle: {
+            color: theme.color.textMain,
+            fontWeight: theme.fontWeight.bold,
+            fontSize: 18,
+          },
         }}
       >
         <Tabs.Screen

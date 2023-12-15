@@ -15,6 +15,7 @@ export default function Layout() {
           fontWeight: theme.fontWeight.bold,
           fontSize: 18,
         },
+        headerTintColor: theme.color.accents.normal,
       }}
     />
   );
