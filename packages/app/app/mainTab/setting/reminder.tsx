@@ -1,28 +1,31 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useFocusEffect, useRouter } from 'expo-router';
 
 import * as Notifications from 'expo-notifications';
 import {
   getAllScheduledNotifications,
   registerForPushNotifications,
-  registerNotification,
 } from '../../../feature/Notification/notificationControllers';
 import { ReminderListItem } from '../../../feature/Reminder/ReminderListItem';
 import PressableScale from '../../../feature/Pressable/PressableScale';
 import { theme } from '../../../feature/styles/theme';
 import PlusIcon from '../../../feature/icons/PlusIcon';
-import CreateReminderBottomSheet, {
-  CreateReminderBottomSheetHandler,
-} from '../../../feature/BottomSheet/CreateReminderBottomSheet';
 import Spacer from '../../../feature/Spacer/Spacer';
 
 export default function ReminderPage() {
+  const router = useRouter();
   const [notifications, setNotifications] = useState<Notifications.NotificationRequest[]>([]);
   const updateNotifications = useCallback(async () => {
     const notifications = await getAllScheduledNotifications();
     setNotifications(notifications);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      updateNotifications();
+    }, [updateNotifications]),
+  );
 
   useEffect(() => {
     const init = async () => {
@@ -32,19 +35,6 @@ export default function ReminderPage() {
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const addNotification = useCallback(
-    async (props: {
-      title: string;
-      subtitle: string;
-      body: string;
-      trigger: Notifications.DailyTriggerInput;
-    }) => {
-      await registerNotification(props);
-      await updateNotifications();
-    },
-    [updateNotifications],
-  );
 
   const renderItem = useCallback(
     ({ item }: { item: Notifications.NotificationRequest }) => {
@@ -61,12 +51,9 @@ export default function ReminderPage() {
     return <Spacer height={120} />;
   }, []);
 
-  const playSettingBottomSheetRef = useRef<CreateReminderBottomSheetHandler>(null);
-  const toggleBottomSheet = useCallback(() => {
-    if (playSettingBottomSheetRef.current) {
-      playSettingBottomSheetRef.current.toggleBottomSheet();
-    }
-  }, []);
+  const onPressAdd = useCallback(() => {
+    router.push('modalCreateReminder');
+  }, [router]);
 
   return (
     <>
@@ -88,14 +75,10 @@ export default function ReminderPage() {
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         />
         <View style={styles.addContainer}>
-          <PressableScale onPress={toggleBottomSheet} style={styles.add}>
+          <PressableScale onPress={onPressAdd} style={styles.add}>
             <PlusIcon width={28} height={28} color={theme.color.bgNone} />
           </PressableScale>
         </View>
-        <CreateReminderBottomSheet
-          ref={playSettingBottomSheetRef}
-          addNotification={addNotification}
-        />
       </View>
     </>
   );

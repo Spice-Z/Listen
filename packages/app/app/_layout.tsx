@@ -122,6 +122,21 @@ export default function Layout() {
                       },
                     }}
                   />
+                  <Stack.Screen
+                    name="modalCreateReminder"
+                    options={{
+                      presentation: 'transparentModal',
+                      animation: 'slide_from_bottom',
+                      headerStyle: {
+                        backgroundColor: theme.color.bgMain,
+                      },
+                      headerTitleStyle: {
+                        color: theme.color.textMain,
+                        fontWeight: theme.fontWeight.bold,
+                        fontSize: 18,
+                      },
+                    }}
+                  />
                 </Stack>
               </PlayerProvider>
             </QueryClientProvider>
