@@ -86,7 +86,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-native": "^4.0.0",
     "vite": "^4.4.9",
-    "vitest": "^0.34.4"
+    "vitest": "^1.2.2"
   },
   "version": "1.0.0"
 }
