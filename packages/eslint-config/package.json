@@ -1,7 +1,7 @@
 {
   "name": "@listen/eslint-config",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^5.57.1",
     "eslint": "^8.37.0",
     "eslint-config-airbnb": "^19.0.4",
