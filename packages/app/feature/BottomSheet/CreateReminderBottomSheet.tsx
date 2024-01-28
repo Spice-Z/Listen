@@ -18,7 +18,7 @@ export type CreateReminderBottomSheetHandler = {
 type Props = {
   addNotification: (props: {
     title: string;
-    subtitle: string;
+    subtitle?: string;
     body: string;
     trigger: DailyTriggerInput;
   }) => Promise<void>;
@@ -83,13 +83,11 @@ const CreateReminderBottomSheet = forwardRef<CreateReminderBottomSheetHandler, P
     };
 
     const [title, setTitle] = useState<string>('Reminder');
-    const [subtitle, setSubtitle] = useState<string>('This is the subtitle');
     const [body, setBody] = useState<string>('This is the body');
 
     const onPress = useCallback(async () => {
       await addNotification({
         title,
-        subtitle,
         body,
         trigger: {
           hour: hour,
@@ -99,7 +97,7 @@ const CreateReminderBottomSheet = forwardRef<CreateReminderBottomSheetHandler, P
       });
 
       bottomSheetRef.current.close();
-    }, [addNotification, body, hour, minute, subtitle, title]);
+    }, [addNotification, body, hour, minute, title]);
 
     return (
       <BottomSheet
@@ -111,7 +109,6 @@ const CreateReminderBottomSheet = forwardRef<CreateReminderBottomSheetHandler, P
         }}
         onChange={handleSheetChanges}
         backdropComponent={renderBackDrop}
-        enablePanDownToClose
         keyboardBlurBehavior="restore"
         keyboardBehavior="fillParent"
       >
@@ -141,14 +138,6 @@ const CreateReminderBottomSheet = forwardRef<CreateReminderBottomSheetHandler, P
           <Text style={styles.inputTitle}>Title</Text>
           <Spacer height={4} />
           <BottomSheetTextInput value={title} onChangeText={setTitle} style={styles.textInput} />
-          <Spacer height={12} />
-          <Text style={styles.inputTitle}>SubTitle</Text>
-          <Spacer height={4} />
-          <BottomSheetTextInput
-            value={subtitle}
-            onChangeText={setSubtitle}
-            style={styles.textInput}
-          />
           <Spacer height={12} />
           <Text style={styles.inputTitle}>Message</Text>
           <Spacer height={4} />
