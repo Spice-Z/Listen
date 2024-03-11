@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.1",
-    "@babel/runtime": "^7.21.0",
+    "@babel/runtime": "^7.24.0",
     "@gorhom/bottom-sheet": "^4.5.1",
     "@invertase/react-native-apple-authentication": "^2.2.2",
     "@react-native-community/slider": "4.4.2",
