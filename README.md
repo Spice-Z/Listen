@@ -2,4 +2,4 @@
 
 This is a monorepo for the Listen project. 
 
-The app is closed in 2024.
+You can find some credentials in this repository, but the app is already closed and all credentials are deprecated.
